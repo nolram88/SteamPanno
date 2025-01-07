@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35514.174 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamPanno", "SteamPanno\SteamPanno.csproj", "{699F0ECE-D713-42B3-83FF-4FCF1306BC1F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamPanno.Tests", "SteamPanno.Tests\SteamPanno.Tests.csproj", "{3FF13FA0-4517-41AD-8ABB-B23464365ED1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		ExportDebug|Any CPU = ExportDebug|Any CPU
+		ExportRelease|Any CPU = ExportRelease|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{699F0ECE-D713-42B3-83FF-4FCF1306BC1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{699F0ECE-D713-42B3-83FF-4FCF1306BC1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{699F0ECE-D713-42B3-83FF-4FCF1306BC1F}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{699F0ECE-D713-42B3-83FF-4FCF1306BC1F}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{699F0ECE-D713-42B3-83FF-4FCF1306BC1F}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{699F0ECE-D713-42B3-83FF-4FCF1306BC1F}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+		{3FF13FA0-4517-41AD-8ABB-B23464365ED1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FF13FA0-4517-41AD-8ABB-B23464365ED1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FF13FA0-4517-41AD-8ABB-B23464365ED1}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FF13FA0-4517-41AD-8ABB-B23464365ED1}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
+		{3FF13FA0-4517-41AD-8ABB-B23464365ED1}.ExportRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{3FF13FA0-4517-41AD-8ABB-B23464365ED1}.ExportRelease|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,30 @@
+# Godot 4+ specific ignores
+.godot/
+.import/
+
+# Imported translations (automatically generated from CSV files)
+*.translation
+
+# Mono-specific ignores
+.mono/
+data_*/
+
+#Visual Studio ignores
+.vs/
+.idea/
+
+# Root Steam Libs
+src/SteamPanno/*.dylib
+src/SteamPanno/*.dll
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/

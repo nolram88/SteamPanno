@@ -1,0 +1,21 @@
+games
+=====
+
+https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key={key}&steamid={id}&include_played_free_games=true&format=json
+https://steamcommunity.com/profiles/{id}/games?tab=all&xml=1
+
+box logo
+========
+https://steamcdn-a.akamaihd.net/steam/apps/{id}/library_600x900_2x.jpg
+https://steamcdn-a.akamaihd.net/steam/apps/{id}/header.jpg
+https://steamcdn-a.akamaihd.net/steam/apps/{id}/logo.png
+https://steamcdn-a.akamaihd.net/steam/apps/{id}/library_hero.jpg
+https://steamcdn-a.akamaihd.net/steam/apps/{id}/library_600x900.jpg (actually 300x450)
+https://steamcdn-a.akamaihd.net/steam/apps/{id}/page_bg_generated.jpg
+https://steamcdn-a.akamaihd.net/steam/apps/{id}/page_bg_generated_v6b.jpg
+
+capsule logo
+============
+https://steamcdn-a.akamaihd.net/steam/apps/{id}/capsule_616x353.jpg
+https://steamcdn-a.akamaihd.net/steam/apps/{id}/capsule_231x87.jpg
+https://steamcdn-a.akamaihd.net/steam/apps/{id}/header.jpg
