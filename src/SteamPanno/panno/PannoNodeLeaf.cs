@@ -8,7 +8,10 @@ namespace SteamPanno.panno
 
 		public override void Draw(Image image)
 		{
-			image.BlitRect(PannoImage.Image, new Rect2I(Vector2I.Zero, PannoImage.Image.GetSize()), Vector2I.Zero);
+			var size = PannoImage.Image.GetSize();
+			var rect = new Rect2I(Vector2I.Zero, size);
+
+			image.BlitRect(PannoImage.Image, rect, Vector2I.Zero);
 		}
 
 		public override int Count()
