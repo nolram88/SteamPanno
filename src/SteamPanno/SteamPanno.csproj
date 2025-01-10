@@ -20,6 +20,6 @@
     <Exec Command="xcopy /Y &quot;$(GodotProjectDir)addons\steam\windows\steam_api64.dll&quot; &quot;$(GodotProjectDir)&quot;" />
   </Target>
   <Target Condition=" '$(GodotTargetPlatform)' == 'macos' " Name="PostBuildMacos" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /Y &quot;$(GodotProjectDir)SteamPanno\addons\steam\macos\libsteam_api.dylib&quot; &quot;$(GodotProjectDir)&quot;" />
+    <Exec Command="xcopy /Y &quot;$(GodotProjectDir)addons\steam\macos\libsteam_api.dylib&quot; &quot;$(GodotProjectDir)&quot;" />
   </Target>
 </Project>
