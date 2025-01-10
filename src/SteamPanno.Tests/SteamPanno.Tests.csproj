@@ -2,14 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net7.0</TargetFramework>
-    <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'ios' ">net8.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
 	<Platforms>AnyCPU</Platforms>
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <RootNamespace>$(MSBuildProjectName.Replace(".Tests", ""))</RootNamespace>
+    <RootNamespace>SteamPanno</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,10 +27,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SteamPanno\SteamPanno.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Using Include="Xunit" />
   </ItemGroup>
 
 </Project>

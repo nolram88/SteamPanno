@@ -10,18 +10,16 @@
     <Reference Include="Facepunch.Steamworks.Win64">
       <HintPath>addons\steam\windows\Facepunch.Steamworks.Win64.dll</HintPath>
     </Reference>
-	  <Content Include="Addons\Steam\Windows\steam_api64.dll">
-      <Link>../../../../../steam_api64.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup Condition=" '$(GodotTargetPlatform)' == 'macos' ">
     <Reference Include="Facepunch.Steamworks.Posix">
       <HintPath>addons\steam\macos\Facepunch.Steamworks.Posix.dll</HintPath>
     </Reference>
-    <Content Include="Addons\Steam\Macos\libsteam_api.dylib">
-      <Link>../../../../../libsteam_api.dylib</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
+  <Target Condition=" '$(GodotTargetPlatform)' == 'windows' " Name="PostBuildWindows" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /Y &quot;$(SolutionDir)SteamPanno\addons\steam\windows\steam_api64.dll&quot; &quot;$(SolutionDir)SteamPanno\&quot;" />
+  </Target>
+  <Target Condition=" '$(GodotTargetPlatform)' == 'macos' " Name="PostBuildMacos" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /Y &quot;$(SolutionDir)SteamPanno\addons\steam\macos\libsteam_api.dylib&quot; &quot;$(SolutionDir)SteamPanno\&quot;" />
+  </Target>
 </Project>
