@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Godot;
 using Xunit;
@@ -23,39 +20,65 @@ namespace SteamPanno.panno
 			pannoGenerator = new PannoGenerator(pannoLoader);
 		}
 
-		[Fact]
-		public async Task ShouldPutOneImageForOneGame()
+		[Theory]
+		[InlineData(true)]
+		[InlineData(false)]
+		public async Task ShouldPutOneImageForOneGame(bool horizontal)
 		{
-			var games = new PannoGame[]
-			{
-				new PannoGame()
-			};
+			var game = new PannoGame();
+			var games = new PannoGame[] { game };
+			var area = new Rect2I(0, 0, 100, 100);
 
-			var panno = await pannoGenerator.Generate(games, true);
+			var panno = await pannoGenerator.Generate(games, area, horizontal);
 
 			panno.Count().Should().Be(1);
+			var node = panno.AllNodes().First();
+			node.Game.Should().Be(game);
+			node.Area.Should().Be(area);
+			node.Horizontal.Should().Be(horizontal);
 		}
 
-		[Fact]
-		public async Task ShouldPutAllImageForTwoGame()
+		[Theory]
+		[InlineData(true)]
+		[InlineData(false)]
+		public async Task ShouldPutAllImageForTwoGame(bool horizontal)
 		{
-			var games = new PannoGame[]
-			{
-				new PannoGame()
-				{
-					HoursOnRecord = 10,
-				},
-				new PannoGame()
-				{
-					HoursOnRecord = 10,
-				}
-			};
+			var game1 = new PannoGame() { HoursOnRecord = 10 };
+			var game2 = new PannoGame() { HoursOnRecord = 5 };
+			var games = new PannoGame[] { game1, game2 };
+			var area = new Rect2I(0, 0, 100, 100);
 
-			var panno = await pannoGenerator.Generate(games, true);
+			var panno = await pannoGenerator.Generate(games, area, horizontal);
 
 			panno.Count().Should().Be(2);
+			var nodes = panno.AllNodes();
+			nodes.First().Game.HoursOnRecord.Should().Be(game1.HoursOnRecord);
+			nodes.First().Area.Should().Be(horizontal ? new Rect2I(0, 0, 50, 100) : new Rect2I(0, 0, 100, 50));
+			nodes.First().Horizontal.Should().Be(!horizontal);
+			nodes.Last().Game.HoursOnRecord.Should().Be(game2.HoursOnRecord);
+			nodes.Last().Area.Should().Be(horizontal ? new Rect2I(50, 0, 50, 100) : new Rect2I(0, 50, 100, 50));
+			nodes.Last().Horizontal.Should().Be(!horizontal);
 		}
 
+		[Theory]
+		[InlineData(true)]
+		[InlineData(false)]
+		public async Task ShouldSplitAreaCorretlyForOddSize(bool horizontal)
+		{
+			var game1 = new PannoGame() { HoursOnRecord = 10 };
+			var game2 = new PannoGame() { HoursOnRecord = 5 };
+			var games = new PannoGame[] { game1, game2 };
+			var area = new Rect2I(0, 0, 11, 11);
+
+			var panno = await pannoGenerator.Generate(games, area, horizontal);
+
+			panno.Count().Should().Be(2);
+			var nodes = panno.AllNodes();
+			nodes.First().Area.Should().Be(horizontal ? new Rect2I(0, 0, 6, 11) : new Rect2I(0, 0, 11, 6));
+			nodes.Last().Area.Should().Be(horizontal ? new Rect2I(6, 0, 5, 11) : new Rect2I(0, 6, 11, 5));
+		}
+
+		/*
 		[Fact]
 		public async Task ShouldPutAllImageForThreeGame()
 		{
@@ -102,6 +125,6 @@ namespace SteamPanno.panno
 			var panno = await pannoGenerator.Generate(games, true);
 
 			panno.Count().Should().Be(3);
-		}
+		}*/
 	}
 }

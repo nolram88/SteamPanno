@@ -16,14 +16,14 @@ namespace SteamPanno.panno
 			this.pannoLoader = pannoLoader;
 		}
 
-		public async Task<PannoNode> Generate(PannoGame[] games, bool horizontal)
+		public async Task<PannoNode> Generate(PannoGame[] games, Rect2I area, bool horizontal)
 		{
 			games = games.OrderBy(x => x.HoursOnRecord).ToArray();
 
-			return await GenerateInner(games, horizontal);
+			return await GenerateInner(games, area, horizontal);
 		}
 
-		private async Task<PannoNode> GenerateInner(PannoGame[] games, bool horizontal)
+		private async Task<PannoNode> GenerateInner(PannoGame[] games, Rect2I area, bool horizontal)
 		{
 			if (games.Length == 0)
 			{
@@ -35,7 +35,13 @@ namespace SteamPanno.panno
 				var pannoImage = horizontal
 					? (game.LogoH ?? await game.LoadLogoH(pannoLoader))
 					: (game.LogoV ?? await game.LoadLogoV(pannoLoader));
-				return new PannoNodeLeaf() { PannoImage = pannoImage };
+				return new PannoNodeLeaf()
+				{
+					Game = game,
+					Area = area,
+					Horizontal = horizontal,
+					PannoImage = pannoImage,
+				};
 			}
 			else
 			{
@@ -62,8 +68,18 @@ namespace SteamPanno.panno
 					gamesFirst = new PannoGame[] { games.Last() };
 				}
 
-				var nodeSecond = await GenerateInner(gamesSecond, !horizontal);
-				var nodeFirst = await GenerateInner(gamesFirst, !horizontal);
+				var areaFirst = new Rect2I(
+					area.Position.X,
+					area.Position.Y,
+					(int)Math.Ceiling((decimal)area.End.X / (horizontal ? 2 : 1)),
+					(int)Math.Ceiling((decimal)area.End.Y / (!horizontal ? 2 : 1)));
+				var areaSecond = new Rect2I(
+					area.Position.X + (horizontal ? (int)Math.Ceiling((decimal)area.End.X / 2) : 0),
+					area.Position.Y + (!horizontal ? (int)Math.Ceiling((decimal)area.End.Y / 2) : 0),
+					(int)Math.Floor((decimal)area.End.X / (horizontal ? 2 : 1)),
+					(int)Math.Floor((decimal)area.End.Y / (!horizontal ? 2 : 1)));
+				var nodeFirst = await GenerateInner(gamesFirst, areaFirst, !horizontal);
+				var nodeSecond = await GenerateInner(gamesSecond, areaSecond, !horizontal);
 				return new PannoNodeRoot(nodeFirst, nodeSecond);
 			}
 		}
