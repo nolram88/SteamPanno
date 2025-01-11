@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Godot;
 
 namespace SteamPanno.panno
 {
 	public abstract class PannoNode
 	{
-		public abstract void Draw(Image image);
+		public abstract void Draw(Image image, Rect2I area, bool horizontal);
+		public abstract IEnumerable<PannoNode> AllNodes();
 		public abstract int Count();
 	}
 }

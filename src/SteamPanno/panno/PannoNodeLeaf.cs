@@ -1,4 +1,5 @@
 ﻿using Godot;
+using System.Collections.Generic;
 
 namespace SteamPanno.panno
 {
@@ -6,12 +7,17 @@ namespace SteamPanno.panno
 	{
 		public PannoImage PannoImage { get; init; }
 
-		public override void Draw(Image image)
+		public override void Draw(Image image, Rect2I area, bool horizontal)
 		{
 			var size = PannoImage.Image.GetSize();
 			var rect = new Rect2I(Vector2I.Zero, size);
 
-			image.BlitRect(PannoImage.Image, rect, Vector2I.Zero);
+			image.BlitRect(PannoImage.Image, rect, area.Position);
+		}
+
+		public override IEnumerable<PannoNode> AllNodes()
+		{
+			yield return this;
 		}
 
 		public override int Count()

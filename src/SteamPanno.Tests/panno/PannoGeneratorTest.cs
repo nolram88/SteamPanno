@@ -35,5 +35,73 @@ namespace SteamPanno.panno
 
 			panno.Count().Should().Be(1);
 		}
+
+		[Fact]
+		public async Task ShouldPutAllImageForTwoGame()
+		{
+			var games = new PannoGame[]
+			{
+				new PannoGame()
+				{
+					HoursOnRecord = 10,
+				},
+				new PannoGame()
+				{
+					HoursOnRecord = 10,
+				}
+			};
+
+			var panno = await pannoGenerator.Generate(games, true);
+
+			panno.Count().Should().Be(2);
+		}
+
+		[Fact]
+		public async Task ShouldPutAllImageForThreeGame()
+		{
+			var games = new PannoGame[]
+			{
+				new PannoGame()
+				{
+					HoursOnRecord = 10,
+				},
+				new PannoGame()
+				{
+					HoursOnRecord = 10,
+				},
+				new PannoGame()
+				{
+					HoursOnRecord = 10,
+				}
+			};
+
+			var panno = await pannoGenerator.Generate(games, true);
+
+			panno.Count().Should().Be(3);
+		}
+
+		[Fact]
+		public async Task ShouldSplitInCaseWhenOneGameHasMoreThanHalfOfHours()
+		{
+			var games = new PannoGame[]
+			{
+				new PannoGame()
+				{
+					HoursOnRecord = 100,
+				},
+				new PannoGame()
+				{
+					HoursOnRecord = 20,
+				},
+				new PannoGame()
+				{
+					HoursOnRecord = 10,
+				}
+			};
+
+			var panno = await pannoGenerator.Generate(games, true);
+
+			panno.Count().Should().Be(3);
+		}
 	}
 }

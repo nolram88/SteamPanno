@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Godot;
 
 namespace SteamPanno.panno
 {
@@ -17,7 +18,18 @@ namespace SteamPanno.panno
 
 		public async Task<PannoNode> Generate(PannoGame[] games, bool horizontal)
 		{
-			if (games.Length == 1)
+			games = games.OrderBy(x => x.HoursOnRecord).ToArray();
+
+			return await GenerateInner(games, horizontal);
+		}
+
+		private async Task<PannoNode> GenerateInner(PannoGame[] games, bool horizontal)
+		{
+			if (games.Length == 0)
+			{
+				return null;
+			}
+			else if (games.Length == 1)
 			{
 				var game = games.First();
 				var pannoImage = horizontal
@@ -25,11 +37,35 @@ namespace SteamPanno.panno
 					: (game.LogoV ?? await game.LoadLogoV(pannoLoader));
 				return new PannoNodeLeaf() { PannoImage = pannoImage };
 			}
+			else
+			{
+				var gamesFirst = (PannoGame[])null;
+				var gamesSecond = (PannoGame[])null;
 
-			var hours = games.Sum(x => x.HoursOnRecord);
+				if (games.Length > 2)
+				{
+					var halfHours = games.Sum(x => x.HoursOnRecord) / 2;
+					var gamesSecondHours = 0.0f;
+					var gamesSecondCounter = 0;
 
-			await Task.CompletedTask;
-			return null;
+					while ((gamesSecondHours += games[gamesSecondCounter].HoursOnRecord) < halfHours && gamesSecondCounter < games.Length - 1)
+					{
+						gamesSecondCounter++;
+					}
+
+					gamesSecond = games.Take(gamesSecondCounter).ToArray();
+					gamesFirst = games.Skip(gamesSecondCounter).ToArray();
+				}
+				else
+				{
+					gamesSecond = new PannoGame[] { games.First() };
+					gamesFirst = new PannoGame[] { games.Last() };
+				}
+
+				var nodeSecond = await GenerateInner(gamesSecond, !horizontal);
+				var nodeFirst = await GenerateInner(gamesFirst, !horizontal);
+				return new PannoNodeRoot(nodeFirst, nodeSecond);
+			}
 		}
 	}
 }

@@ -31,10 +31,6 @@ namespace SteamPanno.panno
 				var xml = XDocument.Parse(responseBody);
 				var games = xml.Root.Element("games").Elements("game");
 
-				var x = games.First().Element("appID").Value;
-				var xx = games.First().Element("name").Value;
-				var xxx = games.First().Element("hoursOnRecord").Value;
-
 				return games.Select(x => new PannoGame()
 				{
 					Id = int.Parse(x.Element("appID").Value),

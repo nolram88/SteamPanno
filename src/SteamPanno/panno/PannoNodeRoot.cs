@@ -1,27 +1,52 @@
 ﻿using Godot;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SteamPanno.panno
 {
 	public class PannoNodeRoot : PannoNode
 	{
-		private PannoNode[] leaves;
+		private PannoNode first;
+		private PannoNode second;
 
-		public override void Draw(Image image)
+		public PannoNodeRoot(PannoNode first, PannoNode second)
 		{
-			foreach (var leaf in leaves)
+			this.first = first;
+			this.second = second;
+		}
+
+		public override void Draw(Image image, Rect2I area, bool horizontal)
+		{
+			var firstArea = new Rect2I(
+				area.Position.X,
+				area.Position.Y,
+				area.End.X / (horizontal ? 2 : 1),
+				area.End.Y / (!horizontal ? 2 : 1));
+			var secondArea = new Rect2I(
+				area.Position.X + (horizontal ? area.End.X / 2 : 0),
+				area.Position.Y + (!horizontal ? area.End.Y / 2 : 0),
+				area.End.X / (horizontal ? 2 : 1),
+				area.End.Y / (!horizontal ? 2 : 1));
+
+			first.Draw(image, firstArea, !horizontal);
+			second.Draw(image, secondArea, !horizontal);
+		}
+
+		public override IEnumerable<PannoNode> AllNodes()
+		{
+			foreach (var leaf in first.AllNodes())
 			{
-				leaf.Draw(image);
+				yield return leaf;
+			}
+			foreach (var leaf in second.AllNodes())
+			{
+				yield return leaf;
 			}
 		}
 
 		public override int Count()
 		{
-			return leaves.Sum(x => x.Count());
+			return first.Count() + second.Count();
 		}
 	}
 }
