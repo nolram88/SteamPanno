@@ -14,6 +14,8 @@ namespace SteamPanno.scenes
 
 		public override void _Ready()
 		{
+			GetTree().Root.Size = DisplayServer.ScreenGetSize();
+
 			Steam.Init();
 
 			panno = GetNode<TextureRect>("./GUI/Panno");
@@ -65,7 +67,7 @@ namespace SteamPanno.scenes
 				var loader = new PannoLoaderOnline();
 				var pannoSize = DisplayServer.ScreenGetSize();
 				var pannoArea = new Rect2I(0, 0, pannoSize.X, pannoSize.Y);
-				var drawer = new PannoDrawer()
+				var drawer = new PannoDrawerResizeProportional()
 				{
 					Panno = Image.CreateEmpty(pannoSize.X, pannoSize.Y, false, Image.Format.Rgb8),
 				};
@@ -73,7 +75,7 @@ namespace SteamPanno.scenes
 				var builder = new PannoBuilder(loader, drawer);
 				
 				var games = await loader.GetProfileGames(steamId);
-				games = games.OrderByDescending(x => x.HoursOnRecord).Take(3).ToArray();
+				games = games.OrderByDescending(x => x.HoursOnRecord).Take(4).ToArray();
 				var panno = await generator.Generate(games, pannoArea, pannoArea.Size.X > pannoArea.Size.Y);
 				await builder.Build(panno);
 

@@ -26,7 +26,10 @@ namespace SteamPanno.panno
 					? await loader.GetGameLogoH(game.Game.Id)
 					: await loader.GetGameLogoV(game.Game.Id);
 
-				drawer.Draw(game, image);
+				if (image != null)
+				{
+					drawer.Draw(game.Area, image);
+				}
 			}
 		}
 	}

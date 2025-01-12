@@ -36,7 +36,7 @@ namespace SteamPanno.panno
 		[Theory]
 		[InlineData(true)]
 		[InlineData(false)]
-		public async Task ShouldPutAllImageForTwoGame(bool horizontal)
+		public async Task ShouldPutAllImageForTwoGames(bool horizontal)
 		{
 			var game1 = new PannoGame() { HoursOnRecord = 10 };
 			var game2 = new PannoGame() { HoursOnRecord = 5 };
@@ -76,7 +76,7 @@ namespace SteamPanno.panno
 		[Theory]
 		[InlineData(true)]
 		[InlineData(false)]
-		public async Task ShouldPutAllImageForThreeGame(bool horizontal)
+		public async Task ShouldPutAllImageForThreeGames(bool horizontal)
 		{
 			var game1 = new PannoGame() { HoursOnRecord = 10 };
 			var game2 = new PannoGame() { HoursOnRecord = 5 };
