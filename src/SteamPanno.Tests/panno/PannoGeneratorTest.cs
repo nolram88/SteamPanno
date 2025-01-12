@@ -112,13 +112,13 @@ namespace SteamPanno.panno
 		[Theory]
 		[InlineData(true)]
 		[InlineData(false)]
-		public async Task ShouldPutAllImageForFileGames(bool horizontal)
+		public async Task ShouldPutAllImageForFiveGames(bool horizontal)
 		{
 			var game1 = new PannoGame() { HoursOnRecord = 100 };
-			var game2 = new PannoGame() { HoursOnRecord = 50 };
-			var game3 = new PannoGame() { HoursOnRecord = 40 };
-			var game4 = new PannoGame() { HoursOnRecord = 30 };
-			var game5 = new PannoGame() { HoursOnRecord = 20 };
+			var game2 = new PannoGame() { HoursOnRecord = 95 };
+			var game3 = new PannoGame() { HoursOnRecord = 90 };
+			var game4 = new PannoGame() { HoursOnRecord = 85 };
+			var game5 = new PannoGame() { HoursOnRecord = 80 };
 			var games = new PannoGame[] { game5, game4, game1, game2, game3 };
 			var area = new Rect2I(0, 0, 100, 100);
 
@@ -132,6 +132,25 @@ namespace SteamPanno.panno
 			nodes[2].Area.Should().Be(new Rect2I(horizontal ? 50 : 0, horizontal ? 0 : 50, 50, 50));
 			nodes[3].Area.Should().Be(new Rect2I(50, 50, horizontal ? 25 : 50, horizontal ? 50 : 25));
 			nodes[4].Area.Should().Be(new Rect2I(horizontal ? 75 : 50, horizontal ? 50 : 75, horizontal ? 25 : 50, horizontal ? 50 : 25));
+		}
+
+		[Theory]
+		[InlineData(true)]
+		[InlineData(false)]
+		public async Task ShouldSplitAccodringToGameHours(bool horizontal)
+		{
+			var game1 = new PannoGame() { HoursOnRecord = 1000 };
+			var game2 = new PannoGame() { HoursOnRecord = 500 };
+			var game3 = new PannoGame() { HoursOnRecord = 300 };
+			var game4 = new PannoGame() { HoursOnRecord = 200 };
+			var games = new PannoGame[] { game1, game2, game3, game4 };
+			var area = new Rect2I(0, 0, 100, 100);
+
+			var panno = await pannoGenerator.Generate(games, area, horizontal);
+
+			panno.Count().Should().Be(4);
+			panno.AllLeaves().Select(x => x.Area.Area)
+				.Should().BeEquivalentTo(new int[] { 50 * 100, 50 * 50, 25 * 50, 25 * 50 });
 		}
 	}
 }

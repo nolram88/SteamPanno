@@ -9,7 +9,7 @@ namespace SteamPanno.panno
 	{
 		public async Task<PannoNode> Generate(PannoGame[] games, Rect2I area, bool horizontal)
 		{
-			games = games.OrderBy(x => x.HoursOnRecord).ToArray();
+			games = games.OrderByDescending(x => x.HoursOnRecord).ToArray();
 
 			return await GenerateInner(games, area, horizontal);
 		}
@@ -41,34 +41,29 @@ namespace SteamPanno.panno
 					var gamesFirstCounter = 1;
 					var gamesFirstHours = games[gamesFirstCounter - 1].HoursOnRecord;
 					var gamesSecondCounter = 1;
-					var gamesSecondHours = games[games.Length - gamesFirstCounter].HoursOnRecord;
+					var gamesSecondHours = games[games.Length - gamesSecondCounter].HoursOnRecord;
 
 					while (gamesFirstCounter + gamesSecondCounter < games.Length)
 					{
-						if (gamesSecondCounter <= gamesFirstCounter)
+						if (gamesSecondCounter <= gamesFirstCounter || gamesSecondHours < gamesHalfHours)
 						{
 							gamesSecondCounter++;
 							gamesSecondHours += games[games.Length - gamesFirstCounter].HoursOnRecord;
 						}
-						else if (gamesFirstHours < gamesHalfHours)
+						else
 						{
 							gamesFirstCounter++;
 							gamesFirstHours += games[gamesFirstCounter - 1].HoursOnRecord;
 						}
-						else
-						{
-							gamesSecondCounter++;
-							gamesSecondHours += games[games.Length - gamesFirstCounter].HoursOnRecord;
-						}
 					}
 
-					gamesSecond = games.Take(gamesSecondCounter).ToArray();
-					gamesFirst = games.Skip(gamesSecondCounter).ToArray();
+					gamesFirst = games.Take(gamesFirstCounter).ToArray();
+					gamesSecond = games.Skip(gamesFirstCounter).ToArray();
 				}
 				else
 				{
-					gamesSecond = new PannoGame[] { games.First() };
-					gamesFirst = new PannoGame[] { games.Last() };
+					gamesFirst = new PannoGame[] { games.First() };
+					gamesSecond = new PannoGame[] { games.Last() };
 				}
 
 				var areaFirst = new Rect2I(
