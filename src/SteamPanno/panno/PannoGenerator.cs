@@ -48,7 +48,7 @@ namespace SteamPanno.panno
 						if (gamesSecondCounter <= gamesFirstCounter || gamesSecondHours < gamesHalfHours)
 						{
 							gamesSecondCounter++;
-							gamesSecondHours += games[games.Length - gamesFirstCounter].HoursOnRecord;
+							gamesSecondHours += games[games.Length - gamesSecondCounter].HoursOnRecord;
 						}
 						else
 						{
