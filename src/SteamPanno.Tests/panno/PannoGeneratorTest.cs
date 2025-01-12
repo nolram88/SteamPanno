@@ -78,53 +78,40 @@ namespace SteamPanno.panno
 			nodes.Last().Area.Should().Be(horizontal ? new Rect2I(6, 0, 5, 11) : new Rect2I(0, 6, 11, 5));
 		}
 
-		/*
-		[Fact]
-		public async Task ShouldPutAllImageForThreeGame()
+		[Theory]
+		[InlineData(true)]
+		[InlineData(false)]
+		public async Task ShouldPutAllImageForThreeGame(bool horizontal)
 		{
-			var games = new PannoGame[]
-			{
-				new PannoGame()
-				{
-					HoursOnRecord = 10,
-				},
-				new PannoGame()
-				{
-					HoursOnRecord = 10,
-				},
-				new PannoGame()
-				{
-					HoursOnRecord = 10,
-				}
-			};
+			var game1 = new PannoGame() { HoursOnRecord = 10 };
+			var game2 = new PannoGame() { HoursOnRecord = 5 };
+			var game3 = new PannoGame() { HoursOnRecord = 1 };
+			var games = new PannoGame[] { game1, game2, game3 };
+			var area = new Rect2I(0, 0, 100, 100);
 
-			var panno = await pannoGenerator.Generate(games, true);
+			var panno = await pannoGenerator.Generate(games, area, horizontal);
 
 			panno.Count().Should().Be(3);
+			var nodes = panno.AllNodes();
+			nodes.First().Area.Area.Should().Be(
+				nodes.Skip(1).Sum(x => x.Area.Area));
 		}
 
-		[Fact]
-		public async Task ShouldSplitInCaseWhenOneGameHasMoreThanHalfOfHours()
+		[Theory]
+		[InlineData(true)]
+		[InlineData(false)]
+		public async Task ShouldSplitInCaseWhenOneGameHasMoreThanHalfOfHours(bool horizontal)
 		{
-			var games = new PannoGame[]
-			{
-				new PannoGame()
-				{
-					HoursOnRecord = 100,
-				},
-				new PannoGame()
-				{
-					HoursOnRecord = 20,
-				},
-				new PannoGame()
-				{
-					HoursOnRecord = 10,
-				}
-			};
+			var game1 = new PannoGame() { HoursOnRecord = 100 };
+			var game2 = new PannoGame() { HoursOnRecord = 20 };
+			var game3 = new PannoGame() { HoursOnRecord = 10 };
+			var games = new PannoGame[] { game1, game2, game3 };
+			var area = new Rect2I(0, 0, 100, 100);
 
-			var panno = await pannoGenerator.Generate(games, true);
+			var panno = await pannoGenerator.Generate(games, area, horizontal);
 
 			panno.Count().Should().Be(3);
-		}*/
+			panno.AllNodes().Sum(x => x.Area.Area).Should().Be(100 * 100);
+		}
 	}
 }

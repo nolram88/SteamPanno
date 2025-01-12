@@ -71,13 +71,13 @@ namespace SteamPanno.panno
 				var areaFirst = new Rect2I(
 					area.Position.X,
 					area.Position.Y,
-					(int)Math.Ceiling((decimal)area.End.X / (horizontal ? 2 : 1)),
-					(int)Math.Ceiling((decimal)area.End.Y / (!horizontal ? 2 : 1)));
+					(int)Math.Ceiling((decimal)area.Size.X / (horizontal ? 2 : 1)),
+					(int)Math.Ceiling((decimal)area.Size.Y / (!horizontal ? 2 : 1)));
 				var areaSecond = new Rect2I(
 					area.Position.X + (horizontal ? (int)Math.Ceiling((decimal)area.End.X / 2) : 0),
 					area.Position.Y + (!horizontal ? (int)Math.Ceiling((decimal)area.End.Y / 2) : 0),
-					(int)Math.Floor((decimal)area.End.X / (horizontal ? 2 : 1)),
-					(int)Math.Floor((decimal)area.End.Y / (!horizontal ? 2 : 1)));
+					(int)Math.Floor((decimal)area.Size.X / (horizontal ? 2 : 1)),
+					(int)Math.Floor((decimal)area.Size.Y / (!horizontal ? 2 : 1)));
 				var nodeFirst = await GenerateInner(gamesFirst, areaFirst, !horizontal);
 				var nodeSecond = await GenerateInner(gamesSecond, areaSecond, !horizontal);
 				return new PannoNodeRoot(nodeFirst, nodeSecond);
