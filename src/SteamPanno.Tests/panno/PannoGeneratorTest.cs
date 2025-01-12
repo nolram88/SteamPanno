@@ -46,7 +46,7 @@ namespace SteamPanno.panno
 			var panno = await pannoGenerator.Generate(games, area, horizontal);
 
 			panno.Count().Should().Be(2);
-			var nodes = panno.AllLeaves();
+			var nodes = panno.AllLeaves().ToArray();
 			nodes.First().Game.HoursOnRecord.Should().Be(game1.HoursOnRecord);
 			nodes.First().Area.Should().Be(horizontal ? new Rect2I(0, 0, 50, 100) : new Rect2I(0, 0, 100, 50));
 			nodes.First().Horizontal.Should().Be(!horizontal);
@@ -68,7 +68,7 @@ namespace SteamPanno.panno
 			var panno = await pannoGenerator.Generate(games, area, horizontal);
 
 			panno.Count().Should().Be(2);
-			var nodes = panno.AllLeaves();
+			var nodes = panno.AllLeaves().ToArray();
 			nodes.First().Area.Should().Be(horizontal ? new Rect2I(0, 0, 6, 11) : new Rect2I(0, 0, 11, 6));
 			nodes.Last().Area.Should().Be(horizontal ? new Rect2I(6, 0, 5, 11) : new Rect2I(0, 6, 11, 5));
 		}
@@ -87,7 +87,7 @@ namespace SteamPanno.panno
 			var panno = await pannoGenerator.Generate(games, area, horizontal);
 
 			panno.Count().Should().Be(3);
-			var nodes = panno.AllLeaves();
+			var nodes = panno.AllLeaves().ToArray();
 			nodes.First().Area.Area.Should().Be(
 				nodes.Skip(1).Sum(x => x.Area.Area));
 		}

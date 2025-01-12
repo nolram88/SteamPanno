@@ -63,18 +63,21 @@ namespace SteamPanno.scenes
 			{
 				var steamId = Steam.SteamId;
 				var loader = new PannoLoaderOnline();
-
-				var games = await loader.GetProfileGames(steamId);
-				games = games.OrderByDescending(x => x.HoursOnRecord).Take(3).ToArray();
-
 				var pannoSize = DisplayServer.ScreenGetSize();
 				var pannoArea = new Rect2I(0, 0, pannoSize.X, pannoSize.Y);
-				var pannoImageNew = Image.CreateEmpty(pannoSize.X, pannoSize.Y, false, Image.Format.Rgb8);
+				var drawer = new PannoDrawer()
+				{
+					Panno = Image.CreateEmpty(pannoSize.X, pannoSize.Y, false, Image.Format.Rgb8),
+				};
 				var generator = new PannoGenerator();
-				var panno = await generator.Generate(games, pannoArea, true);
+				var builder = new PannoBuilder(loader, drawer);
+				
+				var games = await loader.GetProfileGames(steamId);
+				games = games.OrderByDescending(x => x.HoursOnRecord).Take(3).ToArray();
+				var panno = await generator.Generate(games, pannoArea, pannoArea.Size.X > pannoArea.Size.Y);
+				await builder.Build(panno);
 
-				//panno.Draw(pannoImageNew, pannoArea, true);
-				//pannoImage = pannoImageNew;
+				pannoImage = drawer.Panno;
 			}
 			catch (Exception e)
 			{
