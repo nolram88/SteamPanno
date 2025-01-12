@@ -37,13 +37,29 @@ namespace SteamPanno.panno
 
 				if (games.Length > 2)
 				{
-					var halfHours = games.Sum(x => x.HoursOnRecord) / 2;
-					var gamesSecondHours = 0.0f;
-					var gamesSecondCounter = 0;
+					var gamesHalfHours = games.Sum(x => x.HoursOnRecord) / 2;
+					var gamesFirstCounter = 1;
+					var gamesFirstHours = games[gamesFirstCounter - 1].HoursOnRecord;
+					var gamesSecondCounter = 1;
+					var gamesSecondHours = games[games.Length - gamesFirstCounter].HoursOnRecord;
 
-					while ((gamesSecondHours += games[gamesSecondCounter].HoursOnRecord) < halfHours && gamesSecondCounter < games.Length - 1)
+					while (gamesFirstCounter + gamesSecondCounter < games.Length)
 					{
-						gamesSecondCounter++;
+						if (gamesSecondCounter <= gamesFirstCounter)
+						{
+							gamesSecondCounter++;
+							gamesSecondHours += games[games.Length - gamesFirstCounter].HoursOnRecord;
+						}
+						else if (gamesFirstHours < gamesHalfHours)
+						{
+							gamesFirstCounter++;
+							gamesFirstHours += games[gamesFirstCounter - 1].HoursOnRecord;
+						}
+						else
+						{
+							gamesSecondCounter++;
+							gamesSecondHours += games[games.Length - gamesFirstCounter].HoursOnRecord;
+						}
 					}
 
 					gamesSecond = games.Take(gamesSecondCounter).ToArray();
@@ -61,8 +77,8 @@ namespace SteamPanno.panno
 					(int)Math.Ceiling((decimal)area.Size.X / (horizontal ? 2 : 1)),
 					(int)Math.Ceiling((decimal)area.Size.Y / (!horizontal ? 2 : 1)));
 				var areaSecond = new Rect2I(
-					area.Position.X + (horizontal ? (int)Math.Ceiling((decimal)area.End.X / 2) : 0),
-					area.Position.Y + (!horizontal ? (int)Math.Ceiling((decimal)area.End.Y / 2) : 0),
+					area.Position.X + (horizontal ? (int)Math.Ceiling((decimal)area.Size.X / 2) : 0),
+					area.Position.Y + (!horizontal ? (int)Math.Ceiling((decimal)area.Size.Y / 2) : 0),
 					(int)Math.Floor((decimal)area.Size.X / (horizontal ? 2 : 1)),
 					(int)Math.Floor((decimal)area.Size.Y / (!horizontal ? 2 : 1)));
 				var nodeFirst = await GenerateInner(gamesFirst, areaFirst, !horizontal);

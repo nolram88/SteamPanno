@@ -108,5 +108,30 @@ namespace SteamPanno.panno
 			panno.Count().Should().Be(3);
 			panno.AllLeaves().Sum(x => x.Area.Area).Should().Be(100 * 100);
 		}
+
+		[Theory]
+		[InlineData(true)]
+		[InlineData(false)]
+		public async Task ShouldPutAllImageForFileGames(bool horizontal)
+		{
+			var game1 = new PannoGame() { HoursOnRecord = 100 };
+			var game2 = new PannoGame() { HoursOnRecord = 50 };
+			var game3 = new PannoGame() { HoursOnRecord = 40 };
+			var game4 = new PannoGame() { HoursOnRecord = 30 };
+			var game5 = new PannoGame() { HoursOnRecord = 20 };
+			var games = new PannoGame[] { game5, game4, game1, game2, game3 };
+			var area = new Rect2I(0, 0, 100, 100);
+
+			var panno = await pannoGenerator.Generate(games, area, horizontal);
+
+			panno.Count().Should().Be(5);
+			var nodes = panno.AllLeaves().ToArray();
+			nodes.Sum(x => x.Area.Area).Should().Be(100 * 100);
+			nodes[0].Area.Should().Be(new Rect2I(0, 0, 50, 50));
+			nodes[1].Area.Should().Be(new Rect2I(horizontal ? 0 : 50, horizontal ? 50 : 0, 50, 50));
+			nodes[2].Area.Should().Be(new Rect2I(horizontal ? 50 : 0, horizontal ? 0 : 50, 50, 50));
+			nodes[3].Area.Should().Be(new Rect2I(50, 50, horizontal ? 25 : 50, horizontal ? 50 : 25));
+			nodes[4].Area.Should().Be(new Rect2I(horizontal ? 75 : 50, horizontal ? 50 : 75, horizontal ? 25 : 50, horizontal ? 50 : 25));
+		}
 	}
 }
