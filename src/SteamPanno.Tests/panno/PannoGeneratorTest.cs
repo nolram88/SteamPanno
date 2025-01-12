@@ -3,21 +3,16 @@ using System.Threading.Tasks;
 using Godot;
 using Xunit;
 using FluentAssertions;
-using NSubstitute;
 
 namespace SteamPanno.panno
 {
 	public class PannoGeneratorTest
 	{
 		private readonly PannoGenerator pannoGenerator;
-		private readonly PannoLoader pannoLoader;
-
+		
 		public PannoGeneratorTest()
 		{
-			pannoLoader = Substitute.For<PannoLoader>();
-			pannoLoader.GetGameLogoV(Arg.Any<int>()).Returns(new PannoImage());
-			pannoLoader.GetGameLogoH(Arg.Any<int>()).Returns(new PannoImage());
-			pannoGenerator = new PannoGenerator(pannoLoader);
+			pannoGenerator = new PannoGenerator();
 		}
 
 		[Theory]
