@@ -5,8 +5,10 @@ namespace SteamPanno.panno
 {
 	public class PannoNodeLeaf : PannoNode
 	{
-		public PannoImage PannoImage { get; init; }
-
+		public PannoGame Game { get; init; }
+		public Rect2I Area { get; init; }
+		public bool Horizontal { get; init; }
+		/*
 		public override void Draw(Image image, Rect2I area, bool horizontal)
 		{
 			var position = area.Position;
@@ -38,9 +40,9 @@ namespace SteamPanno.panno
 			var rect = new Rect2I(Vector2I.Zero, size);
 
 			image.BlitRect(PannoImage.Image, rect, position);
-		}
+		}*/
 
-		public override IEnumerable<PannoNode> AllNodes()
+		public override IEnumerable<PannoNodeLeaf> AllLeaves()
 		{
 			yield return this;
 		}

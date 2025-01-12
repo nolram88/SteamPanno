@@ -78,8 +78,8 @@ namespace SteamPanno.scenes
 				var pannoImageNew = Image.CreateEmpty(pannoSize.X, pannoSize.Y, false, Image.Format.Rgb8);
 				var panno = await generator.Generate(games, pannoArea, true);
 
-				panno.Draw(pannoImageNew, pannoArea, true);
-				pannoImage = pannoImageNew;
+				//panno.Draw(pannoImageNew, pannoArea, true);
+				//pannoImage = pannoImageNew;
 			}
 			catch (Exception e)
 			{

@@ -14,7 +14,7 @@ namespace SteamPanno.panno
 			this.first = first;
 			this.second = second;
 		}
-
+		/*
 		public override void Draw(Image image, Rect2I area, bool horizontal)
 		{
 			var firstArea = new Rect2I(
@@ -30,15 +30,15 @@ namespace SteamPanno.panno
 
 			first.Draw(image, firstArea, !horizontal);
 			second.Draw(image, secondArea, !horizontal);
-		}
+		}*/
 
-		public override IEnumerable<PannoNode> AllNodes()
+		public override IEnumerable<PannoNodeLeaf> AllLeaves()
 		{
-			foreach (var leaf in first.AllNodes())
+			foreach (var leaf in first.AllLeaves())
 			{
 				yield return leaf;
 			}
-			foreach (var leaf in second.AllNodes())
+			foreach (var leaf in second.AllLeaves())
 			{
 				yield return leaf;
 			}

@@ -40,7 +40,7 @@ namespace SteamPanno.panno
 					Game = game,
 					Area = area,
 					Horizontal = horizontal,
-					PannoImage = pannoImage,
+					//PannoImage = pannoImage,
 				};
 			}
 			else
