@@ -75,7 +75,7 @@ namespace SteamPanno.scenes
 				var builder = new PannoBuilder(loader, drawer);
 				
 				var games = await loader.GetProfileGames(steamId);
-				games = games.OrderByDescending(x => x.HoursOnRecord).Take(30).ToArray();
+				games = games.OrderByDescending(x => x.HoursOnRecord).Where(x => x.HoursOnRecord >= 1).ToArray();
 				var panno = await generator.Generate(games, pannoArea, pannoArea.Size.X > pannoArea.Size.Y);
 				await builder.Build(panno);
 

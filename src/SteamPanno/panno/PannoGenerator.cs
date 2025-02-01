@@ -11,10 +11,10 @@ namespace SteamPanno.panno
 		{
 			games = games.OrderByDescending(x => x.HoursOnRecord).ToArray();
 
-			return await GenerateInner(games, area, horizontal);
+			return await DivideAndConquer(games, area, horizontal);
 		}
 
-		private async Task<PannoNode> GenerateInner(PannoGame[] games, Rect2I area, bool horizontal)
+		private async Task<PannoNode> DivideAndConquer(PannoGame[] games, Rect2I area, bool horizontal)
 		{
 			if (games.Length == 0)
 			{
@@ -66,20 +66,30 @@ namespace SteamPanno.panno
 					gamesSecond = new PannoGame[] { games.Last() };
 				}
 
-				var areaFirst = new Rect2I(
-					area.Position.X,
-					area.Position.Y,
-					(int)Math.Ceiling((decimal)area.Size.X / (horizontal ? 2 : 1)),
-					(int)Math.Ceiling((decimal)area.Size.Y / (!horizontal ? 2 : 1)));
-				var areaSecond = new Rect2I(
-					area.Position.X + (horizontal ? (int)Math.Ceiling((decimal)area.Size.X / 2) : 0),
-					area.Position.Y + (!horizontal ? (int)Math.Ceiling((decimal)area.Size.Y / 2) : 0),
-					(int)Math.Floor((decimal)area.Size.X / (horizontal ? 2 : 1)),
-					(int)Math.Floor((decimal)area.Size.Y / (!horizontal ? 2 : 1)));
-				var nodeFirst = await GenerateInner(gamesFirst, areaFirst, !horizontal);
-				var nodeSecond = await GenerateInner(gamesSecond, areaSecond, !horizontal);
+				var areaFirst = GetFirstArea(area, horizontal);
+				var areaSecond = GetSecondArea(area, horizontal);
+				var nodeFirst = await DivideAndConquer(gamesFirst, areaFirst, !horizontal);
+				var nodeSecond = await DivideAndConquer(gamesSecond, areaSecond, !horizontal);
 				return new PannoNodeRoot(nodeFirst, nodeSecond);
 			}
+		}
+
+		private Rect2I GetFirstArea(Rect2I area, bool horizontal)
+		{
+			return new Rect2I(
+				area.Position.X,
+				area.Position.Y,
+				(int)Math.Ceiling((decimal)area.Size.X / (horizontal ? 2 : 1)),
+				(int)Math.Ceiling((decimal)area.Size.Y / (!horizontal ? 2 : 1)));
+		}
+
+		private Rect2I GetSecondArea(Rect2I area, bool horizontal)
+		{
+			return new Rect2I(
+				area.Position.X + (horizontal ? (int)Math.Ceiling((decimal)area.Size.X / 2) : 0),
+				area.Position.Y + (!horizontal ? (int)Math.Ceiling((decimal)area.Size.Y / 2) : 0),
+				(int)Math.Floor((decimal)area.Size.X / (horizontal ? 2 : 1)),
+				(int)Math.Floor((decimal)area.Size.Y / (!horizontal ? 2 : 1)));
 		}
 	}
 }
