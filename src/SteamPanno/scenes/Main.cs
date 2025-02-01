@@ -64,7 +64,7 @@ namespace SteamPanno.scenes
 			try
 			{
 				var steamId = Steam.SteamId;
-				var loader = new PannoLoaderOnline();
+				var loader = new PannoLoaderCache(new PannoLoaderOnline());
 				var pannoSize = DisplayServer.ScreenGetSize();
 				var pannoArea = new Rect2I(0, 0, pannoSize.X, pannoSize.Y);
 				var drawer = new PannoDrawerResizeProportional()
