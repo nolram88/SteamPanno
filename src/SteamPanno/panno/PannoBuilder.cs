@@ -28,7 +28,7 @@ namespace SteamPanno.panno
 
 				if (image != null)
 				{
-					drawer.Draw(game.Area, image);
+					drawer.Draw(image, game.Area);
 				}
 			}
 		}

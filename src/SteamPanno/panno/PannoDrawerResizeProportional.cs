@@ -4,37 +4,38 @@ namespace SteamPanno.panno
 {
 	public class PannoDrawerResizeProportional : PannoDrawer
 	{
-		public override void Draw(Rect2I area, Image image)
+		public override void Draw(PannoImage src, Rect2I destArea)
 		{
-			var position = area.Position;
-			var size = area.Size;
+			var position = destArea.Position;
+			var size = destArea.Size;
+			var isize = src.Size;
 
-			var sizeXRatio = (area.Size.X / (float)size.X);
-			var sizeYRatio = (area.Size.Y / (float)size.Y);
+			var sizeXRatio = (size.X / (float)isize.X);
+			var sizeYRatio = (size.Y / (float)isize.Y);
 			if (sizeXRatio < 1 || sizeYRatio < 1)
 			{
 				if (sizeXRatio < sizeYRatio)
 				{
-					size = new Vector2I((int)(size.X * sizeXRatio), (int)(size.Y * sizeXRatio));
+					isize = new Vector2I((int)(isize.X * sizeXRatio), (int)(isize.Y * sizeXRatio));
 				}
 				else
 				{
-					size = new Vector2I((int)(size.X * sizeYRatio), (int)(size.Y * sizeYRatio));
+					isize = new Vector2I((int)(isize.X * sizeYRatio), (int)(isize.Y * sizeYRatio));
 				}
 			}
 			else
 			{
-				var offsetX = area.Size.X - size.X;
-				var offsetY = area.Size.Y - size.Y;
+				var offsetX = (size.X - isize.X) / 2;
+				var offsetY = (size.Y - isize.Y) / 2;
 
 				position.X += offsetX;
 				position.Y += offsetY;
 			}
 
-			image.Resize(size.X, size.Y, Image.Interpolation.Cubic);
-			var rect = new Rect2I(Vector2I.Zero, size);
+			src.Size = new Vector2I(isize.X, isize.Y);
+			var rect = new Rect2I(Vector2I.Zero, isize);
 
-			Panno.BlitRect(image, rect, position);
+			Dest.Draw(src, rect, position);
 		}
 	}
 }

@@ -26,7 +26,7 @@ namespace SteamPanno.panno
 			return await innerLoader.GetProfileGames(steamId);
 		}
 
-		public override async Task<Image> GetGameLogoV(int appId)
+		public override async Task<PannoImage> GetGameLogoV(int appId)
 		{
 			if (!TryGetFromCache(appId, "v", out var image))
 			{
@@ -37,7 +37,7 @@ namespace SteamPanno.panno
 			return image;
 		}
 
-		public override async Task<Image> GetGameLogoH(int appId)
+		public override async Task<PannoImage> GetGameLogoH(int appId)
 		{
 			if (!TryGetFromCache(appId, "h", out var image))
 			{
@@ -48,14 +48,14 @@ namespace SteamPanno.panno
 			return image;
 		}
 
-		private bool TryGetFromCache(int appId, string name, out Image image)
+		private bool TryGetFromCache(int appId, string name, out PannoImage image)
 		{
 			image = null;
 			var fileName = GetFileName(appId, name);
 			if (File.Exists(fileName))
 			{
-				var imageFromCache = new Image();
-				if (imageFromCache.Load(fileName) == Error.Ok)
+				var imageFromCache = PannoImage.Load(fileName);
+				if (imageFromCache != null)
 				{
 					image = imageFromCache;
 					return true;
@@ -65,7 +65,7 @@ namespace SteamPanno.panno
 			return false;
 		}
 
-		private void TrySaveToCache(int appId, string name, Image image)
+		private void TrySaveToCache(int appId, string name, PannoImage image)
 		{
 			if (image == null) return;
 

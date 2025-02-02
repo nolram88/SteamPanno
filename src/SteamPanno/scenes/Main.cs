@@ -69,7 +69,7 @@ namespace SteamPanno.scenes
 				var pannoArea = new Rect2I(0, 0, pannoSize.X, pannoSize.Y);
 				var drawer = new PannoDrawerResizeProportional()
 				{
-					Panno = Image.CreateEmpty(pannoSize.X, pannoSize.Y, false, Image.Format.Rgb8),
+					Dest = PannoImage.Create(pannoSize.X, pannoSize.Y),
 				};
 				var generator = new PannoGenerator();
 				var builder = new PannoBuilder(loader, drawer);
@@ -79,7 +79,7 @@ namespace SteamPanno.scenes
 				var panno = await generator.Generate(games, pannoArea, pannoArea.Size.X > pannoArea.Size.Y);
 				await builder.Build(panno);
 
-				pannoImage = drawer.Panno;
+				pannoImage = drawer.Dest;
 			}
 			catch (Exception e)
 			{

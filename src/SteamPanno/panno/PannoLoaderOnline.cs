@@ -40,13 +40,13 @@ namespace SteamPanno.panno
 			}
 		}
 
-		public override async Task<Image> GetGameLogoV(int appId) =>
+		public override async Task<PannoImage> GetGameLogoV(int appId) =>
 			await GetGameLogo(appId, LogoType.LIBRARY);
 
-		public override async Task<Image> GetGameLogoH(int appId) =>
+		public override async Task<PannoImage> GetGameLogoH(int appId) =>
 			await GetGameLogo(appId, LogoType.CAPSULE) ?? await GetGameLogo(appId, LogoType.HEADER);
 
-		private async Task<Image> GetGameLogo(int appId, LogoType logo)
+		private async Task<PannoImage> GetGameLogo(int appId, LogoType logo)
 		{
 			var url = (logo) switch
 			{
@@ -66,10 +66,8 @@ namespace SteamPanno.panno
 					if (response.IsSuccessStatusCode)
 					{
 						var responseBody = await response.Content.ReadAsByteArrayAsync();
-						var image = new Image();
-						image.LoadJpgFromBuffer(responseBody);
 
-						return image;
+						return PannoImage.Load(responseBody);
 					}
 				}
 			}

@@ -4,15 +4,15 @@ namespace SteamPanno.panno
 {
 	public class PannoDrawerResize : PannoDrawer
 	{
-		public override void Draw(Rect2I area, Image image)
+		public override void Draw(PannoImage src, Rect2I destArea)
 		{
-			var position = area.Position;
-			var size = area.Size;
+			var position = destArea.Position;
+			var size = destArea.Size;
 
-			image.Resize(size.X, size.Y, Image.Interpolation.Cubic);
+			src.Size = new Vector2I(size.X, size.Y);
 			var rect = new Rect2I(Vector2I.Zero, size);
 
-			Panno.BlitRect(image, rect, position);
+			Dest.Draw(src, rect, position);
 		}
 	}
 }
