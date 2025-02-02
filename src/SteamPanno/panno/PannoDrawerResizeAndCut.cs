@@ -2,7 +2,7 @@
 
 namespace SteamPanno.panno
 {
-	public class PannoDrawerResizeProportional : PannoDrawer
+	public class PannoDrawerResizeAndCut : PannoDrawer
 	{
 		public override void Draw(PannoImage src, Rect2I destArea)
 		{
@@ -14,7 +14,7 @@ namespace SteamPanno.panno
 			var sizeYRatio = (size.Y / (float)isize.Y);
 			if (sizeXRatio != 1 || sizeYRatio != 1)
 			{
-				if (sizeXRatio < sizeYRatio)
+				if (sizeXRatio > sizeYRatio)
 				{
 					isize = new Vector2I((int)(isize.X * sizeXRatio), (int)(isize.Y * sizeXRatio));
 				}
@@ -24,11 +24,12 @@ namespace SteamPanno.panno
 				}
 			}
 
-			position.X += (size.X - isize.X) / 2;
-			position.Y += (size.Y - isize.Y) / 2;
-
+			var cut = new Vector2I(
+				Mathf.Max((isize.X - size.X) / 2, 0),
+				Mathf.Max((isize.Y - size.Y) / 2, 0));
+			
 			src.Size = new Vector2I(isize.X, isize.Y);
-			var rect = new Rect2I(Vector2I.Zero, isize);
+			var rect = new Rect2I(cut, isize - cut * 2);
 
 			Dest.Draw(src, rect, position);
 		}

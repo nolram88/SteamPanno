@@ -2,7 +2,7 @@
 
 namespace SteamPanno.panno
 {
-	public class PannoDrawerResize : PannoDrawer
+	public class PannoDrawerResizeUnproportional : PannoDrawer
 	{
 		public override void Draw(PannoImage src, Rect2I destArea)
 		{
