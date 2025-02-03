@@ -67,9 +67,10 @@ namespace SteamPanno.scenes
 				var loader = new PannoLoaderCache(new PannoLoaderOnline());
 				var pannoSize = DisplayServer.ScreenGetSize();
 				var pannoArea = new Rect2I(0, 0, pannoSize.X, pannoSize.Y);
-				var drawer = new PannoDrawerResizeAndCut()
+				var drawer = new PannoDrawerResizeAndExpand()
 				{
 					Dest = PannoImage.Create(pannoSize.X, pannoSize.Y),
+					Builder = PannoImage.Create,
 				};
 				var generator = new PannoGenerator();
 				var builder = new PannoBuilder(loader, drawer);
