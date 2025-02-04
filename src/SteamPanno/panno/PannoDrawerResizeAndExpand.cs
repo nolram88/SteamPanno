@@ -35,18 +35,18 @@ namespace SteamPanno.panno
 			var srcAreaForExpansion1 = new Rect2I(0, 0, expansion1.Size.X, expansion1.Size.Y);
 			expansion1.Draw(src, srcAreaForExpansion1, Vector2I.Zero);
 			expansion1.Size = gapSize;
-
+			
 			var expansion2 = Builder(
 				sizeXRatio < sizeYRatio ? isize.X : 1,
 				sizeXRatio < sizeYRatio ? 1 : isize.Y);
 			var srcAreaForExpansion2 = new Rect2I(
-					sizeXRatio < sizeYRatio ? 0 : gapSize.X + isize.X,
-					sizeXRatio < sizeYRatio ? gapSize.Y + isize.Y : 0,
+					sizeXRatio < sizeYRatio ? 0 : isize.X - 1,
+					sizeXRatio < sizeYRatio ? isize.Y - 1 : 0,
 					expansion2.Size.X,
 					expansion2.Size.Y);
 			expansion2.Draw(src, srcAreaForExpansion2, Vector2I.Zero);
 			expansion2.Size = gapSize;
-
+			
 			var srcArea = new Rect2I(Vector2I.Zero, isize);
 			var srcPosition = destArea.Position + gapSize * (sizeXRatio < sizeYRatio ? new Vector2I(0, 1) : new Vector2I(1, 0));
 			Dest.Draw(src, srcArea, srcPosition);
