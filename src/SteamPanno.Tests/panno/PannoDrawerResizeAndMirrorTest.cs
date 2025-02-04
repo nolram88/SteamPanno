@@ -5,15 +5,15 @@ using NSubstitute;
 
 namespace SteamPanno.panno
 {
-	public class PannoDrawerResizeAndExpandTest
+	public class PannoDrawerResizeAndMirrorTest
 	{
-		private readonly PannoDrawerResizeAndExpand drawer;
+		private readonly PannoDrawerResizeAndMirror drawer;
 		private readonly PannoImage dest;
 
-		public PannoDrawerResizeAndExpandTest()
+		public PannoDrawerResizeAndMirrorTest()
 		{
 			dest = Substitute.For<PannoImage>();
-			drawer = new PannoDrawerResizeAndExpand()
+			drawer = new PannoDrawerResizeAndMirror()
 			{
 				Dest = dest,
 				Builder = (width, height) =>
@@ -31,7 +31,7 @@ namespace SteamPanno.panno
 		public void ShouldResizeImageAndDrawFullAreaWithThreeFragments(int srcWidth, int srcHeight)
 		{
 			var src = drawer.Builder(srcWidth, srcHeight);
-			
+
 			drawer.Draw(src, new Rect2I(0, 0, 100, 100));
 
 			src.Size.ShouldBe(new Vector2I(100, 50));

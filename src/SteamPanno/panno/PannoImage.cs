@@ -49,6 +49,16 @@ namespace SteamPanno.panno
 			set => Dest.Resize(value.X, value.Y, Image.Interpolation.Cubic);
 		}
 
+		public virtual void MirrorX()
+		{
+			this.Dest.FlipX();
+		}
+
+		public virtual void MirrorY()
+		{
+			this.Dest.FlipY();
+		}
+
 		public virtual void Draw(PannoImage src, Rect2I srcArea, Vector2I dstPosition)
 		{
 			this.Dest.BlitRect(src, srcArea, dstPosition);
