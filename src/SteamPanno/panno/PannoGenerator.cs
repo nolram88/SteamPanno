@@ -66,11 +66,21 @@ namespace SteamPanno.panno
 					gamesSecond = new PannoGame[] { games.Last() };
 				}
 
-				var areaFirst = GetFirstArea(area, horizontal);
-				var areaSecond = GetSecondArea(area, horizontal);
-				var nodeFirst = await DivideAndConquer(gamesFirst, areaFirst, !horizontal);
-				var nodeSecond = await DivideAndConquer(gamesSecond, areaSecond, !horizontal);
-				return new PannoNodeRoot(nodeFirst, nodeSecond);
+				if ((horizontal ? area.Size.X : area.Size.Y) >= 8)
+				{
+					var areaFirst = GetFirstArea(area, horizontal);
+					var areaSecond = GetSecondArea(area, horizontal);
+					var nodeFirst = await DivideAndConquer(gamesFirst, areaFirst, !horizontal);
+					var nodeSecond = await DivideAndConquer(gamesSecond, areaSecond, !horizontal);
+					return new PannoNodeRoot(nodeFirst, nodeSecond);
+				}
+				
+				return new PannoNodeLeaf()
+				{
+					Game = gamesFirst.First(),
+					Area = area,
+					Horizontal = horizontal,
+				};
 			}
 		}
 

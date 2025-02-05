@@ -184,5 +184,22 @@ namespace SteamPanno.panno
 			panno.AllLeaves().Select(x => x.Area.Area)
 				.ShouldNotContain(50 * 100);
 		}
+
+		[Fact]
+		public async Task ShouldStopSplittingWhenAreaIsTooSmall()
+		{
+			var game1 = new PannoGame() { HoursOnRecord = 1000 };
+			var game2 = new PannoGame() { HoursOnRecord = 500 };
+			var game3 = new PannoGame() { HoursOnRecord = 300 };
+			var game4 = new PannoGame() { HoursOnRecord = 200 };
+			var games = new PannoGame[] { game1, game2, game3, game4 };
+			var area = new Rect2I(0, 0, 8, 8);
+
+			var panno = await pannoGenerator.Generate(games, area, true);
+
+			panno.Count().ShouldBe(3);
+			panno.AllLeaves().Select(x => x.Area.Area).ToArray()
+				.ShouldBeEquivalentTo(new int[] { 4 * 8, 4 * 4, 4 * 4 });
+		}
 	}
 }
