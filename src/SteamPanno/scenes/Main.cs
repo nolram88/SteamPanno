@@ -72,7 +72,7 @@ namespace SteamPanno.scenes
 					Dest = PannoImage.Create(pannoSize.X, pannoSize.Y),
 					Builder = PannoImage.Create,
 				};
-				var generator = new PannoGenerator();
+				var generator = new PannoGeneratorDivideAndConquer();
 				var builder = new PannoBuilder(loader, drawer);
 				
 				var games = await loader.GetProfileGames(steamId);

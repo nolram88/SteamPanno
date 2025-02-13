@@ -6,13 +6,13 @@ using Shouldly;
 
 namespace SteamPanno.panno
 {
-	public class PannoGeneratorTest
+	public class PannoGeneratorDivideAndConquerTest
 	{
-		private readonly PannoGenerator pannoGenerator;
-		
-		public PannoGeneratorTest()
+		private readonly PannoGeneratorDivideAndConquer pannoGenerator;
+
+		public PannoGeneratorDivideAndConquerTest()
 		{
-			pannoGenerator = new PannoGenerator();
+			pannoGenerator = new PannoGeneratorDivideAndConquer();
 		}
 
 		[Theory]

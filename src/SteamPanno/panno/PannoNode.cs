@@ -6,5 +6,6 @@ namespace SteamPanno.panno
 	{
 		public abstract IEnumerable<PannoNodeLeaf> AllLeaves();
 		public abstract int Count();
+		public abstract int Depth();
 	}
 }

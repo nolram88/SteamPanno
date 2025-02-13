@@ -1,6 +1,5 @@
 ﻿using Godot;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SteamPanno.panno
 {
@@ -14,24 +13,7 @@ namespace SteamPanno.panno
 			this.first = first;
 			this.second = second;
 		}
-		/*
-		public override void Draw(Image image, Rect2I area, bool horizontal)
-		{
-			var firstArea = new Rect2I(
-				area.Position.X,
-				area.Position.Y,
-				area.End.X / (horizontal ? 2 : 1),
-				area.End.Y / (!horizontal ? 2 : 1));
-			var secondArea = new Rect2I(
-				area.Position.X + (horizontal ? area.End.X / 2 : 0),
-				area.Position.Y + (!horizontal ? area.End.Y / 2 : 0),
-				area.End.X / (horizontal ? 2 : 1),
-				area.End.Y / (!horizontal ? 2 : 1));
-
-			first.Draw(image, firstArea, !horizontal);
-			second.Draw(image, secondArea, !horizontal);
-		}*/
-
+		
 		public override IEnumerable<PannoNodeLeaf> AllLeaves()
 		{
 			foreach (var leaf in first.AllLeaves())
@@ -47,6 +29,11 @@ namespace SteamPanno.panno
 		public override int Count()
 		{
 			return first.Count() + second.Count();
+		}
+
+		public override int Depth()
+		{
+			return Mathf.Max(first.Depth(), second.Depth()) + 1;
 		}
 	}
 }
