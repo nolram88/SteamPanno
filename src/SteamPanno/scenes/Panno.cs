@@ -1,5 +1,6 @@
 using Godot;
 using SteamPanno.panno;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,10 +10,13 @@ namespace SteamPanno.scenes
 	{
 		private TextureRect pannoControl;
 		private PannoImage pannoImage;
+		private List<Label> pannoLabels;
 
 		public override void _Ready()
 		{
 			pannoControl = GetNode<TextureRect>("./TextureRect");
+			pannoImage = null;
+			pannoLabels = new List<Label>();
 		}
 
 		public override void _Process(double delta)
@@ -20,6 +24,11 @@ namespace SteamPanno.scenes
 			if (pannoImage != null)
 			{
 				pannoControl.Texture = ImageTexture.CreateFromImage(pannoImage);
+				foreach (var label in pannoLabels)
+				{
+					AddChild(label);
+				}
+
 				pannoImage = null;
 			}
 		}
@@ -38,23 +47,35 @@ namespace SteamPanno.scenes
 				{
 					drawer.Draw(image, game.Area);
 				}
-				else
-				{
-					
-				}
+				
+				AddTextRect(game.Area, game.Game.Name);
+				
 			}
 
 			pannoImage = drawer.Dest;
 		}
 
-		private async Task<PannoImage> Text(string text)
+		private void AddTextRect(Rect2I area, string text)
 		{
-			var view = new SubViewport();
-			view.Size = new Vector2I(100, 100);
-			view.RenderTargetUpdateMode = SubViewport.UpdateMode.Always;
-			await ToSignal(GetTree(), "idle_frame");
+			//var view = new SubViewport();
+			//view.Size = new Vector2I(100, 100);
+			//view.RenderTargetUpdateMode = SubViewport.UpdateMode.Always;
+			//await ToSignal(GetTree(), "idle_frame");
 
-			return null;
+			var label = new Label();
+			label.Text = text;
+			label.ClipText = true;
+			label.LabelSettings = new LabelSettings()
+			{
+				FontSize = 1 * area.Size.X / 15,
+				LineSpacing = 0,
+			};
+			label.AutowrapMode = TextServer.AutowrapMode.Word;
+			label.HorizontalAlignment = HorizontalAlignment.Center;
+			label.VerticalAlignment = VerticalAlignment.Center;
+			label.Position = area.Position;
+			label.Size = area.Size;
+			pannoLabels.Add(label);
 		}
 	}
 }
