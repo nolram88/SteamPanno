@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://14571x617fbq"]
+[gd_scene load_steps=3 format=3 uid="uid://14571x617fbq"]
 
 [ext_resource type="Script" path="res://scenes/Main.cs" id="1_4kbnv"]
+[ext_resource type="PackedScene" uid="uid://cipukuj7keyul" path="res://scenes/Panno.tscn" id="2_tmwwy"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_4kbnv")
@@ -15,12 +16,4 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Panno" type="TextureRect" parent="GUI"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
+[node name="Panno" parent="GUI" instance=ExtResource("2_tmwwy")]

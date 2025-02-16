@@ -9,16 +9,13 @@ namespace SteamPanno.scenes
 {
 	public partial class Main : Node
 	{
-		private TextureRect panno;
-		private Image pannoImage;
+		private Panno panno;
 
 		public override void _Ready()
 		{
+			panno = GetNode<Panno>("./GUI/Panno");
 			GetTree().Root.Size = DisplayServer.ScreenGetSize();
-
 			Steam.Init();
-
-			panno = GetNode<TextureRect>("./GUI/Panno");
 
 			Task.Run(async () => await LoadPanno());
 		}
@@ -26,11 +23,6 @@ namespace SteamPanno.scenes
 		public override void _Process(double delta)
 		{
 			Steam.Update();
-
-			if (panno.Texture == null && pannoImage != null)
-			{
-				panno.Texture = ImageTexture.CreateFromImage(pannoImage);
-			}
 		}
 
 		public override void _UnhandledInput(InputEvent @event)
@@ -73,14 +65,11 @@ namespace SteamPanno.scenes
 					Builder = PannoImage.Create,
 				};
 				var generator = new PannoGeneratorDivideAndConquer();
-				var builder = new PannoBuilder(loader, drawer);
 				
 				var games = await loader.GetProfileGames(steamId);
 				games = games.OrderByDescending(x => x.HoursOnRecord).Where(x => x.HoursOnRecord >= 1).ToArray();
-				var panno = await generator.Generate(games, pannoArea, pannoArea.Size.X > pannoArea.Size.Y);
-				await builder.Build(panno);
-
-				pannoImage = drawer.Dest;
+				var pannoStructure = await generator.Generate(games, pannoArea, pannoArea.Size.X > pannoArea.Size.Y);
+				await panno.Build(pannoStructure, loader, drawer);
 			}
 			catch (Exception e)
 			{
