@@ -7,7 +7,6 @@ namespace SteamPanno.panno
 	{
 		public PannoGame Game { get; init; }
 		public Rect2I Area { get; init; }
-		public bool Horizontal { get; init; }
 		
 		public override IEnumerable<PannoNodeLeaf> AllLeaves()
 		{

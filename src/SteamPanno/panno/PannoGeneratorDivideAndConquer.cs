@@ -6,14 +6,14 @@ namespace SteamPanno.panno
 {
 	public class PannoGeneratorDivideAndConquer : PannoGenerator
 	{
-		public override async Task<PannoNode> Generate(PannoGame[] games, Rect2I area, bool horizontal)
+		public override async Task<PannoNode> Generate(PannoGame[] games, Rect2I area)
 		{
 			games = games.OrderByDescending(x => x.HoursOnRecord).ToArray();
 
-			return await GenerateInner(games, area, horizontal);
+			return await GenerateInner(games, area);
 		}
 
-		private async Task<PannoNode> GenerateInner(PannoGame[] games, Rect2I area, bool horizontal)
+		private async Task<PannoNode> GenerateInner(PannoGame[] games, Rect2I area)
 		{
 			if (games.Length == 0)
 			{
@@ -26,7 +26,6 @@ namespace SteamPanno.panno
 				{
 					Game = game,
 					Area = area,
-					Horizontal = horizontal,
 				};
 			}
 			else
@@ -65,12 +64,12 @@ namespace SteamPanno.panno
 					gamesSecond = new PannoGame[] { games.Last() };
 				}
 
-				if ((horizontal ? area.Size.X : area.Size.Y) >= 8)
+				if ((area.PreferHorizontal() ? area.Size.X : area.Size.Y) >= 8)
 				{
-					var areaFirst = GetFirstArea(area, horizontal);
-					var areaSecond = GetSecondArea(area, horizontal);
-					var nodeFirst = await GenerateInner(gamesFirst, areaFirst, !horizontal);
-					var nodeSecond = await GenerateInner(gamesSecond, areaSecond, !horizontal);
+					var areaFirst = GetFirstArea(area);
+					var areaSecond = GetSecondArea(area);
+					var nodeFirst = await GenerateInner(gamesFirst, areaFirst);
+					var nodeSecond = await GenerateInner(gamesSecond, areaSecond);
 					return new PannoNodeRoot(nodeFirst, nodeSecond);
 				}
 
@@ -78,7 +77,6 @@ namespace SteamPanno.panno
 				{
 					Game = gamesFirst.First(),
 					Area = area,
-					Horizontal = horizontal,
 				};
 			}
 		}

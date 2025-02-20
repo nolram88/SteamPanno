@@ -58,6 +58,7 @@ namespace SteamPanno.scenes
 				var steamId = Steam.SteamId;
 				var loader = new PannoLoaderCache(new PannoLoaderOnline());
 				var pannoSize = DisplayServer.ScreenGetSize();
+				//var pannoSize = new Vector2I(1600, 400);
 				var pannoArea = new Rect2I(0, 0, pannoSize.X, pannoSize.Y);
 				var drawer = new PannoDrawerResizeAndCut()
 				{
@@ -68,7 +69,7 @@ namespace SteamPanno.scenes
 				
 				var games = await loader.GetProfileGames(steamId);
 				games = games.OrderByDescending(x => x.HoursOnRecord).Where(x => x.HoursOnRecord >= 1).ToArray();
-				var pannoStructure = await generator.Generate(games, pannoArea, pannoArea.Size.X > pannoArea.Size.Y);
+				var pannoStructure = await generator.Generate(games, pannoArea);
 				await panno.Build(pannoStructure, loader, drawer);
 			}
 			catch (Exception e)

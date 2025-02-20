@@ -39,7 +39,7 @@ namespace SteamPanno.scenes
 
 			foreach (var game in games)
 			{
-				var image = game.Horizontal
+				var image = game.Area.PreferHorizontal()
 					? await loader.GetGameLogoH(game.Game.Id)
 					: await loader.GetGameLogoV(game.Game.Id);
 
