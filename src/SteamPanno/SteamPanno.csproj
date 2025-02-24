@@ -6,20 +6,23 @@
     <EnableDynamicLoading>true</EnableDynamicLoading>
 	<Platforms>AnyCPU</Platforms>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(GodotTargetPlatform)' == 'windows' ">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>$(DefineConstants);STEAM</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup Condition=" '$(STEAM)' == '' and '$(GodotTargetPlatform)' == 'windows' ">
     <Reference Include="Facepunch.Steamworks.Win64">
       <HintPath>addons\steam\windows\Facepunch.Steamworks.Win64.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup Condition=" '$(GodotTargetPlatform)' == 'macos' ">
+  <ItemGroup Condition=" '$(STEAM)' == '' and '$(GodotTargetPlatform)' == 'macos' ">
     <Reference Include="Facepunch.Steamworks.Posix">
       <HintPath>addons\steam\macos\Facepunch.Steamworks.Posix.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <Target Condition=" '$(GodotTargetPlatform)' == 'windows' " Name="PostBuildWindows" AfterTargets="PostBuildEvent">
+  <Target Condition=" '$(STEAM)' == '' and '$(GodotTargetPlatform)' == 'windows' " Name="PostBuildWindows" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy /Y &quot;$(GodotProjectDir)addons\steam\windows\steam_api64.dll&quot; &quot;$(GodotProjectDir)&quot;" />
   </Target>
-  <Target Condition=" '$(GodotTargetPlatform)' == 'macos' " Name="PostBuildMacos" AfterTargets="PostBuildEvent">
+  <Target Condition=" '$(STEAM)' == '' and '$(GodotTargetPlatform)' == 'macos' " Name="PostBuildMacos" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy /Y &quot;$(GodotProjectDir)addons\steam\macos\libsteam_api.dylib&quot; &quot;$(GodotProjectDir)&quot;" />
   </Target>
 </Project>

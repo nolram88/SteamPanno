@@ -1,3 +1,5 @@
+#if STEAM
+
 using System;
 using Godot;
 using Steamworks;
@@ -10,9 +12,7 @@ namespace SteamPanno.global
 
 		static Steam()
 		{
-			#if RELEASE
 			SteamClient.RestartAppIfNecessary(appID);
-			#endif
 		}
 
 		public static string SteamId
@@ -55,3 +55,5 @@ namespace SteamPanno.global
 		}
 	}
 }
+
+#endif

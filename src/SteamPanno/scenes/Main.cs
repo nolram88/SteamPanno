@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Godot;
-using SteamPanno.global;
 using SteamPanno.panno;
 
 namespace SteamPanno.scenes
@@ -13,16 +12,23 @@ namespace SteamPanno.scenes
 
 		public override void _Ready()
 		{
+			GD.Print(DisplayServer.ScreenGetSize());
+			GD.Print(GetTree().Root.Size);
+
 			panno = GetNode<Panno>("./GUI/Panno");
-			GetTree().Root.Size = DisplayServer.ScreenGetSize();
-			Steam.Init();
+			
+			#if STEAM
+			SteamPanno.global.Steam.Init();
+			#endif
 
 			Task.Run(async () => await LoadPanno());
 		}
 
 		public override void _Process(double delta)
 		{
-			Steam.Update();
+			#if STEAM
+			SteamPanno.global.Steam.Update();
+			#endif
 		}
 
 		public override void _UnhandledInput(InputEvent @event)
@@ -42,7 +48,9 @@ namespace SteamPanno.scenes
 		{
 			if (what == NotificationPredelete)
 			{
-				Steam.Shutdown();
+				#if STEAM
+				SteamPanno.global.Steam.Shutdown();
+				#endif
 			}
 			if (what == NotificationWMCloseRequest)
 			{
@@ -55,7 +63,12 @@ namespace SteamPanno.scenes
 		{
 			try
 			{
-				var steamId = Steam.SteamId;
+				#if STEAM
+				var steamId = SteamPanno.global.Steam.SteamId;
+				#else
+				var steamId = "76561198053918407";
+				#endif
+
 				var loader = new PannoLoaderCache(new PannoLoaderOnline());
 				var pannoSize = DisplayServer.ScreenGetSize();
 				//var pannoSize = new Vector2I(1600, 400);
