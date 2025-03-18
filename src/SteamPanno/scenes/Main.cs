@@ -12,9 +12,9 @@ namespace SteamPanno.scenes
 
 		public override void _Ready()
 		{
-			GD.Print(DisplayServer.ScreenGetSize());
-			GD.Print(GetTree().Root.Size);
-
+			var screenResolution = DisplayServer.ScreenGetSize();
+			GetTree().Root.ContentScaleSize = screenResolution;
+			
 			panno = GetNode<Panno>("./GUI/Panno");
 			
 			#if STEAM
