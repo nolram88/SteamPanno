@@ -13,9 +13,14 @@ namespace SteamPanno.scenes
 		public override void _Ready()
 		{
 			var screenResolution = DisplayServer.ScreenGetSize();
+			var windowResolution = GetTree().Root.Size;
+
+			GD.Print(screenResolution);
+			GD.Print(windowResolution);
+			
 			GetTree().Root.ContentScaleSize = screenResolution;
 			
-			panno = GetNode<Panno>("./GUI/Panno");
+			panno = GetNode<Panno>("./GUI/Center/Panno");
 			
 			#if STEAM
 			SteamPanno.global.Steam.Init();
@@ -84,6 +89,7 @@ namespace SteamPanno.scenes
 				games = games.OrderByDescending(x => x.HoursOnRecord).Where(x => x.HoursOnRecord >= 1).ToArray();
 				var pannoStructure = await generator.Generate(games, pannoArea);
 				await panno.Build(pannoStructure, loader, drawer);
+				
 			}
 			catch (Exception e)
 			{

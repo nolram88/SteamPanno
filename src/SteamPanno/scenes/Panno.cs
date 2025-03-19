@@ -24,6 +24,8 @@ namespace SteamPanno.scenes
 			if (pannoImage != null)
 			{
 				pannoControl.Texture = ImageTexture.CreateFromImage(pannoImage);
+				pannoControl.Position = Vector2.Zero;
+				
 				foreach (var label in pannoLabels)
 				{
 					AddChild(label);
@@ -47,9 +49,8 @@ namespace SteamPanno.scenes
 				{
 					drawer.Draw(image, game.Area);
 				}
-				
+
 				AddTextRect(game.Area, game.Game.Name);
-				
 			}
 
 			pannoImage = drawer.Dest;
