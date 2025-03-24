@@ -10,13 +10,12 @@ namespace SteamPanno.scenes
 	{
 		private TextureRect pannoControl;
 		private PannoImage pannoImage;
-		private List<Label> pannoLabels;
+		private List<PannoNodeLeaf> pannoGamesInText;
 
 		public override void _Ready()
 		{
 			pannoControl = GetNode<TextureRect>("./TextureRect");
 			pannoImage = null;
-			pannoLabels = new List<Label>();
 		}
 
 		public override void _Process(double delta)
@@ -25,12 +24,21 @@ namespace SteamPanno.scenes
 			{
 				pannoControl.Texture = ImageTexture.CreateFromImage(pannoImage);
 				pannoControl.Position = Vector2.Zero;
-				
-				foreach (var label in pannoLabels)
-				{
-					AddChild(label);
-				}
 
+				foreach (var pannoControlChild in pannoControl.GetChildren())
+				{
+					if (pannoControlChild is Label)
+					{
+						pannoControl.RemoveChild(pannoControlChild);
+					}
+				}
+				
+				foreach (var textGame in pannoGamesInText)
+				{
+					var label = CreateTextRect(textGame.Area, textGame.Game.Name);
+					pannoControl.AddChild(label);
+				}
+				
 				pannoImage = null;
 			}
 		}
@@ -38,7 +46,8 @@ namespace SteamPanno.scenes
 		public async Task Build(PannoNode pannoStructure, PannoLoader loader, PannoDrawer drawer)
 		{
 			var games = pannoStructure.AllLeaves().ToArray();
-
+			pannoGamesInText = new List<PannoNodeLeaf>();
+			
 			foreach (var game in games)
 			{
 				var image = game.Area.PreferHorizontal()
@@ -50,19 +59,14 @@ namespace SteamPanno.scenes
 					drawer.Draw(image, game.Area);
 				}
 
-				AddTextRect(game.Area, game.Game.Name);
+				pannoGamesInText.Add(game);
 			}
 
 			pannoImage = drawer.Dest;
 		}
 
-		private void AddTextRect(Rect2I area, string text)
+		private Label CreateTextRect(Rect2I area, string text)
 		{
-			//var view = new SubViewport();
-			//view.Size = new Vector2I(100, 100);
-			//view.RenderTargetUpdateMode = SubViewport.UpdateMode.Always;
-			//await ToSignal(GetTree(), "idle_frame");
-
 			var label = new Label();
 			label.Text = text;
 			label.ClipText = true;
@@ -76,7 +80,8 @@ namespace SteamPanno.scenes
 			label.VerticalAlignment = VerticalAlignment.Center;
 			label.Position = area.Position;
 			label.Size = area.Size;
-			pannoLabels.Add(label);
+			
+			return label;
 		}
 	}
 }
