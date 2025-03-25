@@ -18,7 +18,7 @@ namespace SteamPanno.scenes
 			GD.Print(screenResolution);
 			GD.Print(windowResolution);
 			
-			GetTree().Root.ContentScaleSize = screenResolution;
+			GetTree().Root.ContentScaleSize = windowResolution;
 			
 			panno = GetNode<Panno>("./GUI/Center/Panno");
 			
