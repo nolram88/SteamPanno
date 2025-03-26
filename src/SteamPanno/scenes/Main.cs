@@ -14,7 +14,7 @@ namespace SteamPanno.scenes
 		{
 			var screenResolution = DisplayServer.ScreenGetSize();
 			var windowResolution = GetTree().Root.Size;
-
+			
 			GD.Print(screenResolution);
 			GD.Print(windowResolution);
 			
