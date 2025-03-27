@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Godot;
 using SteamPanno.panno;
+using SteamPanno.scenes.controls;
 
 namespace SteamPanno.scenes
 {
@@ -21,6 +22,9 @@ namespace SteamPanno.scenes
 			GetTree().Root.ContentScaleSize = windowResolution;
 			
 			panno = GetNode<Panno>("./GUI/Center/Panno");
+
+			var exitButton = GetNode<ImageButton>("./GUI/ExitButton");
+			exitButton.OnClick = Quit;
 			
 			#if STEAM
 			SteamPanno.global.Steam.Init();

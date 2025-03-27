@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://14571x617fbq"]
+[gd_scene load_steps=5 format=3 uid="uid://14571x617fbq"]
 
 [ext_resource type="Script" uid="uid://dhe4h26dru2cp" path="res://scenes/Main.cs" id="1_4kbnv"]
 [ext_resource type="PackedScene" uid="uid://cipukuj7keyul" path="res://scenes/Panno.tscn" id="2_tmwwy"]
+[ext_resource type="PackedScene" uid="uid://csddb8mltqpvc" path="res://scenes/controls/ImageButton.tscn" id="3_0bbpv"]
+[ext_resource type="Texture2D" uid="uid://cjel17i5uyr7n" path="res://assets/images/exit.png" id="4_rarhs"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_4kbnv")
@@ -26,3 +28,13 @@ grow_vertical = 2
 
 [node name="Panno" parent="GUI/Center" instance=ExtResource("2_tmwwy")]
 layout_mode = 2
+
+[node name="ExitButton" parent="GUI" instance=ExtResource("3_0bbpv")]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -64.0
+offset_bottom = 64.0
+grow_horizontal = 0
+ImageTexture = ExtResource("4_rarhs")
