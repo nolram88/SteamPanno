@@ -23,6 +23,10 @@ namespace SteamPanno.scenes
 			
 			panno = GetNode<Panno>("./GUI/Center/Panno");
 
+			var configButton = GetNode<ImageButton>("./GUI/ConfigButton");
+			configButton.OnClick = () => GD.Print("config");
+			var wirningButton = GetNode<ImageButton>("./GUI/WarningButton");
+			wirningButton.OnClick = () => GD.Print("wirning");
 			var exitButton = GetNode<ImageButton>("./GUI/ExitButton");
 			exitButton.OnClick = Quit;
 			

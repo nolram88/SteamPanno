@@ -13,5 +13,6 @@ layout_mode = 0
 [node name="TextureRect" type="TextureRect" parent="Center"]
 layout_mode = 2
 
+[connection signal="gui_input" from="." to="." method="OnInput"]
 [connection signal="mouse_entered" from="." to="." method="OnMouseEntered"]
 [connection signal="mouse_exited" from="." to="." method="OnMouseExited"]

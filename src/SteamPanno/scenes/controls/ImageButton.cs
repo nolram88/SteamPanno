@@ -7,11 +7,11 @@ namespace SteamPanno.scenes.controls
 	{
 		private TextureRect image;
 		private float alphaMin = 0.3f;
-		private float alphaMax = 0.7f;
+		private float alphaMax = 0.8f;
 		private float alphaCurrent = 0;
 		private float alphaTarget = 0;
-		private float alphaChangePerSecond = 1.0f;
-
+		private float alphaChangePerSecond = 1.5f;
+		
 		[Export]
 		public Texture2D ImageTexture
 		{
@@ -26,7 +26,7 @@ namespace SteamPanno.scenes.controls
 		}
 
 		public Action OnClick { get; set; }
-
+		
 		public TextureRect GetImage()
 		{
 			return GetNode<TextureRect>("./Center/TextureRect");
@@ -50,7 +50,7 @@ namespace SteamPanno.scenes.controls
 			image.Modulate = new Color(1, 1, 1, alphaCurrent);
 		}
 
-		public override void _Input(InputEvent @event)
+		public void OnInput(InputEvent @event)
 		{
 			if (@event is InputEventMouseButton mouseEvent &&
 				mouseEvent.ButtonIndex == MouseButton.Left &&
