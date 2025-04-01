@@ -1,5 +1,6 @@
 using Godot;
 using SteamPanno.panno;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -43,13 +44,16 @@ namespace SteamPanno.scenes
 			}
 		}
 
-		public async Task Build(PannoNode pannoStructure, PannoLoader loader, PannoDrawer drawer)
+		public async Task Build(PannoNode pannoStructure, PannoLoader loader, PannoDrawer drawer, IPannoProgress progress)
 		{
 			var games = pannoStructure.AllLeaves().ToArray();
 			pannoGamesInText = new List<PannoNodeLeaf>();
-			
+
+			var current = 0;
 			foreach (var game in games)
 			{
+				progress.ProgressSet(((double)current / games.Length) * 100, $"{game.Game.Name} ({current}/{games.Length})");
+
 				var image = game.Area.PreferHorizontal()
 					? await loader.GetGameLogoH(game.Game.Id)
 					: await loader.GetGameLogoV(game.Game.Id);
@@ -58,8 +62,9 @@ namespace SteamPanno.scenes
 				{
 					drawer.Draw(image, game.Area);
 				}
-
 				pannoGamesInText.Add(game);
+
+				current++;
 			}
 
 			pannoImage = drawer.Dest;

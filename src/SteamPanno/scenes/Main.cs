@@ -4,12 +4,18 @@ using System.Threading.Tasks;
 using Godot;
 using SteamPanno.panno;
 using SteamPanno.scenes.controls;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SteamPanno.scenes
 {
-	public partial class Main : Node
+	public partial class Main : Node, IPannoProgress
 	{
 		private Panno panno;
+		private Control progressContainer;
+		private ProgressBar pannoProgressBar;
+		private Label pannoProgressLabel;
+		private double pannoProgressValueToSet;
+		private string pannoProgressTextToSet;
 
 		public override void _Ready()
 		{
@@ -22,6 +28,9 @@ namespace SteamPanno.scenes
 			GetTree().Root.ContentScaleSize = windowResolution;
 			
 			panno = GetNode<Panno>("./GUI/Center/Panno");
+			progressContainer = GetNode<VBoxContainer>("./GUI/Center/Progress");
+			pannoProgressBar = GetNode<ProgressBar>("./GUI/Center/Progress/Bar");
+			pannoProgressLabel = GetNode<Label>("./GUI/Center/Progress/Text");
 
 			var configButton = GetNode<ImageButton>("./GUI/ConfigButton");
 			configButton.OnClick = () => GD.Print("config");
@@ -42,6 +51,10 @@ namespace SteamPanno.scenes
 			#if STEAM
 			SteamPanno.global.Steam.Update();
 			#endif
+
+			pannoProgressBar.Value = pannoProgressValueToSet;
+			pannoProgressLabel.Text = pannoProgressTextToSet;
+			progressContainer.Visible = pannoProgressTextToSet != null;
 		}
 
 		public override void _UnhandledInput(InputEvent @event)
@@ -92,17 +105,39 @@ namespace SteamPanno.scenes
 					Builder = PannoImage.Create,
 				};
 				var generator = new PannoGeneratorDivideAndConquer();
-				
+
+				ProgressSet(0, "Profile loading...");
 				var games = await loader.GetProfileGames(steamId);
+
+				ProgressSet(0, "Panno layout generation...");
 				games = games.OrderByDescending(x => x.HoursOnRecord).Where(x => x.HoursOnRecord >= 1).ToArray();
 				var pannoStructure = await generator.Generate(games, pannoArea);
-				await panno.Build(pannoStructure, loader, drawer);
-				
+
+				await panno.Build(pannoStructure, loader, drawer, this);
 			}
 			catch (Exception e)
 			{
 				GD.Print($"{e.Message}{System.Environment.NewLine}{e.StackTrace}");
 			}
+			finally
+			{
+				ProgressStop();
+			}
+		}
+
+		public void ProgressSet(double value, string text = null)
+		{
+			pannoProgressValueToSet = value;
+			if (text != null)
+			{
+				pannoProgressTextToSet = text;
+			}
+		}
+
+		public void ProgressStop()
+		{
+			pannoProgressTextToSet = null;
+			pannoProgressValueToSet = 0;
 		}
 
 		protected void Quit()
