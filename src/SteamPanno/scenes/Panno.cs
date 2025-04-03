@@ -1,7 +1,9 @@
 using Godot;
+using SteamPanno.global;
 using SteamPanno.panno;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,17 +13,34 @@ namespace SteamPanno.scenes
 	{
 		private TextureRect pannoControl;
 		private PannoImage pannoImage;
+		private bool pannoImageNeedsUpdate;
+		private DateTime pannoImageDate;
 		private List<PannoNodeLeaf> pannoGamesInText;
 
 		public override void _Ready()
 		{
 			pannoControl = GetNode<TextureRect>("./TextureRect");
-			pannoImage = null;
+		}
+
+		public bool Save()
+		{
+			if (pannoImage != null)
+			{
+				var dateText = pannoImageDate.ToString("yyyy-MM-dd-HH-mm-ss");
+				var savePath = Path.Combine(Settings.GetDataPath(), $"panno_{dateText}.png");
+				if (!File.Exists(savePath))
+				{
+					pannoImage.SavePng(savePath);
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		public override void _Process(double delta)
 		{
-			if (pannoImage != null)
+			if (pannoImageNeedsUpdate)
 			{
 				pannoControl.Texture = ImageTexture.CreateFromImage(pannoImage);
 				pannoControl.Position = Vector2.Zero;
@@ -40,7 +59,7 @@ namespace SteamPanno.scenes
 					pannoControl.AddChild(label);
 				}
 				
-				pannoImage = null;
+				pannoImageNeedsUpdate = false;
 			}
 		}
 
@@ -68,6 +87,8 @@ namespace SteamPanno.scenes
 			}
 
 			pannoImage = drawer.Dest;
+			pannoImageNeedsUpdate = true;
+			pannoImageDate = DateTime.Now;
 		}
 
 		private Label CreateTextRect(Rect2I area, string text)

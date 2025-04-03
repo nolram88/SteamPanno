@@ -68,5 +68,10 @@ namespace SteamPanno.panno
 		{
 			return Dest.SaveJpg(file) == Error.Ok;
 		}
+
+		public virtual bool SavePng(string file)
+		{
+			return Dest.SavePng(file) == Error.Ok;
+		}
 	}
 }

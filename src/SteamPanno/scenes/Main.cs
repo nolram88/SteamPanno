@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Godot;
 using SteamPanno.panno;
 using SteamPanno.scenes.controls;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace SteamPanno.scenes
 {
@@ -16,6 +15,8 @@ namespace SteamPanno.scenes
 		private Label pannoProgressLabel;
 		private double pannoProgressValueToSet;
 		private string pannoProgressTextToSet;
+		private ImageButton saveButton;
+		private ImageButton wirningButton;
 
 		public override void _Ready()
 		{
@@ -34,10 +35,18 @@ namespace SteamPanno.scenes
 
 			var configButton = GetNode<ImageButton>("./GUI/ConfigButton");
 			configButton.OnClick = () => GD.Print("config");
-			var wirningButton = GetNode<ImageButton>("./GUI/WarningButton");
-			wirningButton.OnClick = () => GD.Print("wirning");
 			var exitButton = GetNode<ImageButton>("./GUI/ExitButton");
 			exitButton.OnClick = Quit;
+			saveButton = GetNode<ImageButton>("./GUI/SaveButton");
+			saveButton.OnClick = () =>
+			{
+				if (panno.Save())
+				{
+					saveButton.Visible = false;
+				}
+			};
+			wirningButton = GetNode<ImageButton>("./GUI/WarningButton");
+			wirningButton.OnClick = () => GD.Print("wirning");
 			
 			#if STEAM
 			SteamPanno.global.Steam.Init();

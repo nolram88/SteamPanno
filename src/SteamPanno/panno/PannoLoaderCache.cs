@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
-using Godot;
+using SteamPanno.global;
 
 namespace SteamPanno.panno
 {
@@ -12,13 +12,7 @@ namespace SteamPanno.panno
 		public PannoLoaderCache(PannoLoader innerLoader)
 		{
 			this.innerLoader = innerLoader;
-			var appDataPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData);
-			this.cachePath = Path.Combine(appDataPath, nameof(SteamPanno).ToLower(), "cache");
-			GD.Print(cachePath);
-			if (!Directory.Exists(cachePath))
-			{
-				Directory.CreateDirectory(cachePath);
-			}
+			this.cachePath = Settings.GetCachePath();
 		}
 
 		public override async Task<PannoGame[]> GetProfileGames(string steamId)
