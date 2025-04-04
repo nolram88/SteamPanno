@@ -55,8 +55,10 @@ namespace SteamPanno.scenes
 			switch (pannoState)
 			{
 				case PannoState.Ready:
-					textureIn.Texture = ImageTexture.CreateFromImage(pannoImage);
+					subViewport.Size = pannoImage.Size;
 					textureIn.Position = Vector2.Zero;
+					textureIn.Size = pannoImage.Size;
+					textureIn.Texture = ImageTexture.CreateFromImage(pannoImage);
 
 					foreach (var pannoControlChild in textureIn.GetChildren())
 					{
@@ -76,8 +78,10 @@ namespace SteamPanno.scenes
 					break;
 
 				case PannoState.Drawn:
-					textureOut.Size = subViewport.Size;
 					textureOut.Texture = subViewport.GetTexture();
+					textureOut.Position = Vector2.Zero;
+					textureOut.Size = pannoImage.Size;
+					
 					pannoState = PannoState.Visible;
 					break;
 
