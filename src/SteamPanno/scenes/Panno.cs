@@ -11,15 +11,27 @@ namespace SteamPanno.scenes
 {
 	public partial class Panno : Control
 	{
-		private TextureRect pannoControl;
+		private enum PannoState
+		{
+			Empty = 0,
+			Ready = 1,
+			Drawn = 2,
+			Visible = 3,
+		}
+
+		private SubViewport subViewport;
+		private TextureRect textureIn;
+		private TextureRect textureOut;
 		private PannoImage pannoImage;
-		private bool pannoImageNeedsUpdate;
 		private DateTime pannoImageDate;
+		private PannoState pannoState;
 		private List<PannoNodeLeaf> pannoGamesInText;
 
 		public override void _Ready()
 		{
-			pannoControl = GetNode<TextureRect>("./TextureRect");
+			subViewport = GetNode<SubViewport>("./SubViewport");
+			textureIn = GetNode<TextureRect>("./SubViewport/TextureIn");
+			textureOut = GetNode<TextureRect>("./TextureOut");
 		}
 
 		public bool Save()
@@ -30,7 +42,7 @@ namespace SteamPanno.scenes
 				var savePath = Path.Combine(Settings.GetDataPath(), $"panno_{dateText}.png");
 				if (!File.Exists(savePath))
 				{
-					pannoImage.SavePng(savePath);
+					textureOut.Texture.GetImage().SavePng(savePath);
 					return true;
 				}
 			}
@@ -40,26 +52,37 @@ namespace SteamPanno.scenes
 
 		public override void _Process(double delta)
 		{
-			if (pannoImageNeedsUpdate)
+			switch (pannoState)
 			{
-				pannoControl.Texture = ImageTexture.CreateFromImage(pannoImage);
-				pannoControl.Position = Vector2.Zero;
+				case PannoState.Ready:
+					textureIn.Texture = ImageTexture.CreateFromImage(pannoImage);
+					textureIn.Position = Vector2.Zero;
 
-				foreach (var pannoControlChild in pannoControl.GetChildren())
-				{
-					if (pannoControlChild is Label)
+					foreach (var pannoControlChild in textureIn.GetChildren())
 					{
-						pannoControl.RemoveChild(pannoControlChild);
+						if (pannoControlChild is Label)
+						{
+							textureIn.RemoveChild(pannoControlChild);
+						}
 					}
-				}
-				
-				foreach (var textGame in pannoGamesInText)
-				{
-					var label = CreateTextRect(textGame.Area, textGame.Game.Name);
-					pannoControl.AddChild(label);
-				}
-				
-				pannoImageNeedsUpdate = false;
+
+					foreach (var textGame in pannoGamesInText)
+					{
+						var label = CreateTextRect(textGame.Area, textGame.Game.Name);
+						textureIn.AddChild(label);
+					}
+
+					pannoState = PannoState.Drawn;
+					break;
+
+				case PannoState.Drawn:
+					textureOut.Size = subViewport.Size;
+					textureOut.Texture = subViewport.GetTexture();
+					pannoState = PannoState.Visible;
+					break;
+
+				default:
+					break;
 			}
 		}
 
@@ -87,8 +110,8 @@ namespace SteamPanno.scenes
 			}
 
 			pannoImage = drawer.Dest;
-			pannoImageNeedsUpdate = true;
 			pannoImageDate = DateTime.Now;
+			pannoState = PannoState.Ready;
 		}
 
 		private Label CreateTextRect(Rect2I area, string text)
