@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Godot;
 
@@ -6,15 +7,23 @@ namespace SteamPanno.panno
 {
 	public class PannoGeneratorDivideAndConquer : PannoGenerator
 	{
+		private int maxDepth;
+
 		public override async Task<PannoNode> Generate(PannoGame[] games, Rect2I area)
 		{
 			games = games.OrderByDescending(x => x.HoursOnRecord).ToArray();
 
-			return await GenerateInner(games, area);
+			maxDepth = 1;
+			return await GenerateInner(games, area, 1);
 		}
 
-		private async Task<PannoNode> GenerateInner(PannoGame[] games, Rect2I area)
+		private async Task<PannoNode> GenerateInner(PannoGame[] games, Rect2I area, int depth)
 		{
+			if (depth > maxDepth)
+			{
+				maxDepth = depth;
+			}
+
 			if (games.Length == 0)
 			{
 				return null;
@@ -68,8 +77,8 @@ namespace SteamPanno.panno
 				{
 					var areaFirst = GetFirstArea(area);
 					var areaSecond = GetSecondArea(area);
-					var nodeFirst = await GenerateInner(gamesFirst, areaFirst);
-					var nodeSecond = await GenerateInner(gamesSecond, areaSecond);
+					var nodeFirst = await GenerateInner(gamesFirst, areaFirst, depth+1);
+					var nodeSecond = await GenerateInner(gamesSecond, areaSecond, depth+1);
 					return new PannoNodeRoot(nodeFirst, nodeSecond);
 				}
 

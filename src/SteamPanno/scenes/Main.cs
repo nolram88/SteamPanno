@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Godot;
@@ -113,14 +114,32 @@ namespace SteamPanno.scenes
 					Dest = PannoImage.Create(pannoSize.X, pannoSize.Y),
 					Builder = PannoImage.Create,
 				};
-				var generator = new PannoGeneratorDivideAndConquer();
+				var generator = new PannoGeneratorGradualDescent();
 
 				ProgressSet(0, "Profile loading...");
-				var games = await loader.GetProfileGames(steamId);
+				//var games = await loader.GetProfileGames(steamId);
 
 				ProgressSet(0, "Panno layout generation...");
-				games = games.OrderByDescending(x => x.HoursOnRecord).Where(x => x.HoursOnRecord >= 1).ToArray();
-				var pannoStructure = await generator.Generate(games, pannoArea);
+				//games = games.OrderByDescending(x => x.HoursOnRecord).Where(x => x.HoursOnRecord >= 1).ToArray();
+				
+				var big = 10;
+				var medium = 10;
+				var small = 10;
+				var games = new List<PannoGame>();
+				for (int i = 0; i < big; i++)
+				{
+					games.Add(new PannoGame() { Name = "100", HoursOnRecord = 100 });
+				}
+				for (int i = 0; i < medium; i++)
+				{
+					games.Add(new PannoGame() { Name = "50", HoursOnRecord = 50 });
+				}
+				for (int i = 0; i < small; i++)
+				{
+					games.Add(new PannoGame() { Name = "20", HoursOnRecord = 20 });
+				}
+				
+				var pannoStructure = await generator.Generate(games.ToArray(), pannoArea);
 
 				await panno.Build(pannoStructure, loader, drawer, this);
 			}

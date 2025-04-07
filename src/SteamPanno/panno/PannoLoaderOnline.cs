@@ -56,7 +56,7 @@ namespace SteamPanno.panno
 				_ => null,
 			};
 
-			if (!string.IsNullOrEmpty(url))
+			if (!string.IsNullOrEmpty(url) && appId != default)
 			{
 				url = string.Format(url, appId);
 
