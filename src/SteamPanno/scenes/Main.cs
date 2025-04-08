@@ -115,13 +115,14 @@ namespace SteamPanno.scenes
 					Builder = PannoImage.Create,
 				};
 				var generator = new PannoGeneratorGradualDescent();
+				//var generator = new PannoGeneratorDivideAndConquer();
 
 				ProgressSet(0, "Profile loading...");
-				//var games = await loader.GetProfileGames(steamId);
+				var games = await loader.GetProfileGames(steamId);
 
 				ProgressSet(0, "Panno layout generation...");
-				//games = games.OrderByDescending(x => x.HoursOnRecord).Where(x => x.HoursOnRecord >= 1).ToArray();
-				
+				games = games.OrderByDescending(x => x.HoursOnRecord).Where(x => x.HoursOnRecord >= 1).ToArray();
+				/*
 				var big = 10;
 				var medium = 10;
 				var small = 10;
@@ -137,7 +138,7 @@ namespace SteamPanno.scenes
 				for (int i = 0; i < small; i++)
 				{
 					games.Add(new PannoGame() { Name = "20", HoursOnRecord = 20 });
-				}
+				}*/
 				
 				var pannoStructure = await generator.Generate(games.ToArray(), pannoArea);
 

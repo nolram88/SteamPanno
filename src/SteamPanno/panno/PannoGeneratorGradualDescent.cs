@@ -10,6 +10,8 @@ namespace SteamPanno.panno
 	{
 		private float totalHours;
 		private int totalArea;
+		private float fixedHours;
+		private int fixedArea;
 		private float deltaHours;
 		private int depthMax;
 
@@ -18,6 +20,8 @@ namespace SteamPanno.panno
 			var gamesQueue = new Queue<PannoGame>(games.OrderByDescending(x => x.HoursOnRecord).ToArray());
 			totalHours = gamesQueue.Sum(x => x.HoursOnRecord);
 			totalArea = area.Size.X * area.Size.Y;
+			fixedHours = 0;
+			fixedArea = 0;
 			deltaHours = 0;
 			depthMax = 1;
 
@@ -35,11 +39,15 @@ namespace SteamPanno.panno
 				var areaAreaNext = areaArea / 2;
 				var areaHours = ((float)areaArea / totalArea) * totalHours;
 
-				if (games.Count == 1 ||
-					(areaHours <= game.HoursOnRecord + deltaHours ||
-					(area.PreferHorizontal() ? area.Size.X : area.Size.Y) < 8))
+				if ((games.Count == 1 ||
+					areaHours <= game.HoursOnRecord + deltaHours ||
+					games.Count * areaArea / 2 < totalArea - fixedArea ||
+					(area.PreferHorizontal() ? area.Size.X : area.Size.Y) < 8)
+						&& depth == depthMax)
 				{
 					games.Dequeue();
+					fixedHours += game.HoursOnRecord;
+					fixedArea += areaArea;
 					deltaHours += game.HoursOnRecord - areaHours;
 
 					return new PannoNodeLeaf()

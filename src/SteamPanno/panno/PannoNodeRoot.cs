@@ -20,20 +20,23 @@ namespace SteamPanno.panno
 			{
 				yield return leaf;
 			}
-			foreach (var leaf in second.AllLeaves())
+			if (second != null)
 			{
-				yield return leaf;
+				foreach (var leaf in second.AllLeaves())
+				{
+					yield return leaf;
+				}
 			}
 		}
 
 		public override int Count()
 		{
-			return first.Count() + second.Count();
+			return first.Count() + second?.Count() ?? 0;
 		}
 
 		public override int Depth()
 		{
-			return Mathf.Max(first.Depth(), second.Depth()) + 1;
+			return Mathf.Max(first.Depth(), second?.Depth() ?? 0) + 1;
 		}
 	}
 }
