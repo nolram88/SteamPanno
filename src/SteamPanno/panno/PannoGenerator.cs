@@ -6,7 +6,7 @@ namespace SteamPanno.panno
 {
 	public abstract class PannoGenerator
 	{
-		public abstract Task<PannoNode> Generate(PannoGame[] games, Rect2I area);
+		public abstract Task<PannoGameLayout[]> Generate(PannoGame[] games, Rect2I area);
 		
 		protected virtual Rect2I GetFirstArea(Rect2I area)
 		{

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Godot;
 
@@ -9,12 +8,15 @@ namespace SteamPanno.panno
 	{
 		private int maxDepth;
 
-		public override async Task<PannoNode> Generate(PannoGame[] games, Rect2I area)
+		public override async Task<PannoGameLayout[]> Generate(PannoGame[] games, Rect2I area)
 		{
 			games = games.OrderByDescending(x => x.HoursOnRecord).ToArray();
-
 			maxDepth = 1;
-			return await GenerateInner(games, area, 1);
+			var root = await GenerateInner(games, area, 1);
+
+			return root.AllLeaves()
+				.Select(l => new PannoGameLayout() { Game = l.Game, Area = l.Area })
+				.ToArray();
 		}
 
 		private async Task<PannoNode> GenerateInner(PannoGame[] games, Rect2I area, int depth)

@@ -142,7 +142,7 @@ namespace SteamPanno.scenes
 				
 				var pannoStructure = await generator.Generate(games.ToArray(), pannoArea);
 
-				await panno.Build(pannoStructure, loader, drawer, this);
+				await panno.LoadAndDraw(pannoStructure, loader, drawer, this);
 			}
 			catch (Exception e)
 			{

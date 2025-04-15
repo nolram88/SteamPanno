@@ -25,10 +25,10 @@ namespace SteamPanno.panno
 			var games = new PannoGame[] { game };
 			var area = new Rect2I(0, 0, width, height);
 
-			var panno = await pannoGenerator.Generate(games, area);
+			var layout = await pannoGenerator.Generate(games, area);
 
-			panno.Count().ShouldBe(games.Length);
-			var node = panno.AllLeaves().First();
+			layout.Count().ShouldBe(games.Length);
+			var node = layout.First();
 			node.Game.ShouldBe(game);
 			node.Area.ShouldBe(area);
 		}
@@ -44,14 +44,13 @@ namespace SteamPanno.panno
 			var area = new Rect2I(0, 0, width, height);
 			var horizontal = area.PreferHorizontal();
 
-			var panno = await pannoGenerator.Generate(games, area);
+			var layout = await pannoGenerator.Generate(games, area);
 
-			panno.Count().ShouldBe(games.Length);
-			var nodes = panno.AllLeaves().ToArray();
-			nodes.First().Game.HoursOnRecord.ShouldBe(game1.HoursOnRecord);
-			nodes.First().Area.ShouldBe(new Rect2I(0, 0, 100, 100));
-			nodes.Last().Game.HoursOnRecord.ShouldBe(game2.HoursOnRecord);
-			nodes.Last().Area.ShouldBe(horizontal ? new Rect2I(100, 0, 100, 100) : new Rect2I(0, 100, 100, 100));
+			layout.Count().ShouldBe(games.Length);
+			layout.First().Game.HoursOnRecord.ShouldBe(game1.HoursOnRecord);
+			layout.First().Area.ShouldBe(new Rect2I(0, 0, 100, 100));
+			layout.Last().Game.HoursOnRecord.ShouldBe(game2.HoursOnRecord);
+			layout.Last().Area.ShouldBe(horizontal ? new Rect2I(100, 0, 100, 100) : new Rect2I(0, 100, 100, 100));
 		}
 
 		[Theory]
@@ -65,12 +64,11 @@ namespace SteamPanno.panno
 			var area = new Rect2I(0, 0, width, height);
 			var horizontal = area.PreferHorizontal();
 
-			var panno = await pannoGenerator.Generate(games, area);
+			var layout = await pannoGenerator.Generate(games, area);
 
-			panno.Count().ShouldBe(games.Length);
-			var nodes = panno.AllLeaves().ToArray();
-			nodes.First().Area.ShouldBe(horizontal ? new Rect2I(0, 0, 6, 10) : new Rect2I(0, 0, 10, 6));
-			nodes.Last().Area.ShouldBe(horizontal ? new Rect2I(6, 0, 5, 10) : new Rect2I(0, 6, 10, 5));
+			layout.Count().ShouldBe(games.Length);
+			layout.First().Area.ShouldBe(horizontal ? new Rect2I(0, 0, 6, 10) : new Rect2I(0, 0, 10, 6));
+			layout.Last().Area.ShouldBe(horizontal ? new Rect2I(6, 0, 5, 10) : new Rect2I(0, 6, 10, 5));
 		}
 
 		[Theory]
@@ -84,12 +82,11 @@ namespace SteamPanno.panno
 			var games = new PannoGame[] { game1, game2, game3 };
 			var area = new Rect2I(0, 0, width, height);
 
-			var panno = await pannoGenerator.Generate(games, area);
+			var layout = await pannoGenerator.Generate(games, area);
 
-			panno.Count().ShouldBe(games.Length);
-			var nodes = panno.AllLeaves().ToArray();
-			nodes.First().Area.Area.ShouldBe(
-				nodes.Skip(1).Sum(x => x.Area.Area));
+			layout.Count().ShouldBe(games.Length);
+			layout.First().Area.Area.ShouldBe(
+				layout.Skip(1).Sum(x => x.Area.Area));
 		}
 
 		[Theory]
@@ -103,10 +100,10 @@ namespace SteamPanno.panno
 			var games = new PannoGame[] { game1, game2, game3 };
 			var area = new Rect2I(0, 0, width, height);
 
-			var panno = await pannoGenerator.Generate(games, area);
+			var layout = await pannoGenerator.Generate(games, area);
 
-			panno.Count().ShouldBe(games.Length);
-			panno.AllLeaves().Sum(x => x.Area.Area).ShouldBe(width * height);
+			layout.Count().ShouldBe(games.Length);
+			layout.Sum(x => x.Area.Area).ShouldBe(width * height);
 		}
 
 		[Theory]
@@ -123,11 +120,10 @@ namespace SteamPanno.panno
 			var area = new Rect2I(0, 0, width, height);
 			var horizontal = area.PreferHorizontal();
 
-			var panno = await pannoGenerator.Generate(games, area);
+			var layout = await pannoGenerator.Generate(games, area);
 
-			panno.Count().ShouldBe(games.Length);
-			var nodes = panno.AllLeaves().ToArray();
-			nodes.Sum(x => x.Area.Area).ShouldBe(width * height);
+			layout.Count().ShouldBe(games.Length);
+			layout.Sum(x => x.Area.Area).ShouldBe(width * height);
 		}
 
 		[Theory]
@@ -142,10 +138,10 @@ namespace SteamPanno.panno
 			var games = new PannoGame[] { game1, game2, game3, game4 };
 			var area = new Rect2I(0, 0, width, height);
 
-			var panno = await pannoGenerator.Generate(games, area);
+			var layout = await pannoGenerator.Generate(games, area);
 
-			panno.Count().ShouldBe(games.Length);
-			panno.AllLeaves().Select(x => x.Area.Area).ToArray()
+			layout.Count().ShouldBe(games.Length);
+			layout.Select(x => x.Area.Area).ToArray()
 				.ShouldBeEquivalentTo(new int[] { 100 * 100, 100 * 50, 50 * 50, 50 * 50 });
 		}
 
@@ -157,10 +153,10 @@ namespace SteamPanno.panno
 			var games = Enumerable.Repeat(new PannoGame() { HoursOnRecord = 100 }, 16).ToArray();
 			var area = new Rect2I(0, 0, width, height);
 
-			var panno = await pannoGenerator.Generate(games, area);
+			var layout = await pannoGenerator.Generate(games, area);
 
-			panno.Count().ShouldBe(games.Length);
-			panno.AllLeaves().Select(x => x.Area.Area)
+			layout.Count().ShouldBe(games.Length);
+			layout.Select(x => x.Area.Area)
 				.ShouldAllBe(x => x == 50 * 25);
 		}
 
@@ -174,25 +170,27 @@ namespace SteamPanno.panno
 				.ToArray();
 			var area = new Rect2I(0, 0, width, height);
 
-			var panno = await pannoGenerator.Generate(games, area);
+			var layout = await pannoGenerator.Generate(games, area);
 
-			panno.Count().ShouldBe(games.Length);
-			panno.AllLeaves().Select(x => x.Area.Area)
+			layout.Count().ShouldBe(games.Length);
+			layout.Select(x => x.Area.Area)
 				.ShouldNotContain(100 * 100);
 		}
 
 		[Theory]
-		[InlineData(100, 10)]
-		[InlineData(10, 100)]
-		public async Task ShouldRepeatSameSplittingDependingOnArea(int width, int height)
+		[InlineData(100, 10, true)]
+		[InlineData(10, 100, false)]
+		public async Task ShouldRepeatSameSplittingDependingOnArea(
+			int width, int height, bool allHorizontal)
 		{
 			var games = Enumerable.Repeat(new PannoGame() { HoursOnRecord = 100 }, 8).ToArray();
 			var area = new Rect2I(0, 0, width, height);
 
-			var panno = await pannoGenerator.Generate(games, area);
+			var layout = await pannoGenerator.Generate(games, area);
 
-			panno.Count().ShouldBe(8);
-			panno.AllLeaves().Select(x => x.Area.PreferHorizontal()).All(x => area.PreferHorizontal());
+			layout.Count().ShouldBe(8);
+			layout.All(x => area.PreferHorizontal())
+				.ShouldBe(allHorizontal);
 		}
 
 		[Fact]
@@ -205,10 +203,10 @@ namespace SteamPanno.panno
 			var games = new PannoGame[] { game1, game2, game3, game4 };
 			var area = new Rect2I(0, 0, 8, 8);
 
-			var panno = await pannoGenerator.Generate(games, area);
+			var layout = await pannoGenerator.Generate(games, area);
 
-			panno.Count().ShouldBe(3);
-			panno.AllLeaves().Select(x => x.Area.Area).ToArray()
+			layout.Count().ShouldBe(3);
+			layout.Select(x => x.Area.Area).ToArray()
 				.ShouldBeEquivalentTo(new int[] { 4 * 8, 4 * 4, 4 * 4 });
 		}
 	}

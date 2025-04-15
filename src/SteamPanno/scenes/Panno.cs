@@ -25,7 +25,7 @@ namespace SteamPanno.scenes
 		private PannoImage pannoImage;
 		private DateTime pannoImageDate;
 		private PannoState pannoState;
-		private List<PannoNodeLeaf> pannoGamesInText;
+		private List<PannoGameLayout> pannoGamesInText;
 
 		public override void _Ready()
 		{
@@ -90,10 +90,9 @@ namespace SteamPanno.scenes
 			}
 		}
 
-		public async Task Build(PannoNode pannoStructure, PannoLoader loader, PannoDrawer drawer, IPannoProgress progress)
+		public async Task LoadAndDraw(PannoGameLayout[] games, PannoLoader loader, PannoDrawer drawer, IPannoProgress progress)
 		{
-			var games = pannoStructure.AllLeaves().ToArray();
-			pannoGamesInText = new List<PannoNodeLeaf>();
+			pannoGamesInText = new List<PannoGameLayout>();
 
 			var current = 0;
 			foreach (var game in games)

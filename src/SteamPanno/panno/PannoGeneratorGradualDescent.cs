@@ -15,7 +15,7 @@ namespace SteamPanno.panno
 		private float deltaHours;
 		private int depthMax;
 
-		public override async Task<PannoNode> Generate(PannoGame[] games, Rect2I area)
+		public override async Task<PannoGameLayout[]> Generate(PannoGame[] games, Rect2I area)
 		{
 			var gamesQueue = new Queue<PannoGame>(games.OrderByDescending(x => x.HoursOnRecord).ToArray());
 			totalHours = gamesQueue.Sum(x => x.HoursOnRecord);
@@ -25,7 +25,11 @@ namespace SteamPanno.panno
 			deltaHours = 0;
 			depthMax = 1;
 
-			return await GenerateInner(gamesQueue, area, 1);
+			var root = await GenerateInner(gamesQueue, area, 1);
+
+			return root.AllLeaves()
+				.Select(l => new PannoGameLayout() { Game = l.Game, Area = l.Area })
+				.ToArray();
 		}
 
 		private async Task<PannoNode> GenerateInner(Queue<PannoGame> games, Rect2I area, int depth)

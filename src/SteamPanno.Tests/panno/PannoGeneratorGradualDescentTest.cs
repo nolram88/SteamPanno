@@ -1,5 +1,6 @@
 ﻿using Godot;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 using Shouldly;
@@ -34,11 +35,11 @@ namespace SteamPanno.panno
 			}
 			var area = new Rect2I(0, 0, 1000, 1000);
 
-			var panno = await pannoGenerator.Generate(games.ToArray(), area);
+			var layout = await pannoGenerator.Generate(games.ToArray(), area);
 
-			panno.Count().ShouldBe(big + medium + small);
+			layout.Count().ShouldBe(big + medium + small);
 			var minArea = int.MaxValue;
-			foreach (var leaf in panno.AllLeaves())
+			foreach (var leaf in layout)
 			{
 				var leafArea = leaf.Area.Size.X * leaf.Area.Size.Y;
 				if (leafArea <= minArea)
