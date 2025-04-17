@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Godot;
 using SteamPanno.panno;
+using SteamPanno.panno.generation;
 using SteamPanno.scenes.controls;
 
 namespace SteamPanno.scenes
@@ -114,7 +115,7 @@ namespace SteamPanno.scenes
 					Dest = PannoImage.Create(pannoSize.X, pannoSize.Y),
 					Builder = PannoImage.Create,
 				};
-				var generator = new PannoGeneratorGradualDescent();
+				var generator = new PannoGameLayoutGeneratorGradualDescent();
 				//var generator = new PannoGeneratorDivideAndConquer();
 
 				ProgressSet(0, "Profile loading...");

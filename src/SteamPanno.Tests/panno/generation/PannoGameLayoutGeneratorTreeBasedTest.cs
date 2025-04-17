@@ -5,13 +5,13 @@ using Godot;
 using Xunit;
 using Shouldly;
 
-namespace SteamPanno.panno
+namespace SteamPanno.panno.generation
 {
-	public abstract class PannoGeneratorTest
+	public abstract class PannoGameLayoutGeneratorTreeBasedTest
 	{
-		protected readonly PannoGenerator pannoGenerator;
+		protected readonly PannoGameLayoutGenerator pannoGenerator;
 
-		public PannoGeneratorTest(PannoGenerator pannoGenerator)
+		public PannoGameLayoutGeneratorTreeBasedTest(PannoGameLayoutGenerator pannoGenerator)
 		{
 			this.pannoGenerator = pannoGenerator;
 		}

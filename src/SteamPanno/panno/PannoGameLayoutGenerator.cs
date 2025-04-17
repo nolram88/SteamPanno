@@ -4,7 +4,7 @@ using Godot;
 
 namespace SteamPanno.panno
 {
-	public abstract class PannoGenerator
+	public abstract class PannoGameLayoutGenerator
 	{
 		public abstract Task<PannoGameLayout[]> Generate(PannoGame[] games, Rect2I area);
 		

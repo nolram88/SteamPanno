@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 using Xunit;
 using Shouldly;
 
-namespace SteamPanno.panno
+namespace SteamPanno.panno.generation
 {
-	public class PannoGeneratorGradualDescentTest : PannoGeneratorTest
+	public class PannoGameLayoutGeneratorGradualDescentTest : PannoGameLayoutGeneratorTreeBasedTest
 	{
-		public PannoGeneratorGradualDescentTest()
-			: base(new PannoGeneratorGradualDescent())
+		public PannoGameLayoutGeneratorGradualDescentTest()
+			: base(new PannoGameLayoutGeneratorGradualDescent())
 		{
 		}
 

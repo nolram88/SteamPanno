@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SteamPanno.panno
+namespace SteamPanno.panno.generation
 {
-	public class PannoGeneratorGradualDescent : PannoGenerator
+	public class PannoGameLayoutGeneratorGradualDescent : PannoGameLayoutGeneratorTreeBased
 	{
 		private float totalHours;
 		private int totalArea;
@@ -41,7 +41,7 @@ namespace SteamPanno.panno
 				var game = games.Peek();
 				var areaArea = area.Size.X * area.Size.Y;
 				var areaAreaNext = areaArea / 2;
-				var areaHours = ((float)areaArea / totalArea) * totalHours;
+				var areaHours = (float)areaArea / totalArea * totalHours;
 
 				if ((games.Count == 1 ||
 					areaHours <= game.HoursOnRecord + deltaHours ||
@@ -60,7 +60,7 @@ namespace SteamPanno.panno
 						Area = area,
 					};
 				}
-				
+
 				var areaFirst = GetFirstArea(area);
 				var areaSecond = GetSecondArea(area);
 				var nodeFirst = await GenerateInner(games, areaFirst, depth + 1);

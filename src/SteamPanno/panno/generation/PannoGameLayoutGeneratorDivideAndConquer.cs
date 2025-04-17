@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using Godot;
 
-namespace SteamPanno.panno
+namespace SteamPanno.panno.generation
 {
-	public class PannoGeneratorDivideAndConquer : PannoGenerator
+	public class PannoGameLayoutGeneratorDivideAndConquer : PannoGameLayoutGeneratorTreeBased
 	{
 		private int maxDepth;
 
@@ -79,8 +79,8 @@ namespace SteamPanno.panno
 				{
 					var areaFirst = GetFirstArea(area);
 					var areaSecond = GetSecondArea(area);
-					var nodeFirst = await GenerateInner(gamesFirst, areaFirst, depth+1);
-					var nodeSecond = await GenerateInner(gamesSecond, areaSecond, depth+1);
+					var nodeFirst = await GenerateInner(gamesFirst, areaFirst, depth + 1);
+					var nodeSecond = await GenerateInner(gamesSecond, areaSecond, depth + 1);
 					return new PannoNodeRoot(nodeFirst, nodeSecond);
 				}
 
