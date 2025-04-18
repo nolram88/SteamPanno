@@ -1,6 +1,6 @@
 ﻿using Godot;
 
-namespace SteamPanno.panno
+namespace SteamPanno.panno.drawing
 {
 	public class PannoDrawerResizeAndExpand : PannoDrawer
 	{
@@ -9,8 +9,8 @@ namespace SteamPanno.panno
 			var size = destArea.Size;
 			var isize = src.Size;
 
-			var sizeXRatio = (size.X / (float)isize.X);
-			var sizeYRatio = (size.Y / (float)isize.Y);
+			var sizeXRatio = size.X / (float)isize.X;
+			var sizeYRatio = size.Y / (float)isize.Y;
 			if (sizeXRatio != 1 || sizeYRatio != 1)
 			{
 				if (sizeXRatio < sizeYRatio)
@@ -35,7 +35,7 @@ namespace SteamPanno.panno
 			var srcAreaForExpansion1 = new Rect2I(0, 0, expansion1.Size.X, expansion1.Size.Y);
 			expansion1.Draw(src, srcAreaForExpansion1, Vector2I.Zero);
 			expansion1.Size = gapSize;
-			
+
 			var expansion2 = Builder(
 				sizeXRatio < sizeYRatio ? isize.X : 1,
 				sizeXRatio < sizeYRatio ? 1 : isize.Y);
@@ -46,7 +46,7 @@ namespace SteamPanno.panno
 					expansion2.Size.Y);
 			expansion2.Draw(src, srcAreaForExpansion2, Vector2I.Zero);
 			expansion2.Size = gapSize;
-			
+
 			var srcArea = new Rect2I(Vector2I.Zero, isize);
 			var srcPosition = destArea.Position + gapSize * (sizeXRatio < sizeYRatio ? new Vector2I(0, 1) : new Vector2I(1, 0));
 			Dest.Draw(src, srcArea, srcPosition);

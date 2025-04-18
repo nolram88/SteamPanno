@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Godot;
 
-namespace SteamPanno.panno
+namespace SteamPanno.panno.loading
 {
 	public class PannoLoaderOnline : PannoLoader
 	{
@@ -48,7 +48,7 @@ namespace SteamPanno.panno
 
 		private async Task<PannoImage> GetGameLogo(int appId, LogoType logo)
 		{
-			var url = (logo) switch
+			var url = logo switch
 			{
 				LogoType.LIBRARY => GetLogoV,
 				LogoType.CAPSULE => GetLogoH,

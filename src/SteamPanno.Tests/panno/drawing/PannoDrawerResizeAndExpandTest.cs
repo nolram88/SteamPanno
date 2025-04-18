@@ -3,7 +3,7 @@ using Xunit;
 using Shouldly;
 using NSubstitute;
 
-namespace SteamPanno.panno
+namespace SteamPanno.panno.drawing
 {
 	public class PannoDrawerResizeAndExpandTest
 	{
@@ -31,7 +31,7 @@ namespace SteamPanno.panno
 		public void ShouldResizeImageAndDrawFullAreaWithThreeFragments(int srcWidth, int srcHeight)
 		{
 			var src = drawer.Builder(srcWidth, srcHeight);
-			
+
 			drawer.Draw(src, new Rect2I(0, 0, 100, 100));
 
 			src.Size.ShouldBe(new Vector2I(100, 50));

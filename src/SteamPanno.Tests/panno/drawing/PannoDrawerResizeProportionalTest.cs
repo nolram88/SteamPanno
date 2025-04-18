@@ -3,7 +3,7 @@ using Xunit;
 using Shouldly;
 using NSubstitute;
 
-namespace SteamPanno.panno
+namespace SteamPanno.panno.drawing
 {
 	public class PannoDrawerResizeProportionalTest
 	{

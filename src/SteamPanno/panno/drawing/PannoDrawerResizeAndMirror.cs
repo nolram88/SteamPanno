@@ -1,6 +1,6 @@
 ﻿using Godot;
 
-namespace SteamPanno.panno
+namespace SteamPanno.panno.drawing
 {
 	public class PannoDrawerResizeAndMirror : PannoDrawer
 	{
@@ -9,8 +9,8 @@ namespace SteamPanno.panno
 			var size = destArea.Size;
 			var isize = src.Size;
 
-			var sizeXRatio = (size.X / (float)isize.X);
-			var sizeYRatio = (size.Y / (float)isize.Y);
+			var sizeXRatio = size.X / (float)isize.X;
+			var sizeYRatio = size.Y / (float)isize.Y;
 			if (sizeXRatio != 1 || sizeYRatio != 1)
 			{
 				if (sizeXRatio < sizeYRatio)

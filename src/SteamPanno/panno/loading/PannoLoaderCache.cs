@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using SteamPanno.global;
 
-namespace SteamPanno.panno
+namespace SteamPanno.panno.loading
 {
 	public class PannoLoaderCache : PannoLoader
 	{
@@ -12,7 +12,7 @@ namespace SteamPanno.panno
 		public PannoLoaderCache(PannoLoader innerLoader)
 		{
 			this.innerLoader = innerLoader;
-			this.cachePath = Settings.GetCachePath();
+			cachePath = Settings.GetCachePath();
 		}
 
 		public override async Task<PannoGame[]> GetProfileGames(string steamId)

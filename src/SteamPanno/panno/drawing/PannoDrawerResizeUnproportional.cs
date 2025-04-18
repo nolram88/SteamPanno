@@ -1,6 +1,6 @@
 ﻿using Godot;
 
-namespace SteamPanno.panno
+namespace SteamPanno.panno.drawing
 {
 	public class PannoDrawerResizeUnproportional : PannoDrawer
 	{
