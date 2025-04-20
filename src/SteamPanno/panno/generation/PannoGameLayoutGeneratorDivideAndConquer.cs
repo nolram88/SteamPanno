@@ -95,23 +95,25 @@ namespace SteamPanno.panno.generation
 			{
 				if (layout[i].Area.Area > minArea)
 				{
+					var iToMove = i;
 					for (int j = i - 1; j >= 0; j--)
 					{
-						if (layout[j].Area.Area < layout[i].Area.Area)
+						if (layout[j].Area.Area < layout[iToMove].Area.Area)
 						{
 							var iNew = new PannoGameLayout()
 							{
-								Game = layout[j].Game,
-								Area = layout[i].Area,
+								Game = layout[iToMove].Game,
+								Area = layout[j].Area,
 							};
 							var jNew = new PannoGameLayout()
 							{
-								Game = layout[i].Game,
-								Area = layout[j].Area,
+								Game = layout[j].Game,
+								Area = layout[iToMove].Area,
 							};
 
-							layout[i] = iNew;
+							layout[iToMove] = iNew;
 							layout[j] = jNew;
+							iToMove = j;
 						}
 					}
 				}

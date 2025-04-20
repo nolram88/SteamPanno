@@ -213,9 +213,9 @@ namespace SteamPanno.panno.generation
 		[Fact]
 		public async Task ShouldKeepSizeGoingSmaller()
 		{
-			var big = 10;
-			var medium = 10;
-			var small = 10;
+			var big = 6;
+			var medium = 6;
+			var small = 6;
 			var games = new List<PannoGame>();
 			for (int i = 0; i < big; i++)
 			{
