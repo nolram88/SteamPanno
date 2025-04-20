@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Godot;
@@ -116,8 +117,8 @@ namespace SteamPanno.scenes
 					Dest = PannoImage.Create(pannoSize.X, pannoSize.Y),
 					Builder = PannoImage.Create,
 				};
-				var generator = new PannoGameLayoutGeneratorGradualDescent();
-				//var generator = new PannoGeneratorDivideAndConquer();
+				//var generator = new PannoGameLayoutGeneratorGradualDescent();
+				var generator = new PannoGameLayoutGeneratorDivideAndConquer();
 
 				ProgressSet(0, "Profile loading...");
 				var games = await loader.GetProfileGames(steamId);

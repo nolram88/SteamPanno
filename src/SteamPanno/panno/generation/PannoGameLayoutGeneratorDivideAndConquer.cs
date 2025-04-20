@@ -6,26 +6,17 @@ namespace SteamPanno.panno.generation
 {
 	public class PannoGameLayoutGeneratorDivideAndConquer : PannoGameLayoutGeneratorTreeBased
 	{
-		private int maxDepth;
-
-		public override async Task<PannoGameLayout[]> Generate(PannoGame[] games, Rect2I area)
+		public override ValueTask<PannoGameLayout[]> Generate(PannoGame[] games, Rect2I area)
 		{
 			games = games.OrderByDescending(x => x.HoursOnRecord).ToArray();
-			maxDepth = 1;
-			var root = await GenerateInner(games, area, 1);
+			var root = GenerateInner(games, area);
+			var layout = Rearrangement(root);
 
-			return root.AllLeaves()
-				.Select(l => new PannoGameLayout() { Game = l.Game, Area = l.Area })
-				.ToArray();
+			return ValueTask.FromResult(layout);
 		}
 
-		private async Task<PannoNode> GenerateInner(PannoGame[] games, Rect2I area, int depth)
+		protected PannoNode GenerateInner(PannoGame[] games, Rect2I area)
 		{
-			if (depth > maxDepth)
-			{
-				maxDepth = depth;
-			}
-
 			if (games.Length == 0)
 			{
 				return null;
@@ -79,8 +70,8 @@ namespace SteamPanno.panno.generation
 				{
 					var areaFirst = GetFirstArea(area);
 					var areaSecond = GetSecondArea(area);
-					var nodeFirst = await GenerateInner(gamesFirst, areaFirst, depth + 1);
-					var nodeSecond = await GenerateInner(gamesSecond, areaSecond, depth + 1);
+					var nodeFirst = GenerateInner(gamesFirst, areaFirst);
+					var nodeSecond = GenerateInner(gamesSecond, areaSecond);
 					return new PannoNodeRoot(nodeFirst, nodeSecond);
 				}
 
@@ -90,6 +81,47 @@ namespace SteamPanno.panno.generation
 					Area = area,
 				};
 			}
+		}
+
+		protected PannoGameLayout[] Rearrangement(PannoNode root)
+		{
+			var layout = root
+				.AllLeaves()
+				.Select(l => new PannoGameLayout() { Game = l.Game, Area = l.Area })
+				.ToArray();
+
+			int minArea = int.MaxValue;
+			for (int i = 0; i < layout.Length; i++)
+			{
+				if (layout[i].Area.Area > minArea)
+				{
+					for (int j = i - 1; j >= 0; j--)
+					{
+						if (layout[j].Area.Area < layout[i].Area.Area)
+						{
+							var iNew = new PannoGameLayout()
+							{
+								Game = layout[j].Game,
+								Area = layout[i].Area,
+							};
+							var jNew = new PannoGameLayout()
+							{
+								Game = layout[i].Game,
+								Area = layout[j].Area,
+							};
+
+							layout[i] = iNew;
+							layout[j] = jNew;
+						}
+					}
+				}
+				else
+				{
+					minArea = layout[i].Area.Area;
+				}
+			}
+
+			return layout;
 		}
 	}
 }
