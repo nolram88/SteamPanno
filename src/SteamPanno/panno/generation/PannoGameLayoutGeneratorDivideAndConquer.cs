@@ -26,8 +26,11 @@ namespace SteamPanno.panno.generation
 				var game = games.First();
 				return new PannoNodeLeaf()
 				{
-					Game = game,
-					Area = area,
+					Layout = new PannoGameLayout()
+					{
+						Game = game,
+						Area = area,
+					},
 				};
 			}
 			else
@@ -77,8 +80,11 @@ namespace SteamPanno.panno.generation
 
 				return new PannoNodeLeaf()
 				{
-					Game = gamesFirst.First(),
-					Area = area,
+					Layout = new PannoGameLayout()
+					{
+						Game = gamesFirst.First(),
+						Area = area,
+					},
 				};
 			}
 		}
@@ -87,7 +93,7 @@ namespace SteamPanno.panno.generation
 		{
 			var layout = root
 				.AllLeaves()
-				.Select(l => new PannoGameLayout() { Game = l.Game, Area = l.Area })
+				.Select(l => l.Layout)
 				.ToArray();
 
 			int minArea = int.MaxValue;

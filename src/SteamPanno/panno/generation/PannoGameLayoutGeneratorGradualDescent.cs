@@ -26,8 +26,9 @@ namespace SteamPanno.panno.generation
 			depthMax = 1;
 
 			var root = GenerateInner(gamesQueue, area, 1);
-			var layout = root.AllLeaves()
-				.Select(l => new PannoGameLayout() { Game = l.Game, Area = l.Area })
+			var layout = root
+				.AllLeaves()
+				.Select(l => l.Layout)
 				.ToArray();
 
 			return ValueTask.FromResult(layout);
@@ -57,8 +58,11 @@ namespace SteamPanno.panno.generation
 
 					return new PannoNodeLeaf()
 					{
-						Game = game,
-						Area = area,
+						Layout = new PannoGameLayout()
+						{
+							Game = game,
+							Area = area,
+						}
 					};
 				}
 

@@ -14,9 +14,8 @@ namespace SteamPanno.panno.generation
 
 		protected class PannoNodeLeaf : PannoNode
 		{
-			public PannoGame Game { get; init; }
-			public Rect2I Area { get; init; }
-
+			public PannoGameLayout Layout { get; init; }
+			
 			public override IEnumerable<PannoNodeLeaf> AllLeaves()
 			{
 				yield return this;
