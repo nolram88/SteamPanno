@@ -34,8 +34,11 @@ namespace SteamPanno.panno
 
 		public static PannoImage Load(byte[] buffer)
 		{
-			var image = new Image();
-			return (image.LoadJpgFromBuffer(buffer) == Error.Ok) ? PannoImage.Create(image) : null;
+			using (var stream = buffer.ToBmpStream())
+			{
+				var image = new Image();
+				return (image.LoadBmpFromBuffer(stream.GetBuffer()) == Error.Ok) ? PannoImage.Create(image) : null;
+			}
 		}
 
 		public static implicit operator Image(PannoImage image)
