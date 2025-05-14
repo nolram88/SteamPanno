@@ -120,19 +120,20 @@ namespace SteamPanno.scenes
 		private Label CreateTextRect(Rect2I area, string text)
 		{
 			var label = new Label();
-			label.Text = text;
-			label.ClipText = true;
 			label.LabelSettings = new LabelSettings()
 			{
-				FontSize = 1 * area.Size.X / 15,
+				Font = ThemeDB.FallbackFont,
+				FontSize = Math.Max(area.Size.X / 15, 1),
 				LineSpacing = 0,
 			};
+			label.Text = text;
+			label.ClipText = true;
 			label.AutowrapMode = TextServer.AutowrapMode.Word;
 			label.HorizontalAlignment = HorizontalAlignment.Center;
 			label.VerticalAlignment = VerticalAlignment.Center;
 			label.Position = area.Position;
 			label.Size = area.Size;
-			
+
 			return label;
 		}
 	}
