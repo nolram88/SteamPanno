@@ -31,7 +31,6 @@ namespace SteamPanno.scenes
 		{
 			subViewport = GetNode<SubViewport>("./SubViewport");
 			textureIn = GetNode<TextureRect>("./SubViewport/TextureIn");
-			textureOut = GetNode<TextureRect>("./TextureOut");
 		}
 
 		public bool Save()
@@ -78,10 +77,25 @@ namespace SteamPanno.scenes
 					break;
 
 				case PannoState.Drawn:
-					textureOut.Texture = subViewport.GetTexture();
+					if (textureOut != null)
+					{
+						RemoveChild(textureOut);
+					}
+
+					textureOut = new TextureRect();
 					textureOut.Position = Vector2.Zero;
-					textureOut.Size = pannoImage.Size;
-					
+					textureOut.Size = GetTree().Root.Size;
+					var texture = subViewport.GetTexture();
+					var textureSize = texture.GetSize();
+					textureOut.Texture = texture;
+					textureOut.ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize;
+					textureOut.StretchMode = textureSize.X <= textureOut.Size.X && textureSize.Y <= textureOut.Size.Y
+						? TextureRect.StretchModeEnum.KeepCentered
+						: TextureRect.StretchModeEnum.KeepAspectCentered;
+					textureOut.SetAnchorsPreset(LayoutPreset.FullRect);
+
+					AddChild(textureOut);
+
 					pannoState = PannoState.Visible;
 					break;
 

@@ -31,7 +31,7 @@ namespace SteamPanno.scenes
 			
 			GetTree().Root.ContentScaleSize = windowResolution;
 			
-			panno = GetNode<Panno>("./GUI/Center/Panno");
+			panno = GetNode<Panno>("./Panno");
 			progressContainer = GetNode<VBoxContainer>("./GUI/Center/Progress");
 			pannoProgressBar = GetNode<ProgressBar>("./GUI/Center/Progress/Bar");
 			pannoProgressLabel = GetNode<Label>("./GUI/Center/Progress/Text");
@@ -109,9 +109,9 @@ namespace SteamPanno.scenes
 
 				var loader = new PannoLoaderCache(new PannoLoaderOnline());
 				var pannoSize = DisplayServer.ScreenGetSize();
-				//var pannoSize = new Vector2I(1600, 400);
+				//var pannoSize = new Vector2I(400, 400);
 				var pannoArea = new Rect2I(0, 0, pannoSize.X, pannoSize.Y);
-				var drawer = new PannoDrawerResizeAndCut()
+				var drawer = new PannoDrawerResizeUnproportional()
 				{
 					Dest = PannoImage.Create(pannoSize.X, pannoSize.Y),
 					Builder = PannoImage.Create,
