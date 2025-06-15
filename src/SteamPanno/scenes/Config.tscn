@@ -1,0 +1,158 @@
+[gd_scene load_steps=2 format=3 uid="uid://cjbg01q6avlwd"]
+
+[ext_resource type="Script" uid="uid://6f2c4uibxicc" path="res://scenes/Config.cs" id="1_ha6ln"]
+
+[node name="Config" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ha6ln")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="HBoxContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+size_flags_vertical = 2
+
+[node name="TitleLbl" type="Label" parent="VBoxContainer/Title"]
+custom_minimum_size = Vector2(400, 60)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 24
+text = "Generation settings"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Content" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+theme_override_constants/separation = 10
+
+[node name="AccountId" type="HBoxContainer" parent="VBoxContainer/Content"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="AccountIdLbl" type="Label" parent="VBoxContainer/Content/AccountId"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Account Id"
+
+[node name="AccountIdValue" type="OptionButton" parent="VBoxContainer/Content/AccountId"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+
+[node name="PannoResolution" type="HBoxContainer" parent="VBoxContainer/Content"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="PannoResolutionLbl" type="Label" parent="VBoxContainer/Content/PannoResolution"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Panno Resolution"
+
+[node name="PannoResolutionValue" type="OptionButton" parent="VBoxContainer/Content/PannoResolution"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+
+[node name="MinimalHours" type="HBoxContainer" parent="VBoxContainer/Content"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="MinimalHoursLbl" type="Label" parent="VBoxContainer/Content/MinimalHours"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Minimal Hours"
+
+[node name="MinimalHoursValue" type="OptionButton" parent="VBoxContainer/Content/MinimalHours"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+
+[node name="GenerationMethod" type="HBoxContainer" parent="VBoxContainer/Content"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="GenerationMethodLbl" type="Label" parent="VBoxContainer/Content/GenerationMethod"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Generation Method"
+
+[node name="GenerationMethodValue" type="OptionButton" parent="VBoxContainer/Content/GenerationMethod"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+
+[node name="TileExpansionMethod" type="HBoxContainer" parent="VBoxContainer/Content"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="TileExpansionMethodLbl" type="Label" parent="VBoxContainer/Content/TileExpansionMethod"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Tile Expansion Method"
+
+[node name="TileExpansionMethodValue" type="OptionButton" parent="VBoxContainer/Content/TileExpansionMethod"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+
+[node name="Bottom" type="HBoxContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+size_flags_vertical = 10
+
+[node name="Back" type="VBoxContainer" parent="VBoxContainer/Bottom"]
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 8
+
+[node name="BackBtn" type="Button" parent="VBoxContainer/Bottom/Back"]
+custom_minimum_size = Vector2(400, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Back"
+
+[node name="Restore" type="VBoxContainer" parent="VBoxContainer/Bottom"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 8
+
+[node name="RestoreBtn" type="Button" parent="VBoxContainer/Bottom/Restore"]
+custom_minimum_size = Vector2(400, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Restore default"
+
+[node name="Apply" type="VBoxContainer" parent="VBoxContainer/Bottom"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 8
+
+[node name="ApplyBtn" type="Button" parent="VBoxContainer/Bottom/Apply"]
+custom_minimum_size = Vector2(400, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Apply"
+
+[connection signal="pressed" from="VBoxContainer/Bottom/Back/BackBtn" to="." method="OnBackBtnPressed"]
+[connection signal="pressed" from="VBoxContainer/Bottom/Restore/RestoreBtn" to="." method="OnRestoreBtnPressed"]
+[connection signal="pressed" from="VBoxContainer/Bottom/Apply/ApplyBtn" to="." method="OnApplyBtnPressed"]

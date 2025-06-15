@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://14571x617fbq"]
+[gd_scene load_steps=9 format=3 uid="uid://14571x617fbq"]
 
 [ext_resource type="Script" uid="uid://dhe4h26dru2cp" path="res://scenes/Main.cs" id="1_4kbnv"]
 [ext_resource type="PackedScene" uid="uid://cipukuj7keyul" path="res://scenes/Panno.tscn" id="2_tmwwy"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://cjel17i5uyr7n" path="res://assets/images/exit.png" id="4_rarhs"]
 [ext_resource type="Texture2D" uid="uid://c8q85s23vg86o" path="res://assets/images/warning.png" id="5_nxtc6"]
 [ext_resource type="Texture2D" uid="uid://cfs2ykxnrlns8" path="res://assets/images/save.png" id="6_nxtc6"]
+[ext_resource type="PackedScene" uid="uid://cjbg01q6avlwd" path="res://scenes/Config.tscn" id="8_jlsqs"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_4kbnv")
@@ -87,3 +88,6 @@ offset_top = -64.0
 grow_horizontal = 0
 grow_vertical = 0
 ImageTexture = ExtResource("5_nxtc6")
+
+[node name="Config" parent="." instance=ExtResource("8_jlsqs")]
+visible = false
