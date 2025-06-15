@@ -13,8 +13,13 @@
 script = ExtResource("1_4kbnv")
 
 [node name="Panno" parent="." instance=ExtResource("2_tmwwy")]
-offset_right = -1920.0
-offset_bottom = -1080.0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+grow_horizontal = 1
+grow_vertical = 1
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="GUI" type="Control" parent="."]
 layout_mode = 3
