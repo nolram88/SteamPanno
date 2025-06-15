@@ -51,7 +51,7 @@ theme_override_font_sizes/font_size = 24
 text = "Account Id"
 
 [node name="AccountIdValue" type="OptionButton" parent="VBoxContainer/Content/AccountId"]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
@@ -66,7 +66,7 @@ theme_override_font_sizes/font_size = 24
 text = "Panno Resolution"
 
 [node name="PannoResolutionValue" type="OptionButton" parent="VBoxContainer/Content/PannoResolution"]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
@@ -81,7 +81,7 @@ theme_override_font_sizes/font_size = 24
 text = "Minimal Hours"
 
 [node name="MinimalHoursValue" type="OptionButton" parent="VBoxContainer/Content/MinimalHours"]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
@@ -96,7 +96,7 @@ theme_override_font_sizes/font_size = 24
 text = "Generation Method"
 
 [node name="GenerationMethodValue" type="OptionButton" parent="VBoxContainer/Content/GenerationMethod"]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
@@ -111,7 +111,7 @@ theme_override_font_sizes/font_size = 24
 text = "Tile Expansion Method"
 
 [node name="TileExpansionMethodValue" type="OptionButton" parent="VBoxContainer/Content/TileExpansionMethod"]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 

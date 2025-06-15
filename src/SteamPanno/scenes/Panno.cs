@@ -1,10 +1,8 @@
 using Godot;
-using SteamPanno.global;
 using SteamPanno.panno;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SteamPanno.scenes
@@ -38,7 +36,7 @@ namespace SteamPanno.scenes
 			if (pannoImage != null)
 			{
 				var dateText = pannoImageDate.ToString("yyyy-MM-dd-HH-mm-ss");
-				var savePath = Path.Combine(Settings.GetDataPath(), $"panno_{dateText}.png");
+				var savePath = Path.Combine(FileExtensions.GetDataPath(), $"panno_{dateText}.png");
 				if (!File.Exists(savePath))
 				{
 					textureOut.Texture.GetImage().SavePng(savePath);

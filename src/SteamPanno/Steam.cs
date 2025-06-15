@@ -4,7 +4,7 @@ using System;
 using Godot;
 using Steamworks;
 
-namespace SteamPanno.global
+namespace SteamPanno
 {
 	public static class Steam
 	{

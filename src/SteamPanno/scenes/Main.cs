@@ -57,7 +57,7 @@ namespace SteamPanno.scenes
 			wirningButton.OnClick = () => GD.Print("wirning");
 			
 			#if STEAM
-			SteamPanno.global.Steam.Init();
+			Steam.Init();
 			#endif
 
 			Task.Run(async () => await LoadPanno());
@@ -66,7 +66,7 @@ namespace SteamPanno.scenes
 		public override void _Process(double delta)
 		{
 			#if STEAM
-			SteamPanno.global.Steam.Update();
+			Steam.Update();
 			#endif
 
 			pannoProgressBar.Value = pannoProgressValueToSet;
@@ -92,7 +92,7 @@ namespace SteamPanno.scenes
 			if (what == NotificationPredelete)
 			{
 				#if STEAM
-				SteamPanno.global.Steam.Shutdown();
+				Steam.Shutdown();
 				#endif
 			}
 			if (what == NotificationWMCloseRequest)
@@ -107,7 +107,7 @@ namespace SteamPanno.scenes
 			try
 			{
 				#if STEAM
-				var steamId = SteamPanno.global.Steam.SteamId;
+				var steamId = Steam.SteamId;
 				#else
 				var steamId = "76561198053918407";
 				#endif

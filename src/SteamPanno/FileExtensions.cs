@@ -1,15 +1,15 @@
 ﻿using System.IO;
 
-namespace SteamPanno.global
+namespace SteamPanno
 {
-	public static class Settings
+	public static class FileExtensions
 	{
 		public static string GetDataPath()
 		{
 			var dataPath = Path.Combine(
 				System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData),
 				nameof(SteamPanno).ToLower());
-			
+
 			return dataPath;
 		}
 
