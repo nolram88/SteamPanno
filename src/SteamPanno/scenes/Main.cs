@@ -55,10 +55,6 @@ namespace SteamPanno.scenes
 			};
 			wirningButton = GetNode<ImageButton>("./GUI/WarningButton");
 			wirningButton.OnClick = () => GD.Print("wirning");
-			
-			#if STEAM
-			Steam.Init();
-			#endif
 
 			Task.Run(async () => await LoadPanno());
 		}

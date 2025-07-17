@@ -55,6 +55,16 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
+[node name="FriendAccountIdValue" type="OptionButton" parent="VBoxContainer/Content/AccountId"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+
+[node name="CustomAccountIdValue" type="TextEdit" parent="VBoxContainer/Content/AccountId"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+
 [node name="PannoResolution" type="HBoxContainer" parent="VBoxContainer/Content"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2

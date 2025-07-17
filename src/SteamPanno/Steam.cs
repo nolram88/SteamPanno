@@ -1,6 +1,7 @@
 #if STEAM
 
 using System;
+using System.Collections.Generic;
 using Godot;
 using Steamworks;
 
@@ -12,18 +13,9 @@ namespace SteamPanno
 
 		static Steam()
 		{
-			SteamClient.RestartAppIfNecessary(appID);
-		}
-
-		public static string SteamId
-		{
-			get => SteamClient.SteamId.ToString();
-		}
-
-		public static void Init()
-		{
 			try
 			{
+				SteamClient.RestartAppIfNecessary(appID);
 				SteamClient.Init(appID, true);
 				GD.Print(SteamClient.Name);
 				GD.Print(SteamClient.SteamId);
@@ -33,10 +25,26 @@ namespace SteamPanno
 				GD.Print(e.Message);
 			}
 		}
-		
+
+		public static string SteamId
+		{
+			get => SteamClient.SteamId.ToString();
+		}
+
 		public static void Update()
 		{
 			SteamClient.RunCallbacks();
+		}
+
+		public static (string id, string name)[] GetFriends()
+		{
+			var friends = new List<(string, string)>();
+			foreach (var friend in SteamFriends.GetFriends())
+			{
+				friends.Add((friend.Id.ToString(), friend.Name));
+			}
+
+			return friends.ToArray();
 		}
 		
 		public static void Shutdown()

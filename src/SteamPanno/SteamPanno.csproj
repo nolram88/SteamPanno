@@ -5,7 +5,7 @@
 	<Platforms>AnyCPU</Platforms>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>$(DefineConstants);NOSTEAM</DefineConstants>
+    <DefineConstants>$(DefineConstants);STEAM</DefineConstants>
   </PropertyGroup>
   <ItemGroup Condition=" '$(STEAM)' == '' and '$(GodotTargetPlatform)' == 'windows' ">
     <Reference Include="Facepunch.Steamworks.Win64">
