@@ -56,11 +56,13 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
 [node name="FriendAccountIdValue" type="OptionButton" parent="VBoxContainer/Content/AccountId"]
+visible = false
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
 [node name="CustomAccountIdValue" type="TextEdit" parent="VBoxContainer/Content/AccountId"]
+visible = false
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
@@ -80,6 +82,12 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
+[node name="CustomPannoResolutionValue" type="TextEdit" parent="VBoxContainer/Content/PannoResolution"]
+visible = false
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+
 [node name="MinimalHours" type="HBoxContainer" parent="VBoxContainer/Content"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
@@ -91,6 +99,12 @@ theme_override_font_sizes/font_size = 24
 text = "Minimal Hours"
 
 [node name="MinimalHoursValue" type="OptionButton" parent="VBoxContainer/Content/MinimalHours"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+
+[node name="CustomMinimalHoursValue" type="TextEdit" parent="VBoxContainer/Content/MinimalHours"]
+visible = false
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
@@ -125,6 +139,10 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
+[node name="ContentBottom" type="HBoxContainer" parent="VBoxContainer/Content"]
+custom_minimum_size = Vector2(910, 0)
+layout_mode = 2
+
 [node name="Bottom" type="HBoxContainer" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
@@ -141,17 +159,6 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Back"
 
-[node name="Restore" type="VBoxContainer" parent="VBoxContainer/Bottom"]
-layout_mode = 2
-size_flags_horizontal = 6
-size_flags_vertical = 8
-
-[node name="RestoreBtn" type="Button" parent="VBoxContainer/Bottom/Restore"]
-custom_minimum_size = Vector2(400, 60)
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "Restore default"
-
 [node name="Apply" type="VBoxContainer" parent="VBoxContainer/Bottom"]
 layout_mode = 2
 size_flags_horizontal = 10
@@ -164,5 +171,4 @@ theme_override_font_sizes/font_size = 24
 text = "Apply"
 
 [connection signal="pressed" from="VBoxContainer/Bottom/Back/BackBtn" to="." method="OnBackBtnPressed"]
-[connection signal="pressed" from="VBoxContainer/Bottom/Restore/RestoreBtn" to="." method="OnRestoreBtnPressed"]
 [connection signal="pressed" from="VBoxContainer/Bottom/Apply/ApplyBtn" to="." method="OnApplyBtnPressed"]

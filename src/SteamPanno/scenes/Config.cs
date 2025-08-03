@@ -25,7 +25,9 @@ namespace SteamPanno.scenes
 		private OptionButton friendAccountIdValue;
 		private TextEdit customAccountIdValue;
 		private OptionButton pannoResolutionValue;
+		private TextEdit customPannoResolutionValue;
 		private OptionButton minimalHoursValue;
+		private TextEdit customMinimalHoursValue;
 		private OptionButton generationMethodValue;
 		private OptionButton tileExpansionMethod;
 
@@ -36,71 +38,77 @@ namespace SteamPanno.scenes
 			settings = Settings.Instance;
 			accountIdValue = GetNode<OptionButton>("./VBoxContainer/Content/AccountId/AccountIdValue");
 			friendAccountIdValue = GetNode<OptionButton>("./VBoxContainer/Content/AccountId/FriendAccountIdValue");
+			friendAccountIdValue.ClipText = true;
 			customAccountIdValue = GetNode<TextEdit>("./VBoxContainer/Content/AccountId/CustomAccountIdValue");
+			friendAccountIdValue.ClipText = true;
 			pannoResolutionValue = GetNode<OptionButton>("./VBoxContainer/Content/PannoResolution/PannoResolutionValue");
+			customPannoResolutionValue = GetNode<TextEdit>("./VBoxContainer/Content/PannoResolution/CustomPannoResolutionValue");
 			minimalHoursValue = GetNode<OptionButton>("./VBoxContainer/Content/MinimalHours/MinimalHoursValue");
+			customMinimalHoursValue = GetNode<TextEdit>("./VBoxContainer/Content/MinimalHours/CustomMinimalHoursValue");
 			generationMethodValue = GetNode<OptionButton>("./VBoxContainer/Content/GenerationMethod/GenerationMethodValue");
 			tileExpansionMethod = GetNode<OptionButton>("./VBoxContainer/Content/TileExpansionMethod/TileExpansionMethodValue");
 			
 			accountIdValue.AddItem("My Account");
 			accountIdValue.AddItem("My Friend's Account");
 			accountIdValue.AddItem("Custom Account");
-			accountIdValue.ItemSelected += (index) =>
-			{
-				friendAccountIdValue.Visible = index == 1;
-				customAccountIdValue.Visible = index == 2;
-			};
+			accountIdValue.ItemSelected += AccountOptionSelected;
+			var accountOptionIndex = Math.Clamp(settings.AccountIdOption, 0, accountIdValue.ItemCount);
 			#if STEAM
-			accountIdValue.Select(Math.Clamp(settings.AccountIdOption, 0, accountIdValue.ItemCount));
+				accountIdValue.Select(accountOptionIndex);
+				AccountOptionSelected(accountOptionIndex);
 			#else
-			accountIdValue.Select(2));
-			accountIdValue.AllowReselect = false;
+				accountIdValue.Select(2));
+				AccountOptionSelected(accountOptionIndex);
+				accountIdValue.AllowReselect = false;
 			#endif
-
 			#if STEAM
-			var friends = Steam.GetFriends();
-			if (friends.Length > 0)
-			{
-				foreach (var friend in friends)
+				var friends = Steam.GetFriends();
+				if (friends.Length > 0)
 				{
-					friendAccountIdValue.AddItem($"{friend.name} ({friend.id})");
-					if (friend.id == settings.FriendAccountId)
+					foreach (var friend in friends)
 					{
-						friendAccountIdValue.Select(friendAccountIdValue.ItemCount - 1);
+						var itemName = $"{friend.name} ({friend.id})";
+						friendAccountIdValue.AddItem(itemName);
+						if (itemName == settings.FriendAccountId)
+						{
+							friendAccountIdValue.Select(friendAccountIdValue.ItemCount - 1);
+						}
 					}
 				}
-			}
 			#endif
-			
 			customAccountIdValue.Text = settings.CustomAccountId;
 
+			var screenResolution = DisplayServer.ScreenGetSize();
+			pannoResolutionValue.AddItem($"Native ({screenResolution.X}x{screenResolution.Y})");
+			pannoResolutionValue.AddItem("Custom");
+			pannoResolutionValue.ItemSelected += ResolutionOptionSelected;
+			var resolutionOptionIndex = settings.UseNativeResolution ? 0 : 1;
+			pannoResolutionValue.Select(resolutionOptionIndex);
+			ResolutionOptionSelected(resolutionOptionIndex);
+			customPannoResolutionValue.Text = settings.CustomResolution;
 
-			pannoResolutionValue = GetNode<OptionButton>("./VBoxContainer/Content/PannoResolution/PannoResolutionValue");
-			pannoResolutionValue.AddItem("Native (1920x1080)");
-			pannoResolutionValue.AddItem("another");
-			pannoResolutionValue.Select(0);
-
-			minimalHoursValue = GetNode<OptionButton>("./VBoxContainer/Content/MinimalHours/MinimalHoursValue");
 			minimalHoursValue.AddItem("1");
 			minimalHoursValue.AddItem("10");
 			minimalHoursValue.AddItem("100");
-			minimalHoursValue.AddItem("another");
-			minimalHoursValue.Select(0);
+			minimalHoursValue.AddItem("Custom");
+			minimalHoursValue.ItemSelected += HoursOptionSelected;
+			var hoursOptionIndex = Math.Clamp(settings.MinimalHoursOption, 0, minimalHoursValue.ItemCount);
+			minimalHoursValue.Select(hoursOptionIndex);
+			HoursOptionSelected(hoursOptionIndex);
+			customMinimalHoursValue.Text = settings.CustomMinimalHours;
 
-			generationMethodValue = GetNode<OptionButton>("./VBoxContainer/Content/GenerationMethod/GenerationMethodValue");
 			foreach (var method in generationMethods)
 			{
 				generationMethodValue.AddItem(method);
 			};
-			var selectedGenerationMethod = Math.Max(Math.Min(Settings.Instance.GenerationMethod, 0), generationMethods.Length - 1);
+			var selectedGenerationMethod = Math.Min(Math.Max(Settings.Instance.GenerationMethodOption, 0), generationMethods.Length - 1);
 			generationMethodValue.Select(selectedGenerationMethod);
 
-			tileExpansionMethod = GetNode<OptionButton>("./VBoxContainer/Content/TileExpansionMethod/TileExpansionMethodValue");
 			foreach (var method in tileExpansionMethods)
 			{
 				tileExpansionMethod.AddItem(method);
 			};
-			var selectedTileExpansionMethod = Math.Max(Math.Min(Settings.Instance.GenerationMethod, 0), generationMethods.Length - 1);
+			var selectedTileExpansionMethod = Math.Min(Math.Max(Settings.Instance.TileExpansionMethodOption, 0), tileExpansionMethods.Length - 1);
 			generationMethodValue.Select(selectedTileExpansionMethod);
 		}
 
@@ -120,25 +128,42 @@ namespace SteamPanno.scenes
 			}
 		}
 
+		private void AccountOptionSelected(long index)
+		{
+			friendAccountIdValue.Visible = index == 1;
+			customAccountIdValue.Visible = index == 2;
+		}
+
+		private void ResolutionOptionSelected(long index)
+		{
+			customPannoResolutionValue.Visible = index == 1;
+		}
+
+		private void HoursOptionSelected(long index)
+		{
+			customMinimalHoursValue.Visible = index == 3;
+		}
+
 		private void OnBackBtnPressed()
 		{
 			OnExit?.Invoke();
 		}
 
-		private void OnRestoreBtnPressed()
-		{
-			
-		}
-
 		private void OnApplyBtnPressed()
 		{
+			var maxTextureSize = RenderingServer.GetRenderingDevice().LimitGet(RenderingDevice.Limit.MaxTextureSize2D);
+
 			Settings.Instance.AccountIdOption = accountIdValue.Selected;
 			Settings.Instance.FriendAccountId = friendAccountIdValue.Text;
 			Settings.Instance.CustomAccountId = customAccountIdValue.Text;
-			Settings.Instance.Resolution = (100, 100);
-			Settings.Instance.MinimalHours = int.TryParse(minimalHoursValue.Text, out var minimalHours) ? minimalHours : 0;
-			Settings.Instance.GenerationMethod = generationMethodValue.Selected;
-			Settings.Instance.TileExpansionMethod = tileExpansionMethod.Selected;
+			Settings.Instance.UseNativeResolution = pannoResolutionValue.Selected == 0;
+			Settings.Instance.CustomResolution = customPannoResolutionValue.Text;
+			Settings.Instance.MinimalHoursOption = minimalHoursValue.Selected;
+			Settings.Instance.CustomMinimalHours = decimal.TryParse(customMinimalHoursValue.Text, out _)
+				? customMinimalHoursValue.Text
+				: "0";
+			Settings.Instance.GenerationMethodOption = generationMethodValue.Selected;
+			Settings.Instance.TileExpansionMethodOption = tileExpansionMethod.Selected;
 			Settings.Save();
 
 			OnExit?.Invoke();

@@ -1,4 +1,4 @@
-<Project Sdk="Godot.NET.Sdk/4.4.1">
+﻿<Project Sdk="Godot.NET.Sdk/4.4.1">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
@@ -18,7 +18,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.8" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
   </ItemGroup>
   <Target Condition=" '$(STEAM)' == '' and '$(GodotTargetPlatform)' == 'windows' " Name="PostBuildWindows" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy /Y &quot;$(GodotProjectDir)addons\steam\windows\steam_api64.dll&quot; &quot;$(GodotProjectDir)&quot;" />

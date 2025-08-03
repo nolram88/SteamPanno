@@ -10,10 +10,12 @@ namespace SteamPanno
 			public int AccountIdOption { get; set; }
 			public string FriendAccountId { get; set; }
 			public string CustomAccountId { get; set; }
-			public (int, int) Resolution { get; set; }
-			public decimal MinimalHours { get; set; }
-			public int GenerationMethod { get; set; }
-			public int TileExpansionMethod { get; set; }
+			public bool UseNativeResolution { get; set; }
+			public string CustomResolution { get; set; }
+			public int MinimalHoursOption { get; set; }
+			public string CustomMinimalHours { get; set; }
+			public int GenerationMethodOption { get; set; }
+			public int TileExpansionMethodOption { get; set; }
 		}
 
 		static Settings()
