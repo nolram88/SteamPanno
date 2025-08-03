@@ -29,6 +29,8 @@ namespace SteamPanno.scenes
 		private OptionButton generationMethodValue;
 		private OptionButton tileExpansionMethod;
 
+		public Action OnExit { get; set; }
+
 		public override void _Ready()
 		{
 			settings = Settings.Instance;
@@ -120,7 +122,7 @@ namespace SteamPanno.scenes
 
 		private void OnBackBtnPressed()
 		{
-			Visible = false;
+			OnExit?.Invoke();
 		}
 
 		private void OnRestoreBtnPressed()
@@ -137,9 +139,9 @@ namespace SteamPanno.scenes
 			Settings.Instance.MinimalHours = int.TryParse(minimalHoursValue.Text, out var minimalHours) ? minimalHours : 0;
 			Settings.Instance.GenerationMethod = generationMethodValue.Selected;
 			Settings.Instance.TileExpansionMethod = tileExpansionMethod.Selected;
-
 			Settings.Save();
-			Visible = false;
+
+			OnExit?.Invoke();
 		}
 	}
 }

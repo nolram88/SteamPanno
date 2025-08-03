@@ -13,7 +13,8 @@ namespace SteamPanno.scenes
 	public partial class Main : Node, IPannoProgress
 	{
 		private Panno panno;
-		private Control config;
+		private Control gui;
+		private Config config;
 		private Control progressContainer;
 		private ProgressBar pannoProgressBar;
 		private Label pannoProgressLabel;
@@ -33,16 +34,15 @@ namespace SteamPanno.scenes
 			GetTree().Root.ContentScaleSize = windowResolution;
 			
 			panno = GetNode<Panno>("./Panno");
-			config = GetNode<Control>("./Config");
+			gui = GetNode<Control>("./GUI");
+			config = GetNode<Config>("./Config");
+			config.OnExit = () => ShowConfig(false);
 			progressContainer = GetNode<VBoxContainer>("./GUI/Center/Progress");
 			pannoProgressBar = GetNode<ProgressBar>("./GUI/Center/Progress/Bar");
 			pannoProgressLabel = GetNode<Label>("./GUI/Center/Progress/Text");
 
 			var configButton = GetNode<ImageButton>("./GUI/ConfigButton");
-			configButton.OnClick = () =>
-			{
-				config.Visible = true;
-			};
+			configButton.OnClick = () => ShowConfig(true);
 			var exitButton = GetNode<ImageButton>("./GUI/ExitButton");
 			exitButton.OnClick = Quit;
 			saveButton = GetNode<ImageButton>("./GUI/SaveButton");
@@ -155,6 +155,13 @@ namespace SteamPanno.scenes
 			{
 				ProgressStop();
 			}
+		}
+
+		protected void ShowConfig(bool show)
+		{
+			panno.Visible = !show;
+			gui.Visible = !show;
+			config.Visible = show;
 		}
 
 		public void ProgressSet(double value, string text = null)

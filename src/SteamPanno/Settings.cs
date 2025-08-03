@@ -26,7 +26,10 @@ namespace SteamPanno
 		public static void Save()
 		{
 			var settingsPath = GetSettingsPath();
-			var json = JsonSerializer.Serialize(Instance);
+			var json = JsonSerializer.Serialize(Instance, options: new JsonSerializerOptions()
+			{
+				WriteIndented = true,
+			});
 			File.WriteAllText(settingsPath, json);
 		}
 
