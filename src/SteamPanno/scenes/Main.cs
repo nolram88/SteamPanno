@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Godot;
 using SteamPanno.panno;
@@ -36,7 +37,14 @@ namespace SteamPanno.scenes
 			panno = GetNode<Panno>("./Panno");
 			gui = GetNode<Control>("./GUI");
 			config = GetNode<Config>("./Config");
-			config.OnExit = () => ShowConfig(false);
+			config.OnExit = (applied) =>
+			{
+				ShowConfig(false);
+				if (applied)
+				{
+					Task.Run(async () => await GeneratePanno());
+				}
+			};
 			progressContainer = GetNode<VBoxContainer>("./GUI/Center/Progress");
 			pannoProgressBar = GetNode<ProgressBar>("./GUI/Center/Progress/Bar");
 			pannoProgressLabel = GetNode<Label>("./GUI/Center/Progress/Text");
@@ -56,7 +64,7 @@ namespace SteamPanno.scenes
 			wirningButton = GetNode<ImageButton>("./GUI/WarningButton");
 			wirningButton.OnClick = () => GD.Print("wirning");
 
-			Task.Run(async () => await LoadPanno());
+			Task.Run(async () => await GeneratePanno());
 		}
 
 		public override void _Process(double delta)
@@ -98,72 +106,6 @@ namespace SteamPanno.scenes
 			}
 		}
 
-		protected async Task LoadPanno()
-		{
-			try
-			{
-				#if STEAM
-				var steamId = Steam.SteamId;
-				#else
-				var steamId = "76561198053918407";
-				#endif
-
-				var loader = new PannoLoaderCache(new PannoLoaderOnline());
-				var pannoSize = DisplayServer.ScreenGetSize();
-				//var pannoSize = new Vector2I(400, 400);
-				var pannoArea = new Rect2I(0, 0, pannoSize.X, pannoSize.Y);
-				var drawer = new PannoDrawerResizeUnproportional()
-				{
-					Dest = PannoImage.Create(pannoSize.X, pannoSize.Y),
-					Builder = PannoImage.Create,
-				};
-				//var generator = new PannoGameLayoutGeneratorGradualDescent();
-				var generator = new PannoGameLayoutGeneratorDivideAndConquer();
-
-				ProgressSet(0, "Profile loading...");
-				var games = await loader.GetProfileGames(steamId);
-
-				ProgressSet(0, "Panno layout generation...");
-				games = games.OrderByDescending(x => x.HoursOnRecord).Where(x => x.HoursOnRecord >= 1).ToArray();
-				/*
-				var big = 10;
-				var medium = 10;
-				var small = 10;
-				var games = new List<PannoGame>();
-				for (int i = 0; i < big; i++)
-				{
-					games.Add(new PannoGame() { Name = "100", HoursOnRecord = 100 });
-				}
-				for (int i = 0; i < medium; i++)
-				{
-					games.Add(new PannoGame() { Name = "50", HoursOnRecord = 50 });
-				}
-				for (int i = 0; i < small; i++)
-				{
-					games.Add(new PannoGame() { Name = "20", HoursOnRecord = 20 });
-				}*/
-				
-				var pannoStructure = await generator.Generate(games.ToArray(), pannoArea);
-
-				await panno.LoadAndDraw(pannoStructure, loader, drawer, this);
-			}
-			catch (Exception e)
-			{
-				GD.Print($"{e.Message}{System.Environment.NewLine}{e.StackTrace}");
-			}
-			finally
-			{
-				ProgressStop();
-			}
-		}
-
-		protected void ShowConfig(bool show)
-		{
-			panno.Visible = !show;
-			gui.Visible = !show;
-			config.Visible = show;
-		}
-
 		public void ProgressSet(double value, string text = null)
 		{
 			pannoProgressValueToSet = value;
@@ -177,6 +119,139 @@ namespace SteamPanno.scenes
 		{
 			pannoProgressTextToSet = null;
 			pannoProgressValueToSet = 0;
+		}
+
+		protected async Task GeneratePanno()
+		{
+			try
+			{
+				var steamId = GetSteamId();
+				if (string.IsNullOrEmpty(steamId))
+				{
+					return;
+				}
+
+				var pannoSize = GetPannoSize();
+				if (pannoSize == Vector2I.Zero)
+				{
+					return;
+				}
+
+				var loader = new PannoLoaderCache(new PannoLoaderOnline());
+				PannoDrawer drawer = Settings.Instance.TileExpansionMethodOption switch
+				{
+					0 => CreateDrawer<PannoDrawerResizeAndCut>(pannoSize),
+					1 => CreateDrawer<PannoDrawerResizeAndExpand>(pannoSize),
+					2 => CreateDrawer<PannoDrawerResizeAndMirror>(pannoSize),
+					3 => CreateDrawer<PannoDrawerResizeProportional>(pannoSize),
+					4 => CreateDrawer<PannoDrawerResizeUnproportional>(pannoSize),
+					_ => CreateDrawer<PannoDrawerResizeAndCut>(pannoSize),
+				};
+				PannoGameLayoutGenerator generator = (Settings.Instance.GenerationMethodOption) switch
+				{
+					0 => new PannoGameLayoutGeneratorDivideAndConquer(),
+					1 => new PannoGameLayoutGeneratorGradualDescent(),
+					_ => new PannoGameLayoutGeneratorDivideAndConquer(),
+				};
+				
+				ProgressSet(0, "Profile loading...");
+				var games = await loader.GetProfileGames(steamId);
+
+				ProgressSet(0, "Panno layout generation...");
+				var minimalHours = GetMinimalHours();
+				games = games
+					.Where(x => x.HoursOnRecord >= minimalHours)
+					.OrderByDescending(x => x.HoursOnRecord)
+					.ToArray();
+				
+				var pannoStructure = await generator.Generate(
+					games.ToArray(),
+					new Rect2I(0, 0, pannoSize.X, pannoSize.Y));
+
+				await panno.LoadAndDraw(pannoStructure, loader, drawer, this);
+			}
+			catch (Exception e)
+			{
+				GD.Print($"{e.Message}{System.Environment.NewLine}{e.StackTrace}");
+			}
+			finally
+			{
+				ProgressStop();
+			}
+		}
+
+		protected string GetSteamId()
+		{
+			#if STEAM
+			return (Settings.Instance.AccountIdOption) switch
+			{
+				1 => ParseSteamId(Settings.Instance.FriendAccountId),
+				2 => ParseSteamId(Settings.Instance.CustomAccountId),
+				_ => Steam.SteamId,
+			};
+			#else
+			return ParseSteamId(Settings.Instance.CustomAccountId);
+			#endif
+		}
+
+		protected string ParseSteamId(string input)
+		{
+			if (string.IsNullOrEmpty(input))
+			{
+				return null;
+			}
+
+			Regex steamIdRegex = new Regex(@"(?:7656119\d{10}|STEAM_[01]:[01]:\d+|\[?[A-Z]:[01]:\d+\]?|U:1:\d+)");
+			var match = steamIdRegex.Match(input);
+			
+			return match.Success ? match.Groups[1].Value : null;
+		}
+
+		protected Vector2I GetPannoSize()
+		{
+			if (Settings.Instance.UseNativeResolution)
+			{
+				return DisplayServer.ScreenGetSize();
+			}
+
+			Regex resRegex = new Regex(@"\b(\d{2,5})\w+(\d{2,5})\b");
+			var match = resRegex.Match(Settings.Instance.CustomResolution);
+			if (match.Success)
+			{
+				var x = int.TryParse(match.Groups[1].Value, out var xv) ? xv : 0;
+				var y = int.TryParse(match.Groups[2].Value, out var yv) ? yv : 0;
+
+				return new Vector2I(x, y);
+			}
+
+			return Vector2I.Zero;
+		}
+
+		protected PannoDrawer CreateDrawer<T>(Vector2I pannoSize) where T : PannoDrawer, new()
+		{
+			return new T()
+			{
+				Dest = PannoImage.Create(pannoSize.X, pannoSize.Y),
+				Builder = PannoImage.Create,
+			};
+		}
+
+		protected float GetMinimalHours()
+		{
+			return (Settings.Instance.MinimalHoursOption) switch
+			{
+				0 => 1,
+				1 => 10,
+				2 => 100,
+				_ => float.TryParse(Settings.Instance.CustomMinimalHours, out var hours) ? hours : 0,
+			};
+		}
+
+		protected void ShowConfig(bool show)
+		{
+			panno.Visible = !show;
+			gui.Visible = !show;
+			config.Visible = show;
 		}
 
 		protected void Quit()

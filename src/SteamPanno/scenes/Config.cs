@@ -20,7 +20,6 @@ namespace SteamPanno.scenes
 			"Resize Unproportional",
 		};
 
-		private Settings.Dto settings;
 		private OptionButton accountIdValue;
 		private OptionButton friendAccountIdValue;
 		private TextEdit customAccountIdValue;
@@ -31,11 +30,10 @@ namespace SteamPanno.scenes
 		private OptionButton generationMethodValue;
 		private OptionButton tileExpansionMethod;
 
-		public Action OnExit { get; set; }
+		public Action<bool> OnExit { get; set; }
 
 		public override void _Ready()
 		{
-			settings = Settings.Instance;
 			accountIdValue = GetNode<OptionButton>("./VBoxContainer/Content/AccountId/AccountIdValue");
 			friendAccountIdValue = GetNode<OptionButton>("./VBoxContainer/Content/AccountId/FriendAccountIdValue");
 			friendAccountIdValue.ClipText = true;
@@ -52,7 +50,7 @@ namespace SteamPanno.scenes
 			accountIdValue.AddItem("My Friend's Account");
 			accountIdValue.AddItem("Custom Account");
 			accountIdValue.ItemSelected += AccountOptionSelected;
-			var accountOptionIndex = Math.Clamp(settings.AccountIdOption, 0, accountIdValue.ItemCount);
+			var accountOptionIndex = Math.Clamp(Settings.Instance.AccountIdOption, 0, accountIdValue.ItemCount);
 			#if STEAM
 				accountIdValue.Select(accountOptionIndex);
 				AccountOptionSelected(accountOptionIndex);
@@ -69,33 +67,33 @@ namespace SteamPanno.scenes
 					{
 						var itemName = $"{friend.name} ({friend.id})";
 						friendAccountIdValue.AddItem(itemName);
-						if (itemName == settings.FriendAccountId)
+						if (itemName == Settings.Instance.FriendAccountId)
 						{
 							friendAccountIdValue.Select(friendAccountIdValue.ItemCount - 1);
 						}
 					}
 				}
 			#endif
-			customAccountIdValue.Text = settings.CustomAccountId;
+			customAccountIdValue.Text = Settings.Instance.CustomAccountId;
 
 			var screenResolution = DisplayServer.ScreenGetSize();
 			pannoResolutionValue.AddItem($"Native ({screenResolution.X}x{screenResolution.Y})");
 			pannoResolutionValue.AddItem("Custom");
 			pannoResolutionValue.ItemSelected += ResolutionOptionSelected;
-			var resolutionOptionIndex = settings.UseNativeResolution ? 0 : 1;
+			var resolutionOptionIndex = Settings.Instance.UseNativeResolution ? 0 : 1;
 			pannoResolutionValue.Select(resolutionOptionIndex);
 			ResolutionOptionSelected(resolutionOptionIndex);
-			customPannoResolutionValue.Text = settings.CustomResolution;
+			customPannoResolutionValue.Text = Settings.Instance.CustomResolution;
 
 			minimalHoursValue.AddItem("1");
 			minimalHoursValue.AddItem("10");
 			minimalHoursValue.AddItem("100");
 			minimalHoursValue.AddItem("Custom");
 			minimalHoursValue.ItemSelected += HoursOptionSelected;
-			var hoursOptionIndex = Math.Clamp(settings.MinimalHoursOption, 0, minimalHoursValue.ItemCount);
+			var hoursOptionIndex = Math.Clamp(Settings.Instance.MinimalHoursOption, 0, minimalHoursValue.ItemCount);
 			minimalHoursValue.Select(hoursOptionIndex);
 			HoursOptionSelected(hoursOptionIndex);
-			customMinimalHoursValue.Text = settings.CustomMinimalHours;
+			customMinimalHoursValue.Text = Settings.Instance.CustomMinimalHours;
 
 			foreach (var method in generationMethods)
 			{
@@ -146,7 +144,7 @@ namespace SteamPanno.scenes
 
 		private void OnBackBtnPressed()
 		{
-			OnExit?.Invoke();
+			OnExit?.Invoke(false);
 		}
 
 		private void OnApplyBtnPressed()
@@ -166,7 +164,7 @@ namespace SteamPanno.scenes
 			Settings.Instance.TileExpansionMethodOption = tileExpansionMethod.Selected;
 			Settings.Save();
 
-			OnExit?.Invoke();
+			OnExit?.Invoke(true);
 		}
 	}
 }
