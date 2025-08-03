@@ -27,7 +27,7 @@ namespace SteamPanno
 
 		public static void Save()
 		{
-			var settingsPath = GetSettingsPath();
+			var settingsPath = FileExtensions.GetSettingsPath();
 			var json = JsonSerializer.Serialize(Instance, options: new JsonSerializerOptions()
 			{
 				WriteIndented = true,
@@ -37,20 +37,12 @@ namespace SteamPanno
 
 		public static void Load()
 		{
-			var settingsPath = GetSettingsPath();
+			var settingsPath = FileExtensions.GetSettingsPath();
 			if (File.Exists(settingsPath))
 			{
 				var json = File.ReadAllText(settingsPath);
 				Instance = JsonSerializer.Deserialize<Dto>(json);
 			}
-		}
-
-		private static string GetSettingsPath()
-		{
-			var dataPath = FileExtensions.GetDataPath();
-			var settingsPath = Path.Combine(dataPath, "settings.json");
-
-			return settingsPath;
 		}
 	}
 }

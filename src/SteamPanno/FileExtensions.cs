@@ -9,10 +9,14 @@ namespace SteamPanno
 			var dataPath = Path.Combine(
 				System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData),
 				nameof(SteamPanno).ToLower());
+			if (!Directory.Exists(dataPath))
+			{
+				Directory.CreateDirectory(dataPath);
+			}
 
 			return dataPath;
 		}
-
+		
 		public static string GetGenerationPath()
 		{
 			var generationPath = Path.Combine(GetDataPath(), "generated");
@@ -33,6 +37,13 @@ namespace SteamPanno
 			}
 
 			return cachePath;
+		}
+		
+		public static string GetSettingsPath()
+		{
+			var settingsPath = Path.Combine(GetDataPath(), "settings.json");
+			
+			return settingsPath;
 		}
 	}
 }

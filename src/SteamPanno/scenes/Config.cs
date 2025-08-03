@@ -55,7 +55,7 @@ namespace SteamPanno.scenes
 				accountIdValue.Select(accountOptionIndex);
 				AccountOptionSelected(accountOptionIndex);
 			#else
-				accountIdValue.Select(2));
+				accountIdValue.Select(2);
 				AccountOptionSelected(accountOptionIndex);
 				accountIdValue.AllowReselect = false;
 			#endif

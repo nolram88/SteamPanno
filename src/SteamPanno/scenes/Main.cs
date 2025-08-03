@@ -192,7 +192,7 @@ namespace SteamPanno.scenes
 			};
 			#else
 			return Settings.Instance.CustomAccountId.TryParseSteamId(out var customSteamId)
-				? customSteamId : null,
+				? customSteamId : null;
 			#endif
 		}
 
