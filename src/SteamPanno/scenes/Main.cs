@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Godot;
 using SteamPanno.panno;
@@ -185,26 +184,16 @@ namespace SteamPanno.scenes
 			#if STEAM
 			return (Settings.Instance.AccountIdOption) switch
 			{
-				1 => ParseSteamId(Settings.Instance.FriendAccountId),
-				2 => ParseSteamId(Settings.Instance.CustomAccountId),
+				1 => Settings.Instance.FriendAccountId.TryParseSteamId(out var friendSteamId)
+					? friendSteamId : null,
+				2 => Settings.Instance.CustomAccountId.TryParseSteamId(out var customSteamId)
+					? customSteamId : null,
 				_ => Steam.SteamId,
 			};
 			#else
-			return ParseSteamId(Settings.Instance.CustomAccountId);
+			return Settings.Instance.CustomAccountId.TryParseSteamId(out var customSteamId)
+				? customSteamId : null,
 			#endif
-		}
-
-		protected string ParseSteamId(string input)
-		{
-			if (string.IsNullOrEmpty(input))
-			{
-				return null;
-			}
-
-			Regex steamIdRegex = new Regex(@"(?:7656119\d{10}|STEAM_[01]:[01]:\d+|\[?[A-Z]:[01]:\d+\]?|U:1:\d+)");
-			var match = steamIdRegex.Match(input);
-			
-			return match.Success ? match.Groups[1].Value : null;
 		}
 
 		protected Vector2I GetPannoSize()
@@ -214,17 +203,9 @@ namespace SteamPanno.scenes
 				return DisplayServer.ScreenGetSize();
 			}
 
-			Regex resRegex = new Regex(@"\b(\d{2,5})\w+(\d{2,5})\b");
-			var match = resRegex.Match(Settings.Instance.CustomResolution);
-			if (match.Success)
-			{
-				var x = int.TryParse(match.Groups[1].Value, out var xv) ? xv : 0;
-				var y = int.TryParse(match.Groups[2].Value, out var yv) ? yv : 0;
-
-				return new Vector2I(x, y);
-			}
-
-			return Vector2I.Zero;
+			return Settings.Instance.CustomResolution.TryParseResolution(out var resolution)
+				? resolution
+				: Vector2I.Zero;
 		}
 
 		protected PannoDrawer CreateDrawer<T>(Vector2I pannoSize) where T : PannoDrawer, new()
