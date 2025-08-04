@@ -131,11 +131,7 @@ namespace SteamPanno.scenes
 				}
 
 				var pannoSize = GetPannoSize();
-				if (pannoSize == Vector2I.Zero)
-				{
-					return;
-				}
-
+				
 				var loader = new PannoLoaderCache(new PannoLoaderOnline());
 				PannoDrawer drawer = Settings.Instance.TileExpansionMethodOption switch
 				{
@@ -198,14 +194,13 @@ namespace SteamPanno.scenes
 
 		protected Vector2I GetPannoSize()
 		{
-			if (Settings.Instance.UseNativeResolution)
+			if (Settings.Instance.UseCustomResolution &&
+				Settings.Instance.CustomResolution.TryParseResolution(out var resolution))
 			{
-				return DisplayServer.ScreenGetSize();
+				return resolution;
 			}
 
-			return Settings.Instance.CustomResolution.TryParseResolution(out var resolution)
-				? resolution
-				: Vector2I.Zero;
+			return DisplayServer.ScreenGetSize();
 		}
 
 		protected PannoDrawer CreateDrawer<T>(Vector2I pannoSize) where T : PannoDrawer, new()

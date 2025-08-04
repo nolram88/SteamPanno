@@ -61,7 +61,7 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
-[node name="CustomAccountIdValue" type="TextEdit" parent="VBoxContainer/Content/AccountId"]
+[node name="CustomAccountIdValue" type="LineEdit" parent="VBoxContainer/Content/AccountId"]
 visible = false
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2

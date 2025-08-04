@@ -10,8 +10,8 @@ namespace SteamPanno
 			public int AccountIdOption { get; set; }
 			public string FriendAccountId { get; set; }
 			public string CustomAccountId { get; set; }
-			public bool UseNativeResolution { get; set; }
 			public string CustomResolution { get; set; }
+			public bool UseCustomResolution { get; set; }
 			public int MinimalHoursOption { get; set; }
 			public string CustomMinimalHours { get; set; }
 			public int GenerationMethodOption { get; set; }

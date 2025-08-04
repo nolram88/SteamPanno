@@ -22,7 +22,7 @@ namespace SteamPanno.scenes
 
 		private OptionButton accountIdValue;
 		private OptionButton friendAccountIdValue;
-		private TextEdit customAccountIdValue;
+		private LineEdit customAccountIdValue;
 		private OptionButton pannoResolutionValue;
 		private TextEdit customPannoResolutionValue;
 		private OptionButton minimalHoursValue;
@@ -37,7 +37,7 @@ namespace SteamPanno.scenes
 			accountIdValue = GetNode<OptionButton>("./VBoxContainer/Content/AccountId/AccountIdValue");
 			friendAccountIdValue = GetNode<OptionButton>("./VBoxContainer/Content/AccountId/FriendAccountIdValue");
 			friendAccountIdValue.ClipText = true;
-			customAccountIdValue = GetNode<TextEdit>("./VBoxContainer/Content/AccountId/CustomAccountIdValue");
+			customAccountIdValue = GetNode<LineEdit>("./VBoxContainer/Content/AccountId/CustomAccountIdValue");
 			friendAccountIdValue.ClipText = true;
 			pannoResolutionValue = GetNode<OptionButton>("./VBoxContainer/Content/PannoResolution/PannoResolutionValue");
 			customPannoResolutionValue = GetNode<TextEdit>("./VBoxContainer/Content/PannoResolution/CustomPannoResolutionValue");
@@ -56,8 +56,8 @@ namespace SteamPanno.scenes
 				AccountOptionSelected(accountOptionIndex);
 			#else
 				accountIdValue.Select(2);
-				AccountOptionSelected(accountOptionIndex);
-				accountIdValue.AllowReselect = false;
+				AccountOptionSelected(2);
+				accountIdValue.Visible = false;
 			#endif
 			#if STEAM
 				var friends = Steam.GetFriends();
@@ -80,7 +80,7 @@ namespace SteamPanno.scenes
 			pannoResolutionValue.AddItem($"Native ({screenResolution.X}x{screenResolution.Y})");
 			pannoResolutionValue.AddItem("Custom");
 			pannoResolutionValue.ItemSelected += ResolutionOptionSelected;
-			var resolutionOptionIndex = Settings.Instance.UseNativeResolution ? 0 : 1;
+			var resolutionOptionIndex = Settings.Instance.UseCustomResolution ? 1 : 0;
 			pannoResolutionValue.Select(resolutionOptionIndex);
 			ResolutionOptionSelected(resolutionOptionIndex);
 			customPannoResolutionValue.Text = Settings.Instance.CustomResolution;
@@ -154,7 +154,7 @@ namespace SteamPanno.scenes
 			Settings.Instance.AccountIdOption = accountIdValue.Selected;
 			Settings.Instance.FriendAccountId = friendAccountIdValue.Text;
 			Settings.Instance.CustomAccountId = customAccountIdValue.Text;
-			Settings.Instance.UseNativeResolution = pannoResolutionValue.Selected == 0;
+			Settings.Instance.UseCustomResolution = pannoResolutionValue.Selected == 1;
 			Settings.Instance.CustomResolution = customPannoResolutionValue.Text;
 			Settings.Instance.MinimalHoursOption = minimalHoursValue.Selected;
 			Settings.Instance.CustomMinimalHours = decimal.TryParse(customMinimalHoursValue.Text, out _)
