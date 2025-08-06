@@ -1,28 +1,34 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Godot;
 using SteamPanno.panno;
 using SteamPanno.panno.drawing;
 using SteamPanno.panno.generation;
 using SteamPanno.panno.loading;
 using SteamPanno.scenes.controls;
+using System;
+using System.Linq;
+using System.Threading.Channels;
+using System.Threading.Tasks;
 
 namespace SteamPanno.scenes
 {
-	public partial class Main : Node, IPannoProgress
+	public partial class Main : Node, ICallBack
 	{
 		private Panno panno;
 		private Control gui;
 		private Config config;
+		private TextEdit report;
 		private Control progressContainer;
 		private ProgressBar pannoProgressBar;
 		private Label pannoProgressLabel;
+		private ImageButton saveButton;
+		private ImageButton warningButton;
+
 		private double pannoProgressValueToSet;
 		private string pannoProgressTextToSet;
-		private ImageButton saveButton;
-		private ImageButton wirningButton;
-
+		private bool saveButtonVisible;
+		private bool warningButtonVisible;
+		private Channel<string> reportBuffer = Channel.CreateUnbounded<string>();
+		
 		public override void _Ready()
 		{
 			var screenResolution = DisplayServer.ScreenGetSize();
@@ -41,8 +47,13 @@ namespace SteamPanno.scenes
 				ShowConfig(false);
 				if (applied)
 				{
-					Task.Run(async () => await GeneratePanno());
+					Task.Run(async () => await GeneratePannoBackThread());
 				}
+			};
+			report = GetNode<TextEdit>("./GUI/Report");
+			report.TextChanged += () =>
+			{
+				warningButton.Visible = report.Text.Length > 0;
 			};
 			progressContainer = GetNode<VBoxContainer>("./GUI/Center/Progress");
 			pannoProgressBar = GetNode<ProgressBar>("./GUI/Center/Progress/Bar");
@@ -60,10 +71,13 @@ namespace SteamPanno.scenes
 					saveButton.Visible = false;
 				}
 			};
-			wirningButton = GetNode<ImageButton>("./GUI/WarningButton");
-			wirningButton.OnClick = () => GD.Print("wirning");
+			warningButton = GetNode<ImageButton>("./GUI/WarningButton");
+			warningButton.OnClick = () =>
+			{
+				report.Visible = !report.Visible;
+			};
 
-			Task.Run(async () => await GeneratePanno());
+			Task.Run(async () => await GeneratePannoBackThread());
 		}
 
 		public override void _Process(double delta)
@@ -75,6 +89,12 @@ namespace SteamPanno.scenes
 			pannoProgressBar.Value = pannoProgressValueToSet;
 			pannoProgressLabel.Text = pannoProgressTextToSet;
 			progressContainer.Visible = pannoProgressTextToSet != null;
+			saveButton.Visible = saveButtonVisible;
+			warningButton.Visible = warningButtonVisible;
+			while (reportBuffer.Reader.TryRead(out var reportText))
+			{
+				report.Text += reportText;
+			}
 		}
 
 		public override void _UnhandledInput(InputEvent @event)
@@ -120,13 +140,30 @@ namespace SteamPanno.scenes
 			pannoProgressValueToSet = 0;
 		}
 
-		protected async Task GeneratePanno()
+		public void Report(Exception e)
+		{
+			var nl = System.Environment.NewLine;
+			reportBuffer.Writer.TryWrite(
+				$"{e.GetType().Name}{nl}{e.Message}{nl}{e.StackTrace}{nl}");
+		}
+
+		public void Report(string text)
+		{
+			reportBuffer.Writer.TryWrite(
+				text + System.Environment.NewLine);
+		}
+
+		protected async Task GeneratePannoBackThread()
 		{
 			try
 			{
+				saveButtonVisible = false;
+				warningButtonVisible = false;
+
 				var steamId = GetSteamId();
 				if (string.IsNullOrEmpty(steamId))
 				{
+					Report("Could not get Steam ID.");
 					return;
 				}
 
@@ -149,7 +186,7 @@ namespace SteamPanno.scenes
 					_ => new PannoGameLayoutGeneratorDivideAndConquer(),
 				};
 				
-				ProgressSet(0, "Profile loading...");
+				this.ProgressSet(0, "Profile loading...");
 				var games = await loader.GetProfileGames(steamId);
 
 				ProgressSet(0, "Panno layout generation...");
@@ -164,10 +201,15 @@ namespace SteamPanno.scenes
 					new Rect2I(0, 0, pannoSize.X, pannoSize.Y));
 
 				await panno.LoadAndDraw(pannoStructure, loader, drawer, this);
+
+				saveButtonVisible = true;
+
+				throw new NotImplementedException();
 			}
 			catch (Exception e)
 			{
-				GD.Print($"{e.Message}{System.Environment.NewLine}{e.StackTrace}");
+				Report(e);
+				warningButtonVisible = true;
 			}
 			finally
 			{

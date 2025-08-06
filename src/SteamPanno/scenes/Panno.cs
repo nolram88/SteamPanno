@@ -102,14 +102,14 @@ namespace SteamPanno.scenes
 			}
 		}
 
-		public async Task LoadAndDraw(PannoGameLayout[] games, PannoLoader loader, PannoDrawer drawer, IPannoProgress progress)
+		public async Task LoadAndDraw(PannoGameLayout[] games, PannoLoader loader, PannoDrawer drawer, ICallBack callBack)
 		{
 			pannoGamesInText = new List<PannoGameLayout>();
 
 			var current = 0;
 			foreach (var game in games)
 			{
-				progress.ProgressSet(((double)current / games.Length) * 100, $"{game.Game.Name} ({current}/{games.Length})");
+				callBack.ProgressSet(((double)current / games.Length) * 100, $"{game.Game.Name} ({current}/{games.Length})");
 
 				var image = game.Area.PreferHorizontal()
 					? await loader.GetGameLogoH(game.Game.Id)
