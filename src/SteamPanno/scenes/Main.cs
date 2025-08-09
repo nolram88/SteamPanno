@@ -203,8 +203,6 @@ namespace SteamPanno.scenes
 				await panno.LoadAndDraw(pannoStructure, loader, drawer, this);
 
 				saveButtonVisible = true;
-
-				throw new NotImplementedException();
 			}
 			catch (Exception e)
 			{
