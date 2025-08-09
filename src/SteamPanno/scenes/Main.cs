@@ -159,6 +159,7 @@ namespace SteamPanno.scenes
 			{
 				saveButtonVisible = false;
 				warningButtonVisible = false;
+				panno.Clear();
 
 				var steamId = GetSteamId();
 				if (string.IsNullOrEmpty(steamId))

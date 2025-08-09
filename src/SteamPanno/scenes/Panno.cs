@@ -15,6 +15,7 @@ namespace SteamPanno.scenes
 			Ready = 1,
 			Drawn = 2,
 			Visible = 3,
+			Dirty = 4,
 		}
 
 		private SubViewport subViewport;
@@ -57,14 +58,6 @@ namespace SteamPanno.scenes
 					textureIn.Size = pannoImage.Size;
 					textureIn.Texture = ImageTexture.CreateFromImage(pannoImage);
 
-					foreach (var pannoControlChild in textureIn.GetChildren())
-					{
-						if (pannoControlChild is RichTextLabel)
-						{
-							textureIn.RemoveChild(pannoControlChild);
-						}
-					}
-
 					foreach (var textGame in pannoGamesInText)
 					{
 						if (textGame.Area.Size.X < 8)
@@ -85,11 +78,6 @@ namespace SteamPanno.scenes
 					break;
 
 				case PannoState.Drawn:
-					if (textureOut != null)
-					{
-						RemoveChild(textureOut);
-					}
-
 					textureOut = new TextureRect();
 					textureOut.Position = Vector2.Zero;
 					textureOut.Size = GetTree().Root.Size;
@@ -107,9 +95,30 @@ namespace SteamPanno.scenes
 					pannoState = PannoState.Visible;
 					break;
 
+				case PannoState.Dirty:
+					if (textureOut != null)
+					{
+						RemoveChild(textureOut);
+						foreach (var pannoControlChild in textureIn.GetChildren())
+						{
+							if (pannoControlChild is RichTextLabel)
+							{
+								textureIn.RemoveChild(pannoControlChild);
+							}
+						}
+					}
+
+					pannoState = PannoState.Empty;
+					break;
+
 				default:
 					break;
 			}
+		}
+
+		public void Clear()
+		{
+			pannoState = PannoState.Dirty;
 		}
 
 		public async Task LoadAndDraw(PannoGameLayout[] games, PannoLoader loader, PannoDrawer drawer, ICallBack callBack)
