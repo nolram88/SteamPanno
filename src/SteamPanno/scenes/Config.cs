@@ -106,9 +106,9 @@ namespace SteamPanno.scenes
 			minimalHoursValue.AddItem("100");
 			minimalHoursValue.AddItem("Custom");
 			minimalHoursValue.ItemSelected += HoursOptionSelected;
-			var hoursOptionIndex = Math.Clamp(Settings.Instance.MinimalHoursOption, 0, minimalHoursValue.ItemCount);
-			minimalHoursValue.Select(hoursOptionIndex);
-			HoursOptionSelected(hoursOptionIndex);
+			var minimalHoursOptionIndex = Math.Clamp(Settings.Instance.MinimalHoursOption, 0, minimalHoursValue.ItemCount);
+			minimalHoursValue.Select(minimalHoursOptionIndex);
+			HoursOptionSelected(minimalHoursOptionIndex);
 			customMinimalHoursValue.Text = Settings.Instance.CustomMinimalHours;
 			showHoursValue.AddItem("Off");
 			showHoursValue.AddItem("Bottom");
@@ -117,6 +117,8 @@ namespace SteamPanno.scenes
 			showHoursValue.AddItem("Top");
 			showHoursValue.AddItem("Top Left");
 			showHoursValue.AddItem("Top Right");
+			var showHoursOptionIndex = Math.Clamp((int)Settings.Instance.ShowHoursOption, 0, showHoursValue.ItemCount - 1);
+			showHoursValue.Select(showHoursOptionIndex);
 		}
 
 		public override void _UnhandledInput(InputEvent @event)
