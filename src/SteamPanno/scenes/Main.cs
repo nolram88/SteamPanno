@@ -89,8 +89,22 @@ namespace SteamPanno.scenes
 			pannoProgressBar.Value = pannoProgressValueToSet;
 			pannoProgressLabel.Text = pannoProgressTextToSet;
 			progressContainer.Visible = pannoProgressTextToSet != null;
-			saveButton.Visible = saveButtonVisible;
-			warningButton.Visible = warningButtonVisible;
+			if (saveButton.Visible != saveButtonVisible)
+			{
+				saveButton.Visible = saveButtonVisible;
+				if (saveButtonVisible)
+				{
+					saveButton.Blink(true);
+				}
+			}
+			if (warningButton.Visible != warningButtonVisible)
+			{
+				warningButton.Visible = warningButtonVisible;
+				if (warningButtonVisible)
+				{
+					warningButton.Blink(true);
+				}
+			}
 			while (reportBuffer.Reader.TryRead(out var reportText))
 			{
 				report.Text += reportText;
