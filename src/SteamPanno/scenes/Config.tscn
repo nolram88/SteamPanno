@@ -88,27 +88,6 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
-[node name="MinimalHours" type="HBoxContainer" parent="VBoxContainer/Content"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-
-[node name="MinimalHoursLbl" type="Label" parent="VBoxContainer/Content/MinimalHours"]
-custom_minimum_size = Vector2(300, 0)
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "Minimal Hours"
-
-[node name="MinimalHoursValue" type="OptionButton" parent="VBoxContainer/Content/MinimalHours"]
-custom_minimum_size = Vector2(300, 0)
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-
-[node name="CustomMinimalHoursValue" type="TextEdit" parent="VBoxContainer/Content/MinimalHours"]
-visible = false
-custom_minimum_size = Vector2(300, 0)
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-
 [node name="GenerationMethod" type="HBoxContainer" parent="VBoxContainer/Content"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
@@ -135,6 +114,42 @@ theme_override_font_sizes/font_size = 24
 text = "Tile Expansion Method"
 
 [node name="TileExpansionMethodValue" type="OptionButton" parent="VBoxContainer/Content/TileExpansionMethod"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+
+[node name="MinimalHours" type="HBoxContainer" parent="VBoxContainer/Content"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="MinimalHoursLbl" type="Label" parent="VBoxContainer/Content/MinimalHours"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Minimal Hours"
+
+[node name="MinimalHoursValue" type="OptionButton" parent="VBoxContainer/Content/MinimalHours"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+
+[node name="CustomMinimalHoursValue" type="TextEdit" parent="VBoxContainer/Content/MinimalHours"]
+visible = false
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+
+[node name="ShowHours" type="HBoxContainer" parent="VBoxContainer/Content"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="ShowHoursLbl" type="Label" parent="VBoxContainer/Content/ShowHours"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Show Hours"
+
+[node name="ShowHoursValue" type="OptionButton" parent="VBoxContainer/Content/ShowHours"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24

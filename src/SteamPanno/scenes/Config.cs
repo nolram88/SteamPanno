@@ -25,10 +25,11 @@ namespace SteamPanno.scenes
 		private LineEdit customAccountIdValue;
 		private OptionButton pannoResolutionValue;
 		private TextEdit customPannoResolutionValue;
-		private OptionButton minimalHoursValue;
-		private TextEdit customMinimalHoursValue;
 		private OptionButton generationMethodValue;
 		private OptionButton tileExpansionMethod;
+		private OptionButton minimalHoursValue;
+		private TextEdit customMinimalHoursValue;
+		private OptionButton showHoursValue;
 
 		public Action<bool> OnExit { get; set; }
 
@@ -41,11 +42,12 @@ namespace SteamPanno.scenes
 			friendAccountIdValue.ClipText = true;
 			pannoResolutionValue = GetNode<OptionButton>("./VBoxContainer/Content/PannoResolution/PannoResolutionValue");
 			customPannoResolutionValue = GetNode<TextEdit>("./VBoxContainer/Content/PannoResolution/CustomPannoResolutionValue");
-			minimalHoursValue = GetNode<OptionButton>("./VBoxContainer/Content/MinimalHours/MinimalHoursValue");
-			customMinimalHoursValue = GetNode<TextEdit>("./VBoxContainer/Content/MinimalHours/CustomMinimalHoursValue");
 			generationMethodValue = GetNode<OptionButton>("./VBoxContainer/Content/GenerationMethod/GenerationMethodValue");
 			tileExpansionMethod = GetNode<OptionButton>("./VBoxContainer/Content/TileExpansionMethod/TileExpansionMethodValue");
-			
+			minimalHoursValue = GetNode<OptionButton>("./VBoxContainer/Content/MinimalHours/MinimalHoursValue");
+			customMinimalHoursValue = GetNode<TextEdit>("./VBoxContainer/Content/MinimalHours/CustomMinimalHoursValue");
+			showHoursValue = GetNode<OptionButton>("./VBoxContainer/Content/ShowHours/ShowHoursValue");
+
 			accountIdValue.AddItem("My Account");
 			accountIdValue.AddItem("My Friend's Account");
 			accountIdValue.AddItem("Custom Account");
@@ -85,16 +87,6 @@ namespace SteamPanno.scenes
 			ResolutionOptionSelected(resolutionOptionIndex);
 			customPannoResolutionValue.Text = Settings.Instance.CustomResolution;
 
-			minimalHoursValue.AddItem("1");
-			minimalHoursValue.AddItem("10");
-			minimalHoursValue.AddItem("100");
-			minimalHoursValue.AddItem("Custom");
-			minimalHoursValue.ItemSelected += HoursOptionSelected;
-			var hoursOptionIndex = Math.Clamp(Settings.Instance.MinimalHoursOption, 0, minimalHoursValue.ItemCount);
-			minimalHoursValue.Select(hoursOptionIndex);
-			HoursOptionSelected(hoursOptionIndex);
-			customMinimalHoursValue.Text = Settings.Instance.CustomMinimalHours;
-
 			foreach (var method in generationMethods)
 			{
 				generationMethodValue.AddItem(method);
@@ -108,6 +100,23 @@ namespace SteamPanno.scenes
 			};
 			var selectedTileExpansionMethod = Math.Min(Math.Max(Settings.Instance.TileExpansionMethodOption, 0), tileExpansionMethods.Length - 1);
 			generationMethodValue.Select(selectedTileExpansionMethod);
+
+			minimalHoursValue.AddItem("1");
+			minimalHoursValue.AddItem("10");
+			minimalHoursValue.AddItem("100");
+			minimalHoursValue.AddItem("Custom");
+			minimalHoursValue.ItemSelected += HoursOptionSelected;
+			var hoursOptionIndex = Math.Clamp(Settings.Instance.MinimalHoursOption, 0, minimalHoursValue.ItemCount);
+			minimalHoursValue.Select(hoursOptionIndex);
+			HoursOptionSelected(hoursOptionIndex);
+			customMinimalHoursValue.Text = Settings.Instance.CustomMinimalHours;
+			showHoursValue.AddItem("Off");
+			showHoursValue.AddItem("Bottom");
+			showHoursValue.AddItem("Bottom Left");
+			showHoursValue.AddItem("Bottom Right");
+			showHoursValue.AddItem("Top");
+			showHoursValue.AddItem("Top Left");
+			showHoursValue.AddItem("Top Right");
 		}
 
 		public override void _UnhandledInput(InputEvent @event)
@@ -156,12 +165,13 @@ namespace SteamPanno.scenes
 			Settings.Instance.CustomAccountId = customAccountIdValue.Text;
 			Settings.Instance.UseCustomResolution = pannoResolutionValue.Selected == 1;
 			Settings.Instance.CustomResolution = customPannoResolutionValue.Text;
+			Settings.Instance.GenerationMethodOption = generationMethodValue.Selected;
+			Settings.Instance.TileExpansionMethodOption = tileExpansionMethod.Selected;
 			Settings.Instance.MinimalHoursOption = minimalHoursValue.Selected;
 			Settings.Instance.CustomMinimalHours = decimal.TryParse(customMinimalHoursValue.Text, out _)
 				? customMinimalHoursValue.Text
 				: "0";
-			Settings.Instance.GenerationMethodOption = generationMethodValue.Selected;
-			Settings.Instance.TileExpansionMethodOption = tileExpansionMethod.Selected;
+			Settings.Instance.ShowHoursOption = (Settings.Dto.ShowHoursOptions)showHoursValue.Selected;
 			Settings.Save();
 
 			OnExit?.Invoke(true);

@@ -7,6 +7,17 @@ namespace SteamPanno
 	{
 		public class Dto
 		{
+			public enum ShowHoursOptions
+			{
+				OFF = 0,
+				BOTTOM = 1,
+				BOTTOM_LEFT = 2,
+				BOTTOM_RIGHT = 3,
+				TOP = 4,
+				TOP_LEFT = 5,
+				TOP_RIGHT = 6,
+			}
+
 			public int AccountIdOption { get; set; }
 			public string FriendAccountId { get; set; }
 			public string CustomAccountId { get; set; }
@@ -16,6 +27,7 @@ namespace SteamPanno
 			public string CustomMinimalHours { get; set; }
 			public int GenerationMethodOption { get; set; }
 			public int TileExpansionMethodOption { get; set; }
+			public ShowHoursOptions ShowHoursOption { get; set; }
 		}
 
 		static Settings()

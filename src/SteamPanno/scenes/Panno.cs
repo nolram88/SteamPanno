@@ -59,7 +59,7 @@ namespace SteamPanno.scenes
 
 					foreach (var pannoControlChild in textureIn.GetChildren())
 					{
-						if (pannoControlChild is Label)
+						if (pannoControlChild is RichTextLabel)
 						{
 							textureIn.RemoveChild(pannoControlChild);
 						}
@@ -67,8 +67,18 @@ namespace SteamPanno.scenes
 
 					foreach (var textGame in pannoGamesInText)
 					{
-						var label = CreateTextRect(textGame.Area, textGame.Game.Name);
-						textureIn.AddChild(label);
+						if (textGame.Area.Size.X < 8)
+						{
+							continue;
+						}
+
+						var titleLabel = CreateTitleLabel(textGame.Area, textGame.Game.Name);
+						textureIn.AddChild(titleLabel);
+						if (Settings.Instance.ShowHoursOption != 0)
+						{
+							var hoursLabel = CreateHoursLabel(textGame.Area, textGame.Game.HoursOnRecord);
+							textureIn.AddChild(hoursLabel);
+						}
 					}
 
 					pannoState = PannoState.Drawn;
@@ -129,20 +139,48 @@ namespace SteamPanno.scenes
 			pannoState = PannoState.Ready;
 		}
 
-		private Label CreateTextRect(Rect2I area, string text)
+		private RichTextLabel CreateTitleLabel(Rect2I area, string text)
 		{
-			var label = new Label();
-			label.LabelSettings = new LabelSettings()
-			{
-				Font = ThemeDB.FallbackFont,
-				FontSize = Math.Max(area.Size.X / 15, 1),
-				LineSpacing = 0,
-			};
+			var label = new RichTextLabel();
+			label.AddThemeFontOverride("normal_font", ThemeDB.FallbackFont);
+			label.AddThemeFontSizeOverride("normal_font_size", Math.Max(area.Size.X / 15, 1));
+			label.AddThemeConstantOverride("line_separation", 0);
 			label.Text = text;
-			label.ClipText = true;
+			label.ClipContents = true;
 			label.AutowrapMode = TextServer.AutowrapMode.Word;
 			label.HorizontalAlignment = HorizontalAlignment.Center;
 			label.VerticalAlignment = VerticalAlignment.Center;
+			label.Position = area.Position;
+			label.Size = area.Size;
+
+			return label;
+		}
+
+		private RichTextLabel CreateHoursLabel(Rect2I area, float hours)
+		{
+			var label = new RichTextLabel();
+			label.AddThemeFontOverride("normal_font", ThemeDB.FallbackFont);
+			label.AddThemeFontSizeOverride("normal_font_size", Math.Max(area.Size.X / 25, 1));
+			label.AddThemeConstantOverride("line_separation", 0);
+			label.AddThemeConstantOverride("text_highlight_h_padding", 4);
+			label.AddThemeConstantOverride("text_highlight_v_padding", 0);
+			label.AutowrapMode = TextServer.AutowrapMode.Word;
+			label.HorizontalAlignment = Settings.Instance.ShowHoursOption switch
+			{
+				Settings.Dto.ShowHoursOptions.BOTTOM_LEFT => HorizontalAlignment.Left,
+				Settings.Dto.ShowHoursOptions.BOTTOM_RIGHT => HorizontalAlignment.Right,
+				Settings.Dto.ShowHoursOptions.TOP_LEFT => HorizontalAlignment.Left,
+				Settings.Dto.ShowHoursOptions.TOP_RIGHT => HorizontalAlignment.Right,
+				_ => HorizontalAlignment.Center,
+			};
+			label.VerticalAlignment = Settings.Instance.ShowHoursOption switch
+			{
+				Settings.Dto.ShowHoursOptions.TOP => VerticalAlignment.Top,
+				Settings.Dto.ShowHoursOptions.TOP_LEFT => VerticalAlignment.Top,
+				Settings.Dto.ShowHoursOptions.TOP_RIGHT => VerticalAlignment.Top,
+				_ => VerticalAlignment.Bottom,
+			};
+			label.ParseBbcode($"[bgcolor=#000000ff]{Math.Round(hours)} h[/bgcolor]");
 			label.Position = area.Position;
 			label.Size = area.Size;
 
