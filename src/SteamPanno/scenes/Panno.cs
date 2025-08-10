@@ -99,6 +99,7 @@ namespace SteamPanno.scenes
 					if (textureOut != null)
 					{
 						RemoveChild(textureOut);
+						textureIn.Texture = null;
 						foreach (var pannoControlChild in textureIn.GetChildren())
 						{
 							if (pannoControlChild is RichTextLabel)
