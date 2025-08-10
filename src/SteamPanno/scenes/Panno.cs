@@ -89,6 +89,7 @@ namespace SteamPanno.scenes
 					if (textureOut != null)
 					{
 						RemoveChild(textureOut);
+						textureOut = null;
 						textureIn.Texture = null;
 						foreach (var pannoControlChild in textureIn.GetChildren())
 						{
