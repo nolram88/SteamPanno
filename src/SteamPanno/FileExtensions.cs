@@ -39,7 +39,18 @@ namespace SteamPanno
 
 			return cachePath;
 		}
-		
+
+		public static string GetProfilesPath()
+		{
+			var cachePath = Path.Combine(GetDataPath(), "profiles");
+			if (!Directory.Exists(cachePath))
+			{
+				Directory.CreateDirectory(cachePath);
+			}
+
+			return cachePath;
+		}
+
 		public static string GetSettingsPath()
 		{
 			var settingsPath = Path.Combine(GetDataPath(), "settings.json");

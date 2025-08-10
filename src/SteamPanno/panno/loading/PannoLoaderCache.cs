@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SteamPanno.panno.loading
@@ -6,25 +8,33 @@ namespace SteamPanno.panno.loading
 	public class PannoLoaderCache : PannoLoader
 	{
 		private readonly PannoLoader innerLoader;
-		private readonly string cachePath;
+		private readonly string logoPath;
+		private readonly string profilesPath;
 
 		public PannoLoaderCache(PannoLoader innerLoader)
 		{
 			this.innerLoader = innerLoader;
-			cachePath = FileExtensions.GetCachePath();
+			logoPath = FileExtensions.GetCachePath();
+			profilesPath = FileExtensions.GetProfilesPath();
 		}
 
 		public override async Task<PannoGame[]> GetProfileGames(string steamId)
 		{
-			return await innerLoader.GetProfileGames(steamId);
+			if (!TryGetProfileFromCache(steamId, out var profile))
+			{
+				profile = await innerLoader.GetProfileGames(steamId);
+				SaveProfileToCache(steamId, profile);
+			}
+
+			return profile;
 		}
 
 		public override async Task<PannoImage> GetGameLogoV(int appId)
 		{
-			if (!TryGetFromCache(appId, "v", out var image))
+			if (!TryGetLogoFromCache(appId, "v", out var image))
 			{
 				image = await innerLoader.GetGameLogoV(appId);
-				TrySaveToCache(appId, "v", image);
+				SaveLogoToCache(appId, "v", image);
 			}
 
 			return image;
@@ -32,19 +42,18 @@ namespace SteamPanno.panno.loading
 
 		public override async Task<PannoImage> GetGameLogoH(int appId)
 		{
-			if (!TryGetFromCache(appId, "h", out var image))
+			if (!TryGetLogoFromCache(appId, "h", out var image))
 			{
 				image = await innerLoader.GetGameLogoH(appId);
-				TrySaveToCache(appId, "h", image);
+				SaveLogoToCache(appId, "h", image);
 			}
 
 			return image;
 		}
 
-		private bool TryGetFromCache(int appId, string name, out PannoImage image)
+		private bool TryGetLogoFromCache(int appId, string name, out PannoImage image)
 		{
-			image = null;
-			var fileName = GetFileName(appId, name);
+			var fileName = GetLogoFileName(appId, name);
 			if (File.Exists(fileName))
 			{
 				var imageFromCache = PannoImage.Load(fileName);
@@ -55,23 +64,54 @@ namespace SteamPanno.panno.loading
 				}
 			}
 
+			image = null;
 			return false;
 		}
 
-		private void TrySaveToCache(int appId, string name, PannoImage image)
+		private void SaveLogoToCache(int appId, string name, PannoImage image)
 		{
 			if (image == null) return;
 
-			var fileName = GetFileName(appId, name);
+			var fileName = GetLogoFileName(appId, name);
 			if (!File.Exists(fileName))
 			{
 				image.SaveJpg(fileName);
 			}
 		}
 
-		private string GetFileName(int appId, string name)
+		private string GetLogoFileName(int appId, string name)
 		{
-			return Path.Combine(cachePath, $"{appId}{name}.jpg");
+			return Path.Combine(logoPath, $"{appId}{name}.jpg");
+		}
+
+		private bool TryGetProfileFromCache(string steamId, out PannoGame[] profile)
+		{
+			var fileName = GetProfileFileName(steamId);
+			if (File.Exists(fileName))
+			{
+				var json = File.ReadAllText(fileName);
+				profile = JsonSerializer.Deserialize<PannoGame[]>(json);
+				return true;
+			}
+
+			profile = null;
+			return false;
+		}
+
+		private void SaveProfileToCache(string steamId, PannoGame[] profile)
+		{
+			var fileName = GetProfileFileName(steamId);
+			if (!File.Exists(fileName))
+			{
+				var json = JsonSerializer.Serialize(profile);
+				File.WriteAllText(fileName, json);
+			}
+		}
+
+		private string GetProfileFileName(string steamId)
+		{
+			var dateText = DateTime.Today.ToString("yyyy-MM-dd");
+			return Path.Combine(profilesPath, $"{steamId}_{dateText}.json");
 		}
 	}
 }
