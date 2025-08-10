@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace SteamPanno
 {
@@ -7,7 +8,7 @@ namespace SteamPanno
 		public static string GetDataPath()
 		{
 			var dataPath = Path.Combine(
-				System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData),
+				Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
 				nameof(SteamPanno).ToLower());
 			if (!Directory.Exists(dataPath))
 			{
@@ -19,7 +20,7 @@ namespace SteamPanno
 		
 		public static string GetGenerationPath()
 		{
-			var generationPath = Path.Combine(GetDataPath(), "generated");
+			var generationPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 			if (!Directory.Exists(generationPath))
 			{
 				Directory.CreateDirectory(generationPath);

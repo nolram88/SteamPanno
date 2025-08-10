@@ -2,7 +2,6 @@ using Godot;
 using SteamPanno.panno;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace SteamPanno.scenes
@@ -22,7 +21,6 @@ namespace SteamPanno.scenes
 		private TextureRect textureIn;
 		private TextureRect textureOut;
 		private PannoImage pannoImage;
-		private DateTime pannoImageDate;
 		private PannoState pannoState;
 		private List<PannoGameLayout> pannoGamesInText;
 
@@ -32,20 +30,12 @@ namespace SteamPanno.scenes
 			textureIn = GetNode<TextureRect>("./SubViewport/TextureIn");
 		}
 
-		public bool Save()
+		public void Save(string filename)
 		{
 			if (pannoImage != null)
 			{
-				var dateText = pannoImageDate.ToString("yyyy-MM-dd-HH-mm-ss");
-				var savePath = Path.Combine(FileExtensions.GetDataPath(), $"panno_{dateText}.png");
-				if (!File.Exists(savePath))
-				{
-					textureOut.Texture.GetImage().SavePng(savePath);
-					return true;
-				}
+				textureOut.Texture.GetImage().SavePng(filename);
 			}
-
-			return false;
 		}
 
 		public override void _Process(double delta)
@@ -145,7 +135,6 @@ namespace SteamPanno.scenes
 			}
 
 			pannoImage = drawer.Dest;
-			pannoImageDate = DateTime.Now;
 			pannoState = PannoState.Ready;
 		}
 

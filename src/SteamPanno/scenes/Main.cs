@@ -5,6 +5,7 @@ using SteamPanno.panno.generation;
 using SteamPanno.panno.loading;
 using SteamPanno.scenes.controls;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -64,13 +65,7 @@ namespace SteamPanno.scenes
 			var exitButton = GetNode<ImageButton>("./GUI/ExitButton");
 			exitButton.OnClick = Quit;
 			saveButton = GetNode<ImageButton>("./GUI/SaveButton");
-			saveButton.OnClick = () =>
-			{
-				if (panno.Save())
-				{
-					saveButton.Visible = false;
-				}
-			};
+			saveButton.OnClick = SavePannoToFile;
 			warningButton = GetNode<ImageButton>("./GUI/WarningButton");
 			warningButton.OnClick = () =>
 			{
@@ -227,6 +222,30 @@ namespace SteamPanno.scenes
 			finally
 			{
 				ProgressStop();
+			}
+		}
+
+		protected void SavePannoToFile()
+		{
+			try
+			{
+				var dateText = DateTime.Today.ToString("yyyy-MM-dd");
+				var savePath = Path.Combine(FileExtensions.GetGenerationPath(), $"panno_{GetSteamId()}_{dateText}.png");
+				if (File.Exists(savePath))
+				{
+					File.Delete(savePath);
+				}
+
+				panno.Save(savePath);
+			}
+			catch (Exception e)
+			{
+				Report(e);
+				warningButtonVisible = true;
+			}
+			finally
+			{
+				saveButtonVisible = false;
 			}
 		}
 
