@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Godot;
 
@@ -69,7 +70,7 @@ namespace SteamPanno.panno.generation
 					gamesSecond = new PannoGame[] { games.Last() };
 				}
 
-				if ((area.PreferHorizontal() ? area.Size.X : area.Size.Y) >= 8)
+				if ((area.PreferHorizontal() ? area.Size.X : area.Size.Y) >= Settings.Instance.MinimalGameAreaSize * 2)
 				{
 					var areaFirst = GetFirstArea(area);
 					var areaSecond = GetSecondArea(area);

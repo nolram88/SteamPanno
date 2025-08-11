@@ -68,6 +68,5 @@ namespace SteamPanno.panno.generation
 				return Mathf.Max(first.Depth(), second?.Depth() ?? 0) + 1;
 			}
 		}
-
 	}
 }

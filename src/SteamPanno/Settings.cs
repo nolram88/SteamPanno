@@ -28,6 +28,9 @@ namespace SteamPanno
 			public int GenerationMethodOption { get; set; }
 			public int TileExpansionMethodOption { get; set; }
 			public ShowHoursOptions ShowHoursOption { get; set; }
+
+			// hidden settings
+			public int MinimalGameAreaSize { get; set; } = 8;
 		}
 
 		static Settings()

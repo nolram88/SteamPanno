@@ -50,7 +50,7 @@ namespace SteamPanno.scenes
 
 					foreach (var textGame in pannoGamesInText)
 					{
-						if (textGame.Area.Size.X < 8)
+						if (textGame.Area.Size.X < Settings.Instance.MinimalGameAreaSize)
 						{
 							continue;
 						}

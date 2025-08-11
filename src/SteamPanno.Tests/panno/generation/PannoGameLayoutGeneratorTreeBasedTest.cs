@@ -54,8 +54,8 @@ namespace SteamPanno.panno.generation
 		}
 
 		[Theory]
-		[InlineData(11, 10)]
-		[InlineData(10, 11)]
+		[InlineData(101, 100)]
+		[InlineData(100, 101)]
 		public async Task ShouldSplitAreaCorretlyForOddSize(int width, int height)
 		{
 			var game1 = new PannoGame() { HoursOnRecord = 10 };
@@ -67,8 +67,8 @@ namespace SteamPanno.panno.generation
 			var layout = await pannoGenerator.Generate(games, area);
 
 			layout.Count().ShouldBe(games.Length);
-			layout.First().Area.ShouldBe(horizontal ? new Rect2I(0, 0, 6, 10) : new Rect2I(0, 0, 10, 6));
-			layout.Last().Area.ShouldBe(horizontal ? new Rect2I(6, 0, 5, 10) : new Rect2I(0, 6, 10, 5));
+			layout.First().Area.ShouldBe(horizontal ? new Rect2I(0, 0, 51, 100) : new Rect2I(0, 0, 100, 51));
+			layout.Last().Area.ShouldBe(horizontal ? new Rect2I(51, 0, 50, 100) : new Rect2I(0, 51, 100, 50));
 		}
 
 		[Theory]
@@ -231,16 +231,49 @@ namespace SteamPanno.panno.generation
 		{
 			var game1 = new PannoGame() { HoursOnRecord = 1000 };
 			var game2 = new PannoGame() { HoursOnRecord = 500 };
-			var game3 = new PannoGame() { HoursOnRecord = 300 };
-			var game4 = new PannoGame() { HoursOnRecord = 200 };
-			var games = new PannoGame[] { game1, game2, game3, game4 };
-			var area = new Rect2I(0, 0, 8, 8);
+			var games = new PannoGame[] { game1, game2 };
+			var minSize = Settings.Instance.MinimalGameAreaSize;
 
+			var area = new Rect2I(0, 0, minSize, minSize);
 			var layout = await pannoGenerator.Generate(games, area);
 
-			layout.Count().ShouldBe(3);
+			layout.Count().ShouldBe(1);
 			layout.Select(x => x.Area.Area).ToArray()
-				.ShouldBeEquivalentTo(new int[] { 4 * 8, 4 * 4, 4 * 4 });
+				.ShouldBeEquivalentTo(new int[] { minSize * minSize });
+		}
+
+		[Fact]
+		public async Task ShouldStopSplittingWhenAreaIsTooSmall2()
+		{
+			var game1 = new PannoGame() { HoursOnRecord = 1000 };
+			var game2 = new PannoGame() { HoursOnRecord = 500 };
+			var games = new PannoGame[] { game1, game2 };
+			var minSize = Settings.Instance.MinimalGameAreaSize;
+			var size = minSize * 2 - 1;
+
+			var area = new Rect2I(0, 0, size, size);
+			var layout = await pannoGenerator.Generate(games, area);
+
+			layout.Count().ShouldBe(1);
+			layout.Select(x => x.Area.Area).ToArray()
+				.ShouldBeEquivalentTo(new int[] { size * size });
+		}
+
+		[Fact]
+		public async Task ShouldStopSplittingWhenAreaIsTooSmall3()
+		{
+			var game1 = new PannoGame() { HoursOnRecord = 1000 };
+			var game2 = new PannoGame() { HoursOnRecord = 500 };
+			var game3 = new PannoGame() { HoursOnRecord = 300 };
+			var games = new PannoGame[] { game1, game2, game3 };
+			var minSize = Settings.Instance.MinimalGameAreaSize;
+
+			var area = new Rect2I(0, 0, minSize * 2, minSize);
+			var layout = await pannoGenerator.Generate(games, area);
+
+			layout.Count().ShouldBe(2);
+			layout.Select(x => x.Area.Area).ToArray()
+				.ShouldBeEquivalentTo(new int[] { minSize * minSize, minSize * minSize });
 		}
 
 		[Fact]
