@@ -24,6 +24,7 @@ namespace SteamPanno.scenes
 		private ImageButton saveButton;
 		private ImageButton warningButton;
 
+		private string pannoSteamId;
 		private double pannoProgressValueToSet;
 		private string pannoProgressTextToSet;
 		private bool saveButtonVisible;
@@ -52,10 +53,6 @@ namespace SteamPanno.scenes
 				}
 			};
 			report = GetNode<TextEdit>("./GUI/Report");
-			report.TextChanged += () =>
-			{
-				warningButton.Visible = report.Text.Length > 0;
-			};
 			progressContainer = GetNode<VBoxContainer>("./GUI/Center/Progress");
 			pannoProgressBar = GetNode<ProgressBar>("./GUI/Center/Progress/Bar");
 			pannoProgressLabel = GetNode<Label>("./GUI/Center/Progress/Text");
@@ -152,26 +149,28 @@ namespace SteamPanno.scenes
 		public void Report(Exception e)
 		{
 			var nl = System.Environment.NewLine;
-			reportBuffer.Writer.TryWrite(
-				$"{e.GetType().Name}{nl}{e.Message}{nl}{e.StackTrace}{nl}");
+			Report($"{e.GetType().Name}{nl}{e.Message}{nl}{e.StackTrace}");
 		}
 
 		public void Report(string text)
 		{
+			var nl = System.Environment.NewLine;
 			reportBuffer.Writer.TryWrite(
-				text + System.Environment.NewLine);
+				$"{DateTime.Now.ToString()}: {text}{nl}");
+			warningButtonVisible = true;
 		}
 
 		protected async Task GeneratePannoBackThread()
 		{
 			try
 			{
+				pannoSteamId = null;
 				saveButtonVisible = false;
 				warningButtonVisible = false;
 				panno.Clear();
 
-				var steamId = GetSteamId();
-				if (string.IsNullOrEmpty(steamId))
+				pannoSteamId = GetSteamId();
+				if (string.IsNullOrEmpty(pannoSteamId))
 				{
 					Report("Could not get Steam ID.");
 					return;
@@ -197,15 +196,19 @@ namespace SteamPanno.scenes
 				};
 				
 				this.ProgressSet(0, "Profile loading...");
-				var games = await loader.GetProfileGames(steamId);
-
-				ProgressSet(0, "Panno layout generation...");
+				var games = await loader.GetProfileGames(pannoSteamId);
 				var minimalHours = GetMinimalHours();
 				games = games
 					.Where(x => x.HoursOnRecord >= minimalHours)
 					.OrderByDescending(x => x.HoursOnRecord)
 					.ToArray();
-				
+				if (games.Length == 0)
+				{
+					Report("No games meet the given criteria.");
+					return;
+				}
+
+				ProgressSet(0, "Panno layout generation...");
 				var pannoStructure = await generator.Generate(
 					games.ToArray(),
 					new Rect2I(0, 0, pannoSize.X, pannoSize.Y));
@@ -217,7 +220,6 @@ namespace SteamPanno.scenes
 			catch (Exception e)
 			{
 				Report(e);
-				warningButtonVisible = true;
 			}
 			finally
 			{
@@ -230,7 +232,7 @@ namespace SteamPanno.scenes
 			try
 			{
 				var dateText = DateTime.Today.ToString("yyyy-MM-dd");
-				var savePath = Path.Combine(FileExtensions.GetGenerationPath(), $"panno_{GetSteamId()}_{dateText}.png");
+				var savePath = Path.Combine(FileExtensions.GetGenerationPath(), $"panno_{pannoSteamId}_{dateText}.png");
 				if (File.Exists(savePath))
 				{
 					File.Delete(savePath);
@@ -241,7 +243,6 @@ namespace SteamPanno.scenes
 			catch (Exception e)
 			{
 				Report(e);
-				warningButtonVisible = true;
 			}
 			finally
 			{
