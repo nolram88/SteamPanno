@@ -45,10 +45,15 @@ namespace SteamPanno.panno.generation
 				var areaAreaNext = areaArea / 2;
 				var areaHours = (float)areaArea / totalArea * totalHours;
 
-				if ((games.Count == 1 ||
-					areaHours <= game.HoursOnRecord + deltaHours ||
-					games.Count * areaArea / 2 < totalArea - fixedArea ||
-					(area.PreferHorizontal() ? area.Size.X : area.Size.Y) < 8)
+				var lastGame = games.Count == 1;
+				var areaIsNotBiggerThanItSupposedToBe = areaHours <= game.HoursOnRecord + deltaHours && areaHours < totalHours - fixedHours;
+				var freeAreaIsEnoughToPlaceAllRemainGamesOneLevelDeeper = games.Count * (areaArea / 2) < totalArea - fixedArea;
+				var areaIsTooSmallToSplit = (area.PreferHorizontal() ? area.Size.X : area.Size.Y) < 8;
+
+				if ((lastGame ||
+					areaIsNotBiggerThanItSupposedToBe ||
+					freeAreaIsEnoughToPlaceAllRemainGamesOneLevelDeeper ||
+					areaIsTooSmallToSplit)
 						&& depth == depthMax)
 				{
 					games.Dequeue();

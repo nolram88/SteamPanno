@@ -178,6 +178,39 @@ namespace SteamPanno.panno.generation
 		}
 
 		[Theory]
+		[InlineData(100, 200)]
+		[InlineData(200, 100)]
+		public async Task ShouldSplitForZeroGameHours(int width, int height)
+		{
+			var games = new int[] { 0, 0, 0, 0 }
+				.Select(x => new PannoGame() { HoursOnRecord = x })
+				.ToArray();
+			var area = new Rect2I(0, 0, width, height);
+
+			var layout = await pannoGenerator.Generate(games, area);
+
+			layout.Count().ShouldBe(games.Length);
+			layout.Any(x => x.Area.Size.X * x.Area.Size.Y != 100 * 50).ShouldBeFalse();
+		}
+
+		[Theory]
+		[InlineData(100, 200)]
+		[InlineData(200, 100)]
+		public async Task ShouldSplitForZeroGameHours2(int width, int height)
+		{
+			var games = new int[] { 1, 0, 0, 0 }
+				.Select(x => new PannoGame() { HoursOnRecord = x })
+				.ToArray();
+			var area = new Rect2I(0, 0, width, height);
+
+			var layout = await pannoGenerator.Generate(games, area);
+
+			layout.Count().ShouldBe(games.Length);
+			layout.Select(x => x.Area.Size.X * x.Area.Size.Y).ToArray()
+				.ShouldBeEquivalentTo(new int[] { 100 * 100, 100 * 50, 50 * 50, 50 * 50 });
+		}
+
+		[Theory]
 		[InlineData(100, 10, true)]
 		[InlineData(10, 100, false)]
 		public async Task ShouldRepeatSameSplittingDependingOnArea(
