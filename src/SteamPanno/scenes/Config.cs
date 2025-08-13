@@ -21,13 +21,19 @@ namespace SteamPanno.scenes
 		};
 
 		private OptionButton accountIdValue;
+		private Control friendAccountId;
 		private OptionButton friendAccountIdValue;
+		private Control customAccountId;
 		private LineEdit customAccountIdValue;
+		private Control accountDiffDate;
+		private OptionButton accountDiffDateValue;
 		private OptionButton pannoResolutionValue;
+		private Control customPannoResolution;
 		private TextEdit customPannoResolutionValue;
 		private OptionButton generationMethodValue;
 		private OptionButton tileExpansionMethod;
 		private OptionButton minimalHoursValue;
+		private Control customMinimalHours;
 		private TextEdit customMinimalHoursValue;
 		private OptionButton showHoursValue;
 
@@ -36,16 +42,22 @@ namespace SteamPanno.scenes
 		public override void _Ready()
 		{
 			accountIdValue = GetNode<OptionButton>("./VBoxContainer/Content/AccountId/AccountIdValue");
-			friendAccountIdValue = GetNode<OptionButton>("./VBoxContainer/Content/AccountId/FriendAccountIdValue");
+			friendAccountId = GetNode<Control>("./VBoxContainer/Content/FriendAccountId");
+			friendAccountIdValue = GetNode<OptionButton>("./VBoxContainer/Content/FriendAccountId/FriendAccountIdValue");
 			friendAccountIdValue.ClipText = true;
-			customAccountIdValue = GetNode<LineEdit>("./VBoxContainer/Content/AccountId/CustomAccountIdValue");
-			friendAccountIdValue.ClipText = true;
+			customAccountId = GetNode<Control>("./VBoxContainer/Content/CustomAccountId");
+			customAccountIdValue = GetNode<LineEdit>("./VBoxContainer/Content/CustomAccountId/CustomAccountIdValue");
+			customAccountIdValue.ClipContents = true;
+			accountDiffDate = GetNode<Control>("./VBoxContainer/Content/AccountDiffDate");
+			accountDiffDateValue = GetNode<OptionButton>("./VBoxContainer/Content/AccountDiffDate/AccountDiffDateValue");
 			pannoResolutionValue = GetNode<OptionButton>("./VBoxContainer/Content/PannoResolution/PannoResolutionValue");
-			customPannoResolutionValue = GetNode<TextEdit>("./VBoxContainer/Content/PannoResolution/CustomPannoResolutionValue");
+			customPannoResolution = GetNode<Control>("./VBoxContainer/Content/CustomPannoResolution");
+			customPannoResolutionValue = GetNode<TextEdit>("./VBoxContainer/Content/CustomPannoResolution/CustomPannoResolutionValue");
 			generationMethodValue = GetNode<OptionButton>("./VBoxContainer/Content/GenerationMethod/GenerationMethodValue");
 			tileExpansionMethod = GetNode<OptionButton>("./VBoxContainer/Content/TileExpansionMethod/TileExpansionMethodValue");
 			minimalHoursValue = GetNode<OptionButton>("./VBoxContainer/Content/MinimalHours/MinimalHoursValue");
-			customMinimalHoursValue = GetNode<TextEdit>("./VBoxContainer/Content/MinimalHours/CustomMinimalHoursValue");
+			customMinimalHours = GetNode<Control>("./VBoxContainer/Content/CustomMinimalHours");
+			customMinimalHoursValue = GetNode<TextEdit>("./VBoxContainer/Content/CustomMinimalHours/CustomMinimalHoursValue");
 			showHoursValue = GetNode<OptionButton>("./VBoxContainer/Content/ShowHours/ShowHoursValue");
 
 			accountIdValue.AddItem("My Account");
@@ -139,18 +151,18 @@ namespace SteamPanno.scenes
 
 		private void AccountOptionSelected(long index)
 		{
-			friendAccountIdValue.Visible = index == 1;
-			customAccountIdValue.Visible = index == 2;
+			friendAccountId.Visible = index == 1;
+			customAccountId.Visible = index == 2;
 		}
 
 		private void ResolutionOptionSelected(long index)
 		{
-			customPannoResolutionValue.Visible = index == 1;
+			customPannoResolution.Visible = index == 1;
 		}
 
 		private void HoursOptionSelected(long index)
 		{
-			customMinimalHoursValue.Visible = index == 3;
+			customMinimalHours.Visible = index == 3;
 		}
 
 		private void OnBackBtnPressed()

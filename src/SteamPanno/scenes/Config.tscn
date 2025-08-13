@@ -55,14 +55,45 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
-[node name="FriendAccountIdValue" type="OptionButton" parent="VBoxContainer/Content/AccountId"]
-visible = false
+[node name="FriendAccountId" type="HBoxContainer" parent="VBoxContainer/Content"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="FriendAccountIdLbl" type="Label" parent="VBoxContainer/Content/FriendAccountId"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
-[node name="CustomAccountIdValue" type="LineEdit" parent="VBoxContainer/Content/AccountId"]
-visible = false
+[node name="FriendAccountIdValue" type="OptionButton" parent="VBoxContainer/Content/FriendAccountId"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+
+[node name="CustomAccountId" type="HBoxContainer" parent="VBoxContainer/Content"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="CustomAccountIdLbl" type="Label" parent="VBoxContainer/Content/CustomAccountId"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+
+[node name="CustomAccountIdValue" type="LineEdit" parent="VBoxContainer/Content/CustomAccountId"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+
+[node name="AccountDiffDate" type="HBoxContainer" parent="VBoxContainer/Content"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="AccountDiffDateLbl" type="Label" parent="VBoxContainer/Content/AccountDiffDate"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Make difference with"
+
+[node name="AccountDiffDateValue" type="OptionButton" parent="VBoxContainer/Content/AccountDiffDate"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
@@ -82,8 +113,16 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
-[node name="CustomPannoResolutionValue" type="TextEdit" parent="VBoxContainer/Content/PannoResolution"]
-visible = false
+[node name="CustomPannoResolution" type="HBoxContainer" parent="VBoxContainer/Content"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="CustomPannoResolutionLbl" type="Label" parent="VBoxContainer/Content/CustomPannoResolution"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+
+[node name="CustomPannoResolutionValue" type="TextEdit" parent="VBoxContainer/Content/CustomPannoResolution"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
@@ -133,8 +172,16 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
-[node name="CustomMinimalHoursValue" type="TextEdit" parent="VBoxContainer/Content/MinimalHours"]
-visible = false
+[node name="CustomMinimalHours" type="HBoxContainer" parent="VBoxContainer/Content"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="CustomMinimalHoursLbl" type="Label" parent="VBoxContainer/Content/CustomMinimalHours"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+
+[node name="CustomMinimalHoursValue" type="TextEdit" parent="VBoxContainer/Content/CustomMinimalHours"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
@@ -153,10 +200,6 @@ text = "Show Hours"
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-
-[node name="ContentBottom" type="HBoxContainer" parent="VBoxContainer/Content"]
-custom_minimum_size = Vector2(910, 0)
-layout_mode = 2
 
 [node name="Bottom" type="HBoxContainer" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 200)
