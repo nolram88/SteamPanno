@@ -30,5 +30,19 @@ namespace SteamPanno
 			value.X.ShouldBe(x);
 			value.Y.ShouldBe(y);
 		}
+
+		[Theory]
+		[InlineData(null, false)]
+		[InlineData("", false)]
+		[InlineData("76561190123456789_2025-01-01.json", true, "76561190123456789", "2025-01-01")]
+		public void ShouldParseProfileSnapshotFileName(
+			string input, bool success, string steamId = null, string date = null)
+		{
+			var result = input.TryParseProfileSnapshotFileName(
+				out var steamIdParsed, out var dateParsed);
+			result.ShouldBe(success);
+			steamIdParsed.ShouldBe(steamId);
+			dateParsed.ShouldBe(date);
+		}
 	}
 }

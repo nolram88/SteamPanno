@@ -42,5 +42,18 @@ namespace SteamPanno
 			resolution = Vector2I.Zero;
 			return false;
 		}
+
+		public static bool TryParseProfileSnapshotFileName(
+			this string input,
+			out string steamId,
+			out string date)
+		{
+			Match match = Regex.Match(input ?? "", @"^(?<id>\d+)_(?<date>\d{4}-\d{2}-\d{2})\.json$");
+
+			steamId = match.Success ? match.Groups["id"].Value : null;
+			date = match.Success ? match.Groups["date"].Value : null;
+
+			return match.Success;
+		}
 	}
 }

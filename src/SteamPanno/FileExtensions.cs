@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace SteamPanno
 {
@@ -49,6 +51,40 @@ namespace SteamPanno
 			}
 
 			return cachePath;
+		}
+
+		public static Dictionary<string, Dictionary<string, string>> GetProfileSnapshots()
+		{
+			var result = new Dictionary<string, Dictionary<string, string>>();
+			var files = Directory
+				.GetFiles(GetProfilesPath(), "*.json")
+				.Select(x => Path.GetFileName(x))
+				.ToArray();
+
+			foreach (var file in files)
+			{
+				if (file.TryParseProfileSnapshotFileName(out var steamId, out var date))
+				{
+					if (DateTime.Parse(date) >= DateTime.Today)
+					{
+						continue;
+					}
+
+					if (result.TryGetValue(steamId, out var profileSnapshots))
+					{
+						profileSnapshots.Add(date, file);
+					}
+					else
+					{
+						result[steamId] = new Dictionary<string, string>()
+						{
+							{ date, file }
+						};
+					}
+				}
+			}
+
+			return result;
 		}
 
 		public static string GetSettingsPath()

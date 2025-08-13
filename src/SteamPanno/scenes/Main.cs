@@ -169,7 +169,7 @@ namespace SteamPanno.scenes
 				warningButtonVisible = false;
 				panno.Clear();
 
-				pannoSteamId = GetSteamId();
+				pannoSteamId = Settings.GetSteamId();
 				if (string.IsNullOrEmpty(pannoSteamId))
 				{
 					Report("Could not get Steam ID.");
@@ -248,23 +248,6 @@ namespace SteamPanno.scenes
 			{
 				saveButtonVisible = false;
 			}
-		}
-
-		protected string GetSteamId()
-		{
-			#if STEAM
-			return (Settings.Instance.AccountIdOption) switch
-			{
-				1 => Settings.Instance.FriendAccountId.TryParseSteamId(out var friendSteamId)
-					? friendSteamId : null,
-				2 => Settings.Instance.CustomAccountId.TryParseSteamId(out var customSteamId)
-					? customSteamId : null,
-				_ => Steam.SteamId,
-			};
-			#else
-			return Settings.Instance.CustomAccountId.TryParseSteamId(out var customSteamId)
-				? customSteamId : null;
-			#endif
 		}
 
 		protected Vector2I GetPannoSize()

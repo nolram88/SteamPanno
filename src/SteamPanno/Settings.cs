@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Text.Json;
 
 namespace SteamPanno
@@ -21,6 +22,7 @@ namespace SteamPanno
 			public int AccountIdOption { get; set; }
 			public string FriendAccountId { get; set; }
 			public string CustomAccountId { get; set; }
+			public Dictionary<string, string> AccountsDiffFiles { get; set; }
 			public string CustomResolution { get; set; }
 			public bool UseCustomResolution { get; set; }
 			public int MinimalHoursOption { get; set; }
@@ -58,6 +60,23 @@ namespace SteamPanno
 				var json = File.ReadAllText(settingsPath);
 				Instance = JsonSerializer.Deserialize<Dto>(json);
 			}
+		}
+
+		public static string GetSteamId()
+		{
+			#if STEAM
+			return (Settings.Instance.AccountIdOption) switch
+			{
+				1 => Settings.Instance.FriendAccountId.TryParseSteamId(out var friendSteamId)
+					? friendSteamId : null,
+				2 => Settings.Instance.CustomAccountId.TryParseSteamId(out var customSteamId)
+					? customSteamId : null,
+				_ => Steam.SteamId,
+			};
+			#else
+			return Settings.Instance.CustomAccountId.TryParseSteamId(out var customSteamId)
+				? customSteamId : null;
+			#endif
 		}
 	}
 }
