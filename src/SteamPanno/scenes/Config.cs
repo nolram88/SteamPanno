@@ -72,18 +72,6 @@ namespace SteamPanno.scenes
 			customMinimalHoursValue = GetNode<TextEdit>("./VBoxContainer/Content/CustomMinimalHours/CustomMinimalHoursValue");
 			showHoursValue = GetNode<OptionButton>("./VBoxContainer/Content/ShowHours/ShowHoursValue");
 
-			accountIdValue.AddItem("My Account");
-			accountIdValue.AddItem("My Friend's Account");
-			accountIdValue.AddItem("Custom Account");
-			var accountOptionIndex = Math.Clamp(Settings.Instance.AccountIdOption, 0, accountIdValue.ItemCount);
-			#if STEAM
-				accountIdValue.Select(accountOptionIndex);
-				AccountOptionSelected(accountOptionIndex);
-			#else
-				accountIdValue.Select(2);
-				AccountOptionSelected(2);
-				accountIdValue.Visible = false;
-			#endif
 			#if STEAM
 				var friends = Steam.GetFriends();
 				if (friends.Length > 0)
@@ -95,12 +83,23 @@ namespace SteamPanno.scenes
 						if (friend.id == Settings.Instance.FriendAccountId)
 						{
 							friendAccountIdValue.Select(friendAccountIdValue.ItemCount - 1);
-							FriendOptionSelected(friendAccountIdValue.ItemCount - 1);
 						}
 					}
 				}
 			#endif
 			customAccountIdValue.Text = Settings.Instance.CustomAccountId;
+			accountIdValue.AddItem("My Account");
+			accountIdValue.AddItem("My Friend's Account");
+			accountIdValue.AddItem("Custom Account");
+			var accountOptionIndex = Math.Clamp(Settings.Instance.AccountIdOption, 0, accountIdValue.ItemCount);
+			#if STEAM
+				accountIdValue.Select(accountOptionIndex);
+				AccountOptionSelected(accountOptionIndex);
+			#else
+				accountIdValue.Select(2);
+				AccountOptionSelected(2);
+				accountIdValue.Disabled = true;
+			#endif
 
 			var screenResolution = DisplayServer.ScreenGetSize();
 			pannoResolutionValue.AddItem($"Native ({screenResolution.X}x{screenResolution.Y})");
@@ -163,14 +162,19 @@ namespace SteamPanno.scenes
 
 		private string GetSteamId()
 		{
-			return (accountIdValue.Selected) switch
-			{
-				1 => friendAccountIdValue.Text.TryParseSteamId(out var friendSteamId)
-					? friendSteamId : null,
-				2 => customAccountIdValue.Text.TryParseSteamId(out var customSteamId)
-					? customSteamId : null,
-				_ => Steam.SteamId,
-			};
+			#if STEAM
+				return (accountIdValue.Selected) switch
+				{
+					1 => friendAccountIdValue.Text.TryParseSteamId(out var friendSteamId)
+						? friendSteamId : null,
+					2 => customAccountIdValue.Text.TryParseSteamId(out var customSteamId)
+						? customSteamId : null,
+					_ => Steam.SteamId,
+				};
+			#else
+				return customAccountIdValue.Text.TryParseSteamId(out var customSteamId)
+					? customSteamId : null;
+			#endif
 		}
 
 		private void AccountOptionSelected(long index)
