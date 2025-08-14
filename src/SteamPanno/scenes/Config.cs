@@ -234,11 +234,18 @@ namespace SteamPanno.scenes
 
 		private void DiffDateOptionSelected(long index)
 		{
-			var selectedDate = diffSnapshotValue.GetItemText(diffSnapshotValue.Selected);
-			if (profileSnapshots.TryGetValue(steamId, out var snapshots) &&
-				snapshots.TryGetValue(selectedDate, out var fileName))
+			if (index == 0)
 			{
-				selectedDiffSnapshots[steamId] = fileName;
+				selectedDiffSnapshots[steamId] = null;
+			}
+			else
+			{
+				var selectedDate = diffSnapshotValue.GetItemText(diffSnapshotValue.Selected);
+				if (profileSnapshots.TryGetValue(steamId, out var snapshots) &&
+					snapshots.TryGetValue(selectedDate, out var fileName))
+				{
+					selectedDiffSnapshots[steamId] = fileName;
+				}
 			}
 		}
 
@@ -275,7 +282,14 @@ namespace SteamPanno.scenes
 				}
 				foreach (var selectedDiffSnapshot in selectedDiffSnapshots)
 				{
-					Settings.Instance.SelectedDiffSnapshots[selectedDiffSnapshot.Key] = selectedDiffSnapshot.Value;
+					if (selectedDiffSnapshot.Value != null)
+					{
+						Settings.Instance.SelectedDiffSnapshots[selectedDiffSnapshot.Key] = selectedDiffSnapshot.Value;
+					}
+					else if (Settings.Instance.SelectedDiffSnapshots.ContainsKey(selectedDiffSnapshot.Key))
+					{
+						Settings.Instance.SelectedDiffSnapshots.Remove(selectedDiffSnapshot.Key);
+					}
 				}
 			}
 			Settings.Instance.UseCustomResolution = pannoResolutionValue.Selected == 1;
