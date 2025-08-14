@@ -92,7 +92,7 @@ namespace SteamPanno.scenes
 					{
 						var itemName = $"{friend.name} ({friend.id})";
 						friendAccountIdValue.AddItem(itemName);
-						if (itemName == Settings.Instance.FriendAccountId)
+						if (friend.id == Settings.Instance.FriendAccountId)
 						{
 							friendAccountIdValue.Select(friendAccountIdValue.ItemCount - 1);
 							FriendOptionSelected(friendAccountIdValue.ItemCount - 1);
@@ -258,7 +258,10 @@ namespace SteamPanno.scenes
 			var maxTextureSize = RenderingServer.GetRenderingDevice().LimitGet(RenderingDevice.Limit.MaxTextureSize2D);
 
 			Settings.Instance.AccountIdOption = accountIdValue.Selected;
-			Settings.Instance.FriendAccountId = friendAccountIdValue.Text;
+			if (friendAccountIdValue.Text.TryParseSteamId(out var friendSteamId))
+			{
+				Settings.Instance.FriendAccountId = friendSteamId;
+			}
 			Settings.Instance.CustomAccountId = customAccountIdValue.Text;
 			if (selectedDiffSnapshots.Count > 0)
 			{
