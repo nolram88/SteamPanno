@@ -7,6 +7,7 @@ using SteamPanno.scenes.controls;
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 
@@ -197,6 +198,32 @@ namespace SteamPanno.scenes
 				
 				this.ProgressSet(0, "Profile loading...");
 				var games = await loader.GetProfileGames(pannoSteamId);
+				if (Settings.Instance.SelectedDiffSnapshots.TryGetValue(pannoSteamId, out var snapshot))
+				{
+					var snapshotData = FileExtensions.GetProfileSnapshot(snapshot);
+					if (snapshotData != null)
+					{
+						var gamesBefore = JsonSerializer.Deserialize<PannoGame[]>(snapshotData);
+						for (int i = 0; i < games.Length; i++)
+						{
+							var game = games[i];
+							var gameBefore = gamesBefore
+								.Where(x => x.Id == game.Id)
+								.SingleOrDefault();
+
+							if (gameBefore != null)
+							{
+								games[i] = new PannoGame()
+								{
+									Id = game.Id,
+									Name = game.Name,
+									HoursOnRecord = game.HoursOnRecord - gameBefore.HoursOnRecord,
+								};
+							}
+						}
+					}
+				}
+
 				var minimalHours = GetMinimalHours();
 				games = games
 					.Where(x => x.HoursOnRecord >= minimalHours)

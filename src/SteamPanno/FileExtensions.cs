@@ -87,6 +87,18 @@ namespace SteamPanno
 			return result;
 		}
 
+		public static string GetProfileSnapshot(string snapshot)
+		{
+			var snapshotPath = Path.Combine(GetProfilesPath(), snapshot);
+
+			if (File.Exists(snapshotPath))
+			{
+				return File.ReadAllText(snapshotPath);
+			}
+
+			return null;
+		}
+
 		public static string GetSettingsPath()
 		{
 			var settingsPath = Path.Combine(GetDataPath(), "settings.json");
