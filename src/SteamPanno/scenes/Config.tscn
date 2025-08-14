@@ -83,17 +83,17 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
-[node name="AccountDiffDate" type="HBoxContainer" parent="VBoxContainer/Content"]
+[node name="DiffSnapshot" type="HBoxContainer" parent="VBoxContainer/Content"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 
-[node name="AccountDiffDateLbl" type="Label" parent="VBoxContainer/Content/AccountDiffDate"]
+[node name="DiffSnapshotLbl" type="Label" parent="VBoxContainer/Content/DiffSnapshot"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Comparison snapshot"
 
-[node name="AccountDiffDateValue" type="OptionButton" parent="VBoxContainer/Content/AccountDiffDate"]
+[node name="DiffSnapshotValue" type="OptionButton" parent="VBoxContainer/Content/DiffSnapshot"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24

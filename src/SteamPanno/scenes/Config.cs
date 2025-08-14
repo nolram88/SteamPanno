@@ -23,15 +23,15 @@ namespace SteamPanno.scenes
 
 		private Dictionary<string, Dictionary<string, string>> profileSnapshots;
 		private string steamId;
-		private Dictionary<string, string> snapshotSelection;
+		private Dictionary<string, string> selectedDiffSnapshots;
 
 		private OptionButton accountIdValue;
 		private Control friendAccountId;
 		private OptionButton friendAccountIdValue;
 		private Control customAccountId;
 		private LineEdit customAccountIdValue;
-		private Control accountDiffDate;
-		private OptionButton accountDiffDateValue;
+		private Control diffSnapshot;
+		private OptionButton diffSnapshotValue;
 		private OptionButton pannoResolutionValue;
 		private Control customPannoResolution;
 		private TextEdit customPannoResolutionValue;
@@ -47,7 +47,7 @@ namespace SteamPanno.scenes
 		public override void _Ready()
 		{
 			profileSnapshots = FileExtensions.GetProfileSnapshots();
-			snapshotSelection = new Dictionary<string, string>();
+			selectedDiffSnapshots = new Dictionary<string, string>();
 
 			accountIdValue = GetNode<OptionButton>("./VBoxContainer/Content/AccountId/AccountIdValue");
 			accountIdValue.ItemSelected += AccountOptionSelected;
@@ -59,9 +59,9 @@ namespace SteamPanno.scenes
 			customAccountIdValue = GetNode<LineEdit>("./VBoxContainer/Content/CustomAccountId/CustomAccountIdValue");
 			customAccountIdValue.ClipContents = true;
 			customAccountIdValue.TextChanged += CustomAccountOptionChanged;
-			accountDiffDate = GetNode<Control>("./VBoxContainer/Content/AccountDiffDate");
-			accountDiffDateValue = GetNode<OptionButton>("./VBoxContainer/Content/AccountDiffDate/AccountDiffDateValue");
-			accountDiffDateValue.ItemSelected += DiffDateOptionSelected;
+			diffSnapshot = GetNode<Control>("./VBoxContainer/Content/DiffSnapshot");
+			diffSnapshotValue = GetNode<OptionButton>("./VBoxContainer/Content/DiffSnapshot/DiffSnapshotValue");
+			diffSnapshotValue.ItemSelected += DiffDateOptionSelected;
 			pannoResolutionValue = GetNode<OptionButton>("./VBoxContainer/Content/PannoResolution/PannoResolutionValue");
 			customPannoResolution = GetNode<Control>("./VBoxContainer/Content/CustomPannoResolution");
 			customPannoResolutionValue = GetNode<TextEdit>("./VBoxContainer/Content/CustomPannoResolution/CustomPannoResolutionValue");
@@ -163,7 +163,7 @@ namespace SteamPanno.scenes
 
 		private string GetSteamId()
 		{
-			return (accountDiffDateValue.Selected) switch
+			return (accountIdValue.Selected) switch
 			{
 				1 => friendAccountIdValue.Text.TryParseSteamId(out var friendSteamId)
 					? friendSteamId : null,
@@ -194,37 +194,47 @@ namespace SteamPanno.scenes
 		private void CustomAccountOptionChanged(string newText)
 		{
 			steamId = GetSteamId();
-			if (steamId != null)
-			{
-				UpdateAvailableSnapshots();
-			}
+			UpdateAvailableSnapshots();
 		}
 
 		private void UpdateAvailableSnapshots()
 		{
-			accountDiffDateValue.Clear();
-			if (profileSnapshots.TryGetValue(steamId, out var snapshots))
+			diffSnapshotValue.Clear();
+
+			if (!string.IsNullOrEmpty(steamId) &&
+				profileSnapshots.TryGetValue(steamId, out var snapshots))
 			{
-				accountDiffDateValue.AddItem("Off");
+				string selectedSnapshot = null;
+				if (!selectedDiffSnapshots.TryGetValue(steamId, out selectedSnapshot) &&
+					Settings.Instance.SelectedDiffSnapshots != null)
+				{
+					Settings.Instance.SelectedDiffSnapshots.TryGetValue(steamId, out selectedSnapshot);
+				}
+
+				diffSnapshotValue.AddItem("Off");
 				foreach (var snapshot in snapshots)
 				{
-					accountDiffDateValue.AddItem(snapshot.Key);
+					diffSnapshotValue.AddItem(snapshot.Key);
+					if (snapshot.Value == selectedSnapshot)
+					{
+						diffSnapshotValue.Select(diffSnapshotValue.ItemCount - 1);
+					}
 				}
-				accountDiffDate.Visible = true;
+				diffSnapshot.Visible = true;
 			}
 			else
 			{
-				accountDiffDate.Visible = false;
+				diffSnapshot.Visible = false;
 			}
 		}
 
 		private void DiffDateOptionSelected(long index)
 		{
-			var selectedDate = accountDiffDateValue.GetItemText(accountDiffDateValue.Selected);
+			var selectedDate = diffSnapshotValue.GetItemText(diffSnapshotValue.Selected);
 			if (profileSnapshots.TryGetValue(steamId, out var snapshots) &&
 				snapshots.TryGetValue(selectedDate, out var fileName))
 			{
-				snapshotSelection[steamId] = fileName;
+				selectedDiffSnapshots[steamId] = fileName;
 			}
 		}
 
@@ -250,6 +260,17 @@ namespace SteamPanno.scenes
 			Settings.Instance.AccountIdOption = accountIdValue.Selected;
 			Settings.Instance.FriendAccountId = friendAccountIdValue.Text;
 			Settings.Instance.CustomAccountId = customAccountIdValue.Text;
+			if (selectedDiffSnapshots.Count > 0)
+			{
+				if (Settings.Instance.SelectedDiffSnapshots == null)
+				{
+					Settings.Instance.SelectedDiffSnapshots = new Dictionary<string, string>();
+				}
+				foreach (var selectedDiffSnapshot in selectedDiffSnapshots)
+				{
+					Settings.Instance.SelectedDiffSnapshots[selectedDiffSnapshot.Key] = selectedDiffSnapshot.Value;
+				}
+			}
 			Settings.Instance.UseCustomResolution = pannoResolutionValue.Selected == 1;
 			Settings.Instance.CustomResolution = customPannoResolutionValue.Text;
 			Settings.Instance.GenerationMethodOption = generationMethodValue.Selected;
