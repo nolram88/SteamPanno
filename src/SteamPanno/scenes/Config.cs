@@ -1,6 +1,10 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using TextCopy;
+using SteamPanno.panno.loading;
+using SteamPanno.scenes.controls;
 
 namespace SteamPanno.scenes
 {
@@ -23,6 +27,7 @@ namespace SteamPanno.scenes
 
 		private Dictionary<string, Dictionary<string, string>> profileSnapshots;
 		private string steamId;
+		private string customAccountIdToUse;
 		private Dictionary<string, string> selectedDiffSnapshots;
 
 		private OptionButton accountIdValue;
@@ -30,6 +35,7 @@ namespace SteamPanno.scenes
 		private OptionButton friendAccountIdValue;
 		private Control customAccountId;
 		private LineEdit customAccountIdValue;
+		private ImageButton getProfileIdBtn;
 		private Control diffSnapshot;
 		private OptionButton diffSnapshotValue;
 		private OptionButton pannoResolutionValue;
@@ -59,6 +65,8 @@ namespace SteamPanno.scenes
 			customAccountIdValue = GetNode<LineEdit>("./VBoxContainer/Content/CustomAccountId/CustomAccountIdValue");
 			customAccountIdValue.ClipContents = true;
 			customAccountIdValue.TextChanged += CustomAccountOptionChanged;
+			getProfileIdBtn = GetNode<ImageButton>("./VBoxContainer/Content/CustomAccountId/GetProfileIdBtn");
+			getProfileIdBtn.OnClick = () => Task.Run(async () => await GetSteamIdBackThread());
 			diffSnapshot = GetNode<Control>("./VBoxContainer/Content/DiffSnapshot");
 			diffSnapshotValue = GetNode<OptionButton>("./VBoxContainer/Content/DiffSnapshot/DiffSnapshotValue");
 			diffSnapshotValue.ItemSelected += DiffDateOptionSelected;
@@ -142,6 +150,15 @@ namespace SteamPanno.scenes
 			showHoursValue.AddItem("Top Right");
 			var showHoursOptionIndex = Math.Clamp((int)Settings.Instance.ShowHoursOption, 0, showHoursValue.ItemCount - 1);
 			showHoursValue.Select(showHoursOptionIndex);
+		}
+
+		public override void _Process(double delta)
+		{
+			if (customAccountIdToUse != null)
+			{
+				customAccountIdValue.Text = customAccountIdToUse.ToString();
+				customAccountIdToUse = null;
+			}
 		}
 
 		public override void _UnhandledInput(InputEvent @event)
@@ -229,6 +246,29 @@ namespace SteamPanno.scenes
 			else
 			{
 				diffSnapshot.Visible = false;
+			}
+		}
+
+		private async Task GetSteamIdBackThread()
+		{
+			var text = ClipboardService.GetText();
+
+			if (text != null && text.Length < 1000)
+			{
+				if (text.StartsWith("https://steamcommunity.com/profiles/"))
+				{
+					if (text.TryParseSteamId(out var steamIdParsed))
+					{
+						customAccountIdToUse = steamIdParsed;
+					}
+				}
+				else if (text.StartsWith("https://steamcommunity.com/id/"))
+				{
+					var name = text.Replace("https://steamcommunity.com/id/", "").TrimEnd('/');
+					var loader = new PannoLoaderOnline();
+					var steamIdLoaded = await loader.GetProfileSteamId(name);
+					customAccountIdToUse = steamIdLoaded ?? string.Empty;
+				}
 			}
 		}
 

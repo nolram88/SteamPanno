@@ -59,7 +59,7 @@ clip_text = true
 layout_mode = 1
 offset_right = 64.0
 offset_bottom = 64.0
-ImageTexture = ExtResource("4_c01mt")
+texture = ExtResource("4_c01mt")
 
 [node name="SaveButton" parent="GUI" instance=ExtResource("3_0bbpv")]
 visible = false
@@ -70,7 +70,7 @@ anchor_bottom = 1.0
 offset_top = -64.0
 offset_right = 64.0
 grow_vertical = 0
-ImageTexture = ExtResource("6_nxtc6")
+texture = ExtResource("6_nxtc6")
 
 [node name="Report" type="TextEdit" parent="GUI"]
 visible = false
@@ -90,7 +90,7 @@ anchor_right = 1.0
 offset_left = -64.0
 offset_bottom = 64.0
 grow_horizontal = 0
-ImageTexture = ExtResource("4_rarhs")
+texture = ExtResource("4_rarhs")
 
 [node name="WarningButton" parent="GUI" instance=ExtResource("3_0bbpv")]
 visible = false
@@ -101,7 +101,7 @@ anchor_bottom = 1.0
 offset_top = -64.0
 offset_right = 64.0
 grow_vertical = 0
-ImageTexture = ExtResource("5_nxtc6")
+texture = ExtResource("5_nxtc6")
 
 [node name="Config" parent="." instance=ExtResource("8_jlsqs")]
 visible = false

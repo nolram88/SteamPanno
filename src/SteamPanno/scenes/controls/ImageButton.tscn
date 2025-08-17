@@ -2,16 +2,8 @@
 
 [ext_resource type="Script" uid="uid://b583wmpes7xec" path="res://scenes/controls/ImageButton.cs" id="1_nr0dw"]
 
-[node name="ImageButton" type="Control"]
-layout_mode = 3
-anchors_preset = 0
+[node name="ImageButton" type="TextureRect"]
 script = ExtResource("1_nr0dw")
-
-[node name="Center" type="CenterContainer" parent="."]
-layout_mode = 0
-
-[node name="TextureRect" type="TextureRect" parent="Center"]
-layout_mode = 2
 
 [connection signal="gui_input" from="." to="." method="OnInput"]
 [connection signal="mouse_entered" from="." to="." method="OnMouseEntered"]

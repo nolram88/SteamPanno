@@ -3,9 +3,8 @@ using Godot;
 
 namespace SteamPanno.scenes.controls
 {
-	public partial class ImageButton : Control
+	public partial class ImageButton : TextureRect
 	{
-		private TextureRect image;
 		private float alphaMin = 0.3f;
 		private float alphaMax = 0.8f;
 		private float alphaCurrent = 0;
@@ -14,19 +13,6 @@ namespace SteamPanno.scenes.controls
 
 		private double alphaBlinkDelta = 0;
 		private bool alphaBlink = false;
-
-		[Export]
-		public Texture2D ImageTexture
-		{
-			get
-			{
-				return GetImage().Texture;
-			}
-			set
-			{
-				GetImage().Texture = value;
-			}
-		}
 
 		public Action OnClick { get; set; }
 
@@ -43,7 +29,6 @@ namespace SteamPanno.scenes.controls
 
 		public override void _Ready()
 		{
-			image = GetImage();
 			alphaCurrent = alphaMin;
 			alphaTarget = alphaCurrent;
 		}
@@ -61,7 +46,7 @@ namespace SteamPanno.scenes.controls
 			}
 			alphaCurrent = Mathf.Clamp(alphaCurrent, alphaMin, alphaMax);
 
-			image.Modulate = new Color(1, 1, 1, alphaCurrent);
+			Modulate = new Color(1, 1, 1, alphaCurrent);
 		}
 
 		public void OnInput(InputEvent @event)
