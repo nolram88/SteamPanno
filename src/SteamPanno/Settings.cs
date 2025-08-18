@@ -28,7 +28,7 @@ namespace SteamPanno
 			public int MinimalHoursOption { get; set; }
 			public string CustomMinimalHours { get; set; }
 			public int GenerationMethodOption { get; set; }
-			public int TileExpansionMethodOption { get; set; }
+			public int OutpaintingMethodOption { get; set; }
 			public ShowHoursOptions ShowHoursOption { get; set; }
 
 			// hidden settings

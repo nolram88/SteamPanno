@@ -16,7 +16,7 @@ namespace SteamPanno.scenes
 			"Gradual Descent",
 		};
 
-		private readonly string[] tileExpansionMethods = new string[]
+		private readonly string[] outpaintingMethods = new string[]
 		{
 			"Resize+Cut",
 			"Resize+Expand",
@@ -42,7 +42,7 @@ namespace SteamPanno.scenes
 		private Control customPannoResolution;
 		private TextEdit customPannoResolutionValue;
 		private OptionButton generationMethodValue;
-		private OptionButton tileExpansionMethod;
+		private OptionButton outpaintingMethodValue;
 		private OptionButton minimalHoursValue;
 		private Control customMinimalHours;
 		private TextEdit customMinimalHoursValue;
@@ -74,7 +74,7 @@ namespace SteamPanno.scenes
 			customPannoResolution = GetNode<Control>("./VBoxContainer/Content/CustomPannoResolution");
 			customPannoResolutionValue = GetNode<TextEdit>("./VBoxContainer/Content/CustomPannoResolution/CustomPannoResolutionValue");
 			generationMethodValue = GetNode<OptionButton>("./VBoxContainer/Content/GenerationMethod/GenerationMethodValue");
-			tileExpansionMethod = GetNode<OptionButton>("./VBoxContainer/Content/TileExpansionMethod/TileExpansionMethodValue");
+			outpaintingMethodValue = GetNode<OptionButton>("./VBoxContainer/Content/OutpaintingMethod/OutpaintingMethodValue");
 			minimalHoursValue = GetNode<OptionButton>("./VBoxContainer/Content/MinimalHours/MinimalHoursValue");
 			customMinimalHours = GetNode<Control>("./VBoxContainer/Content/CustomMinimalHours");
 			customMinimalHoursValue = GetNode<TextEdit>("./VBoxContainer/Content/CustomMinimalHours/CustomMinimalHoursValue");
@@ -125,12 +125,12 @@ namespace SteamPanno.scenes
 			var selectedGenerationMethod = Math.Min(Math.Max(Settings.Instance.GenerationMethodOption, 0), generationMethods.Length - 1);
 			generationMethodValue.Select(selectedGenerationMethod);
 
-			foreach (var method in tileExpansionMethods)
+			foreach (var method in outpaintingMethods)
 			{
-				tileExpansionMethod.AddItem(method);
+				outpaintingMethodValue.AddItem(method);
 			};
-			var selectedTileExpansionMethod = Math.Min(Math.Max(Settings.Instance.TileExpansionMethodOption, 0), tileExpansionMethods.Length - 1);
-			generationMethodValue.Select(selectedTileExpansionMethod);
+			var selectedOutpaintingMethod = Math.Min(Math.Max(Settings.Instance.OutpaintingMethodOption, 0), outpaintingMethods.Length - 1);
+			outpaintingMethodValue.Select(selectedOutpaintingMethod);
 
 			minimalHoursValue.AddItem("1");
 			minimalHoursValue.AddItem("10");
@@ -335,7 +335,7 @@ namespace SteamPanno.scenes
 			Settings.Instance.UseCustomResolution = pannoResolutionValue.Selected == 1;
 			Settings.Instance.CustomResolution = customPannoResolutionValue.Text;
 			Settings.Instance.GenerationMethodOption = generationMethodValue.Selected;
-			Settings.Instance.TileExpansionMethodOption = tileExpansionMethod.Selected;
+			Settings.Instance.OutpaintingMethodOption = outpaintingMethodValue.Selected;
 			Settings.Instance.MinimalHoursOption = minimalHoursValue.Selected;
 			Settings.Instance.CustomMinimalHours = decimal.TryParse(customMinimalHoursValue.Text, out _)
 				? customMinimalHoursValue.Text

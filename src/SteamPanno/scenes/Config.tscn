@@ -32,7 +32,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 theme_override_font_sizes/font_size = 24
-text = "Generation settings"
+text = "Generation Settings"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -50,7 +50,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "Account Id"
+text = "Steam Account Id"
 
 [node name="AccountIdValue" type="OptionButton" parent="VBoxContainer/Content/AccountId"]
 custom_minimum_size = Vector2(300, 0)
@@ -101,7 +101,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "Comparison snapshot"
+text = "Comparison Snapshot"
 
 [node name="DiffSnapshotValue" type="OptionButton" parent="VBoxContainer/Content/DiffSnapshot"]
 custom_minimum_size = Vector2(300, 0)
@@ -152,17 +152,17 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
-[node name="TileExpansionMethod" type="HBoxContainer" parent="VBoxContainer/Content"]
+[node name="OutpaintingMethod" type="HBoxContainer" parent="VBoxContainer/Content"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 
-[node name="TileExpansionMethodLbl" type="Label" parent="VBoxContainer/Content/TileExpansionMethod"]
+[node name="OutpaintingMethodLbl" type="Label" parent="VBoxContainer/Content/OutpaintingMethod"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "Tile Expansion Method"
+text = "Outpainting Method"
 
-[node name="TileExpansionMethodValue" type="OptionButton" parent="VBoxContainer/Content/TileExpansionMethod"]
+[node name="OutpaintingMethodValue" type="OptionButton" parent="VBoxContainer/Content/OutpaintingMethod"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24

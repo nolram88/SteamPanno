@@ -180,7 +180,7 @@ namespace SteamPanno.scenes
 				var pannoSize = GetPannoSize();
 				
 				var loader = new PannoLoaderCache(new PannoLoaderOnline());
-				PannoDrawer drawer = Settings.Instance.TileExpansionMethodOption switch
+				PannoDrawer drawer = Settings.Instance.OutpaintingMethodOption switch
 				{
 					0 => CreateDrawer<PannoDrawerResizeAndCut>(pannoSize),
 					1 => CreateDrawer<PannoDrawerResizeAndExpand>(pannoSize),
