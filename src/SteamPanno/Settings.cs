@@ -19,6 +19,8 @@ namespace SteamPanno
 				TOP_RIGHT = 6,
 			}
 
+			public string Localization { get; set; }
+
 			public int AccountIdOption { get; set; }
 			public string FriendAccountId { get; set; }
 			public string CustomAccountId { get; set; }
@@ -45,10 +47,7 @@ namespace SteamPanno
 		public static void Save()
 		{
 			var settingsPath = FileExtensions.GetSettingsPath();
-			var json = JsonSerializer.Serialize(Instance, options: new JsonSerializerOptions()
-			{
-				WriteIndented = true,
-			});
+			var json = JsonSerializer.Serialize(Instance, options: SerializerOptions);
 			File.WriteAllText(settingsPath, json);
 		}
 
@@ -78,5 +77,10 @@ namespace SteamPanno
 				? customSteamId : null;
 			#endif
 		}
+
+		private static JsonSerializerOptions SerializerOptions { get; set; } = new JsonSerializerOptions()
+		{
+			WriteIndented = true,
+		};
 	}
 }

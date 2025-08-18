@@ -1,0 +1,13 @@
+{
+	"Config":
+	{
+		"GenerationSettingsLbl": "Настройки генерации",
+		"AccountIdLbl": "Идентификатор Steam",
+		"DiffSnapshotLbl": "Снимок для сравнения",
+		"PannoResolutionLbl": "Разрешение",
+		"GenerationMethodLbl": "Метод генерации",
+		"OutpaintingMethodLbl": "Метод расширения",
+		"MinimalHoursLbl": "Минимум часов",
+		"ShowHoursLbl": "Показывать часы"
+	}
+}

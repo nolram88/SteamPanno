@@ -26,7 +26,7 @@ custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_vertical = 2
 
-[node name="TitleLbl" type="Label" parent="VBoxContainer/Title"]
+[node name="GenerationSettingsLbl" type="Label" parent="VBoxContainer/Title"]
 custom_minimum_size = Vector2(400, 60)
 layout_mode = 2
 size_flags_horizontal = 3

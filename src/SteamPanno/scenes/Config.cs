@@ -52,6 +52,8 @@ namespace SteamPanno.scenes
 
 		public override void _Ready()
 		{
+			Localize(this);
+
 			profileSnapshots = FileExtensions.GetProfileSnapshots();
 			selectedDiffSnapshots = new Dictionary<string, string>();
 
@@ -173,6 +175,22 @@ namespace SteamPanno.scenes
 						OnBackBtnPressed();
 						GetTree().Root.SetInputAsHandled();
 						break;
+				}
+			}
+		}
+
+		private void Localize(Node control)
+		{
+			if (control is Label label && !string.IsNullOrEmpty(label.Text))
+			{
+				var path = this.Name + "/" + label.Name;
+				label.Text = Localization.Localize(path);
+			}
+			else
+			{
+				foreach (var childControl in control.GetChildren())
+				{
+					Localize(childControl);
 				}
 			}
 		}

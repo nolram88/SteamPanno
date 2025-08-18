@@ -1,0 +1,13 @@
+{
+	"Config":
+	{
+		"GenerationSettingsLbl": "Generation Settings",
+		"AccountIdLbl": "Steam Account Id",
+		"DiffSnapshotLbl": "Comparison Snapshot",
+		"PannoResolutionLbl": "Panno Resolution",
+		"GenerationMethodLbl": "Generation Method",
+		"OutpaintingMethodLbl": "Outpainting Method",
+		"MinimalHoursLbl": "Minimal Hours",
+		"ShowHoursLbl": "Show Hours"
+	}
+}
