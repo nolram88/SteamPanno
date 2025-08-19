@@ -21,6 +21,13 @@ namespace SteamPanno
 				: null;
 		}
 
+		public static string[] GetLocalizations()
+		{
+			var files = DirAccess.GetFilesAt($"res://assets/translations");
+
+			return files;
+		}
+
 		public static string Localize(string path)
 		{
 			if (localizationActive != null &&

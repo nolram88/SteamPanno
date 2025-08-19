@@ -60,8 +60,17 @@ namespace SteamPanno.scenes
 
 			var configButton = GetNode<ImageButton>("./GUI/Top/ConfigButton");
 			configButton.OnClick = () => ShowConfig(true);
+			var languageMenu = GetNode<PopupMenu>("./GUI/LanguageMenu");
+			foreach (var lang in Localization.GetLocalizations())
+			{
+				languageMenu.AddItem(lang);
+			}
+			languageMenu.IndexPressed += SelectLanguage;
 			var languageButton = GetNode<ImageButton>("./GUI/Top/LanguageButton");
-			languageButton.OnClick = () => ShowConfig(true);
+			languageButton.OnClick = () => languageMenu.Popup(new Rect2I()
+			{
+				Position = new Vector2I((int)languageButton.Position.X, (int)languageButton.Position.Y + (int)languageButton.Size.Y),
+			});
 			var exitButton = GetNode<ImageButton>("./GUI/Top/ExitButton");
 			exitButton.OnClick = Quit;
 			saveButton = GetNode<ImageButton>("./GUI/Bottom/SaveButton");
@@ -315,6 +324,11 @@ namespace SteamPanno.scenes
 			panno.Visible = !show;
 			gui.Visible = !show;
 			config.Visible = show;
+		}
+
+		protected void SelectLanguage(long id)
+		{
+			
 		}
 
 		protected void Quit()
