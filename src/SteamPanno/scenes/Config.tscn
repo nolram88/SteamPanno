@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://6f2c4uibxicc" path="res://scenes/Config.cs" id="1_ha6ln"]
 [ext_resource type="PackedScene" uid="uid://csddb8mltqpvc" path="res://scenes/controls/ImageButton.tscn" id="2_wfw86"]
-[ext_resource type="Texture2D" uid="uid://cfs2ykxnrlns8" path="res://assets/images/save.png" id="3_deowu"]
+[ext_resource type="Texture2D" uid="uid://cjo8qtd4is6es" path="res://assets/images/steam.png" id="3_wfw86"]
 
 [node name="Config" type="Control"]
 layout_mode = 3
@@ -80,17 +80,19 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
-[node name="CustomAccountIdValue" type="LineEdit" parent="VBoxContainer/Content/CustomAccountId"]
-custom_minimum_size = Vector2(245, 0)
+[node name="CustomAccountIdRight" type="HBoxContainer" parent="VBoxContainer/Content/CustomAccountId"]
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
+
+[node name="CustomAccountIdValue" type="LineEdit" parent="VBoxContainer/Content/CustomAccountId/CustomAccountIdRight"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 24
 
-[node name="GetProfileIdBtn" parent="VBoxContainer/Content/CustomAccountId" instance=ExtResource("2_wfw86")]
+[node name="GetProfileIdBtn" parent="VBoxContainer/Content/CustomAccountId/CustomAccountIdRight" instance=ExtResource("2_wfw86")]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
-size_flags_horizontal = 6
-size_flags_vertical = 4
-texture = ExtResource("3_deowu")
+texture = ExtResource("3_wfw86")
 expand_mode = 1
 
 [node name="DiffSnapshot" type="HBoxContainer" parent="VBoxContainer/Content"]

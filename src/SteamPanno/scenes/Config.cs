@@ -27,7 +27,7 @@ namespace SteamPanno.scenes
 
 		private Dictionary<string, Dictionary<string, string>> profileSnapshots;
 		private string steamId;
-		private string customAccountIdToUse;
+		private string customAccountIdFromClipboard;
 		private Dictionary<string, string> selectedDiffSnapshots;
 
 		private OptionButton accountIdValue;
@@ -64,10 +64,10 @@ namespace SteamPanno.scenes
 			friendAccountIdValue.ClipText = true;
 			friendAccountIdValue.ItemSelected += FriendOptionSelected;
 			customAccountId = GetNode<Control>("./VBoxContainer/Content/CustomAccountId");
-			customAccountIdValue = GetNode<LineEdit>("./VBoxContainer/Content/CustomAccountId/CustomAccountIdValue");
+			customAccountIdValue = GetNode<LineEdit>("./VBoxContainer/Content/CustomAccountId/CustomAccountIdRight/CustomAccountIdValue");
 			customAccountIdValue.ClipContents = true;
 			customAccountIdValue.TextChanged += CustomAccountOptionChanged;
-			getProfileIdBtn = GetNode<ImageButton>("./VBoxContainer/Content/CustomAccountId/GetProfileIdBtn");
+			getProfileIdBtn = GetNode<ImageButton>("./VBoxContainer/Content/CustomAccountId/CustomAccountIdRight/GetProfileIdBtn");
 			getProfileIdBtn.OnClick = () => Task.Run(async () => await GetSteamIdBackThread());
 			diffSnapshot = GetNode<Control>("./VBoxContainer/Content/DiffSnapshot");
 			diffSnapshotValue = GetNode<OptionButton>("./VBoxContainer/Content/DiffSnapshot/DiffSnapshotValue");
@@ -156,10 +156,11 @@ namespace SteamPanno.scenes
 
 		public override void _Process(double delta)
 		{
-			if (customAccountIdToUse != null)
+			if (customAccountIdFromClipboard != null)
 			{
-				customAccountIdValue.Text = customAccountIdToUse.ToString();
-				customAccountIdToUse = null;
+				customAccountIdValue.Text = customAccountIdFromClipboard;
+				customAccountIdFromClipboard = null;
+				CustomAccountOptionChanged(customAccountIdValue.Text);
 			}
 		}
 
@@ -277,7 +278,7 @@ namespace SteamPanno.scenes
 				{
 					if (text.TryParseSteamId(out var steamIdParsed))
 					{
-						customAccountIdToUse = steamIdParsed;
+						customAccountIdFromClipboard = steamIdParsed;
 					}
 				}
 				else if (text.StartsWith("https://steamcommunity.com/id/"))
@@ -285,7 +286,7 @@ namespace SteamPanno.scenes
 					var name = text.Replace("https://steamcommunity.com/id/", "").TrimEnd('/');
 					var loader = new PannoLoaderOnline();
 					var steamIdLoaded = await loader.GetProfileSteamId(name);
-					customAccountIdToUse = steamIdLoaded ?? string.Empty;
+					customAccountIdFromClipboard = steamIdLoaded ?? string.Empty;
 				}
 			}
 		}
