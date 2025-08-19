@@ -22,11 +22,6 @@ namespace SteamPanno.scenes.controls
 			alphaBlink = on;
 		}
 
-		public TextureRect GetImage()
-		{
-			return GetNode<TextureRect>("./Center/TextureRect");
-		}
-
 		public override void _Ready()
 		{
 			alphaCurrent = alphaMin;

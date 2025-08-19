@@ -58,13 +58,15 @@ namespace SteamPanno.scenes
 			pannoProgressBar = GetNode<ProgressBar>("./GUI/Center/Progress/Bar");
 			pannoProgressLabel = GetNode<Label>("./GUI/Center/Progress/Text");
 
-			var configButton = GetNode<ImageButton>("./GUI/ConfigButton");
+			var configButton = GetNode<ImageButton>("./GUI/Top/ConfigButton");
 			configButton.OnClick = () => ShowConfig(true);
-			var exitButton = GetNode<ImageButton>("./GUI/ExitButton");
+			var languageButton = GetNode<ImageButton>("./GUI/Top/LanguageButton");
+			languageButton.OnClick = () => ShowConfig(true);
+			var exitButton = GetNode<ImageButton>("./GUI/Top/ExitButton");
 			exitButton.OnClick = Quit;
-			saveButton = GetNode<ImageButton>("./GUI/SaveButton");
+			saveButton = GetNode<ImageButton>("./GUI/Bottom/SaveButton");
 			saveButton.OnClick = SavePannoToFile;
-			warningButton = GetNode<ImageButton>("./GUI/WarningButton");
+			warningButton = GetNode<ImageButton>("./GUI/Bottom/WarningButton");
 			warningButton.OnClick = () =>
 			{
 				report.Visible = !report.Visible;
