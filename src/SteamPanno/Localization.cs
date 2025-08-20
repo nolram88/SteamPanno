@@ -1,5 +1,6 @@
 ﻿using Godot;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -7,57 +8,86 @@ namespace SteamPanno
 {
 	public static class Localization
 	{
-		private readonly static Dictionary<string, string> localizationDefault;
-		private static Dictionary<string, string> localizationActive;
+		private const string LanguageProperty = "Language";
+		private const string LanguageDefault = "English";
+		private const string TranslationsPath = "res://assets/translations";
 
+		private readonly static Dictionary<string, Dictionary<string, string>> localizations;
+		
 		static Localization()
 		{
-			var langDefault = "en";
-			var langActive = Settings.Instance.Localization ?? "ru";
+			localizations = new Dictionary<string, Dictionary<string, string>>();
+			var files = DirAccess.GetFilesAt(TranslationsPath);
+			foreach (var file in files)
+			{
+				var filePath = $"{TranslationsPath}/{file}";
+				var fileLocalization = LoadLocalization(filePath);
+				if (fileLocalization.Count > 0 && fileLocalization.TryGetValue(LanguageProperty, out var fileLanguage))
+				{
+					localizations[fileLanguage] = fileLocalization;
+				}
+			}
 
-			localizationDefault = LoadLocalization(langDefault);
-			localizationActive = langDefault != langActive
-				? LoadLocalization(langActive)
-				: null;
+			GD.Print(Settings.Instance.Language);
+			GD.Print(localizations.ContainsKey(Settings.Instance.Language));
+
+			if (string.IsNullOrEmpty(Settings.Instance.Language) ||
+				!localizations.ContainsKey(Settings.Instance.Language))
+			{
+				SetLocalization(LanguageDefault);
+			}
 		}
 
 		public static string[] GetLocalizations()
 		{
-			var files = DirAccess.GetFilesAt($"res://assets/translations");
-
-			return files;
+			return localizations.Select(x => x.Value[LanguageProperty]).ToArray();
 		}
 
-		public static string Localize(string path)
+		public static string GetLocalization()
 		{
-			if (localizationActive != null &&
-				localizationActive.TryGetValue(path, out var localizedActive))
-			{
-				return localizedActive;
-			}
-
-			if (localizationDefault.TryGetValue(path, out var localizedDefault))
-			{
-				return localizedDefault;
-			}
-
-			return path;
+			return Settings.Instance.Language;
 		}
 
-		private static Dictionary<string, string> LoadLocalization(string language)
+		public static void SetLocalization(string lang)
+		{
+			Settings.Instance.Language = lang;
+			Settings.Save();
+		}
+
+		public static void SetLocalization(int index)
+		{
+			var localization = localizations.Keys.Skip(index).FirstOrDefault();
+			if (localization != null)
+			{
+				SetLocalization(localizations[localization][LanguageProperty]);
+			}
+		}
+
+		public static string Localize(string phrase)
+		{
+			if (localizations.TryGetValue(Settings.Instance.Language, out var localization) &&
+				localization.TryGetValue(phrase, out var phraseLocalized))
+			{
+				return phraseLocalized;
+			}
+
+			return phrase;
+		}
+
+		private static Dictionary<string, string> LoadLocalization(string filePath)
 		{
 			Dictionary<string, string> localization = new Dictionary<string, string>();
 
-			using FileAccess file = FileAccess.Open(
-				$"res://assets/translations/{language}.json",
-				FileAccess.ModeFlags.Read);
-			if (file != null)
+			using FileAccess file = FileAccess.Open(filePath,FileAccess.ModeFlags.Read);
 			{
-				var json = file.GetAsText();
-				JsonNode node = JsonNode.Parse(json);
-				AppendLocalization(localization, node, string.Empty);
+				if (file != null)
+				{
+					var json = file.GetAsText();
+					JsonNode node = JsonNode.Parse(json);
+					AppendLocalization(localization, node, string.Empty);
+				}
 			}
-
+			
 			return localization;
 		}
 

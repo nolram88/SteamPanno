@@ -19,7 +19,7 @@ namespace SteamPanno
 				TOP_RIGHT = 6,
 			}
 
-			public string Localization { get; set; }
+			public string Language { get; set; }
 
 			public int AccountIdOption { get; set; }
 			public string FriendAccountId { get; set; }
