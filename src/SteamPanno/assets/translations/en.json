@@ -4,11 +4,38 @@
 	{
 		"GenerationSettingsLbl": "Generation Settings",
 		"AccountIdLbl": "Steam Account Id",
+		"AccountIdOption0": "My Account",
+		"AccountIdOption1": "My Friend's Account",
+		"AccountIdOption2": "Custom Account",
 		"DiffSnapshotLbl": "Comparison Snapshot",
+		"DiffSnapshotOptionOff": "Off",
 		"PannoResolutionLbl": "Panno Resolution",
+		"PannoResolutionOption0": "Native",
+		"PannoResolutionOption1": "Custom",
 		"GenerationMethodLbl": "Generation Method",
 		"OutpaintingMethodLbl": "Outpainting Method",
 		"MinimalHoursLbl": "Minimal Hours",
-		"ShowHoursLbl": "Show Hours"
+		"MinimalHoursOptionCustom": "Custom",
+		"ShowHoursLbl": "Show Hours",
+		"ShowHoursOption0": "Off",
+		"ShowHoursOption1": "Bottom",
+		"ShowHoursOption2": "Bottom Left",
+		"ShowHoursOption3": "Bottom Right",
+		"ShowHoursOption4": "Top",
+		"ShowHoursOption5": "Top Left",
+		"ShowHoursOption6": "Top Right",
+		"GenerationMethods":
+		{
+			"DivideAndConquer": "Divide And Conquer",
+			"GradualDescent": "Gradual Descent"
+		},
+		"OutpaintingMethods":
+		{
+			"ResizeAndCut": "Resize+Cut",
+			"ResizeAndExpand": "Resize+Expand",
+			"ResizeAndMirror": "Resize+Mirror",
+			"ResizeProportional": "Resize Proportional",
+			"ResizeUnproportional": "Resize Unproportional"
+		}
 	}
 }

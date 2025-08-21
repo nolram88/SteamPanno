@@ -68,6 +68,12 @@ namespace SteamPanno
 				return phraseLocalized;
 			}
 
+			if (localizations.TryGetValue(LanguageDefault, out var localizationDefault) &&
+				localizationDefault.TryGetValue(phrase, out var phraseLocalizedDefault))
+			{
+				return phraseLocalizedDefault;
+			}
+
 			return phrase;
 		}
 

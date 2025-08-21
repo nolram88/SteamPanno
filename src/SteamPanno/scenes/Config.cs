@@ -10,19 +10,19 @@ namespace SteamPanno.scenes
 {
 	public partial class Config : Control
 	{
-		private readonly string[] generationMethods = new string[]
+		private readonly string[] GenerationMethods = new string[]
 		{
-			"Divide And Conquer",
-			"Gradual Descent",
+			"DivideAndConquer",
+			"GradualDescent",
 		};
 
-		private readonly string[] outpaintingMethods = new string[]
+		private readonly string[] OutpaintingMethods = new string[]
 		{
-			"Resize+Cut",
-			"Resize+Expand",
-			"Resize+Mirror",
-			"Resize Proportional",
-			"Resize Unproportional",
+			"ResizeAndCut",
+			"ResizeAndExpand",
+			"ResizeAndMirror",
+			"ResizeProportional",
+			"ResizeUnproportional",
 		};
 
 		private Dictionary<string, Dictionary<string, string>> profileSnapshots;
@@ -52,34 +52,53 @@ namespace SteamPanno.scenes
 
 		public override void _Ready()
 		{
-			Localize(this);
-
 			profileSnapshots = FileExtensions.GetProfileSnapshots();
 			selectedDiffSnapshots = new Dictionary<string, string>();
 
+			var generationSettingsLbl = GetNode<Label>("./VBoxContainer/Title/GenerationSettingsLbl");
+			generationSettingsLbl.Text = Localization.Localize($"{nameof(Config)}/{generationSettingsLbl.Name}");
+
+			var accountIdLbl = GetNode<Label>("./VBoxContainer/Content/AccountId/AccountIdLbl");
+			accountIdLbl.Text = Localization.Localize($"{nameof(Config)}/{accountIdLbl.Name}");
 			accountIdValue = GetNode<OptionButton>("./VBoxContainer/Content/AccountId/AccountIdValue");
 			accountIdValue.ItemSelected += AccountOptionSelected;
 			friendAccountId = GetNode<Control>("./VBoxContainer/Content/FriendAccountId");
 			friendAccountIdValue = GetNode<OptionButton>("./VBoxContainer/Content/FriendAccountId/FriendAccountIdValue");
-			friendAccountIdValue.ClipText = true;
 			friendAccountIdValue.ItemSelected += FriendOptionSelected;
 			customAccountId = GetNode<Control>("./VBoxContainer/Content/CustomAccountId");
 			customAccountIdValue = GetNode<LineEdit>("./VBoxContainer/Content/CustomAccountId/CustomAccountIdRight/CustomAccountIdValue");
-			customAccountIdValue.ClipContents = true;
 			customAccountIdValue.TextChanged += CustomAccountOptionChanged;
 			getProfileIdBtn = GetNode<ImageButton>("./VBoxContainer/Content/CustomAccountId/CustomAccountIdRight/GetProfileIdBtn");
 			getProfileIdBtn.OnClick = () => Task.Run(async () => await GetSteamIdBackThread());
+
+			var diffSnapshotLbl = GetNode<Label>("./VBoxContainer/Content/DiffSnapshot/DiffSnapshotLbl");
+			diffSnapshotLbl.Text = Localization.Localize($"{nameof(Config)}/{diffSnapshotLbl.Name}");
 			diffSnapshot = GetNode<Control>("./VBoxContainer/Content/DiffSnapshot");
 			diffSnapshotValue = GetNode<OptionButton>("./VBoxContainer/Content/DiffSnapshot/DiffSnapshotValue");
 			diffSnapshotValue.ItemSelected += DiffDateOptionSelected;
+
+			var pannoResolutionLbl = GetNode<Label>("./VBoxContainer/Content/PannoResolution/PannoResolutionLbl");
+			pannoResolutionLbl.Text = Localization.Localize($"{nameof(Config)}/{pannoResolutionLbl.Name}");
 			pannoResolutionValue = GetNode<OptionButton>("./VBoxContainer/Content/PannoResolution/PannoResolutionValue");
 			customPannoResolution = GetNode<Control>("./VBoxContainer/Content/CustomPannoResolution");
 			customPannoResolutionValue = GetNode<TextEdit>("./VBoxContainer/Content/CustomPannoResolution/CustomPannoResolutionValue");
+
+			var generationMethodLbl = GetNode<Label>("./VBoxContainer/Content/GenerationMethod/GenerationMethodLbl");
+			generationMethodLbl.Text = Localization.Localize($"{nameof(Config)}/{generationMethodLbl.Name}");
 			generationMethodValue = GetNode<OptionButton>("./VBoxContainer/Content/GenerationMethod/GenerationMethodValue");
+
+			var outpaintingMethodLbl = GetNode<Label>("./VBoxContainer/Content/OutpaintingMethod/OutpaintingMethodLbl");
+			outpaintingMethodLbl.Text = Localization.Localize($"{nameof(Config)}/{outpaintingMethodLbl.Name}");
 			outpaintingMethodValue = GetNode<OptionButton>("./VBoxContainer/Content/OutpaintingMethod/OutpaintingMethodValue");
+
+			var minimalHoursLbl = GetNode<Label>("./VBoxContainer/Content/MinimalHours/MinimalHoursLbl");
+			minimalHoursLbl.Text = Localization.Localize($"{nameof(Config)}/{minimalHoursLbl.Name}");
 			minimalHoursValue = GetNode<OptionButton>("./VBoxContainer/Content/MinimalHours/MinimalHoursValue");
 			customMinimalHours = GetNode<Control>("./VBoxContainer/Content/CustomMinimalHours");
 			customMinimalHoursValue = GetNode<TextEdit>("./VBoxContainer/Content/CustomMinimalHours/CustomMinimalHoursValue");
+
+			var showHoursLbl = GetNode<Label>("./VBoxContainer/Content/ShowHours/ShowHoursLbl");
+			showHoursLbl.Text = Localization.Localize($"{nameof(Config)}/{showHoursLbl.Name}");
 			showHoursValue = GetNode<OptionButton>("./VBoxContainer/Content/ShowHours/ShowHoursValue");
 
 			#if STEAM
@@ -98,9 +117,11 @@ namespace SteamPanno.scenes
 				}
 			#endif
 			customAccountIdValue.Text = Settings.Instance.CustomAccountId;
-			accountIdValue.AddItem("My Account");
-			accountIdValue.AddItem("My Friend's Account");
-			accountIdValue.AddItem("Custom Account");
+			for (int i = 0; i <= 2; i++)
+			{
+				var text = Localization.Localize($"{nameof(Config)}/AccountIdOption{i}");
+				accountIdValue.AddItem(text);
+			}
 			var accountOptionIndex = Math.Clamp(Settings.Instance.AccountIdOption, 0, accountIdValue.ItemCount);
 			#if STEAM
 				accountIdValue.Select(accountOptionIndex);
@@ -112,44 +133,52 @@ namespace SteamPanno.scenes
 			#endif
 
 			var screenResolution = DisplayServer.ScreenGetSize();
-			pannoResolutionValue.AddItem($"Native ({screenResolution.X}x{screenResolution.Y})");
-			pannoResolutionValue.AddItem("Custom");
+			for (int i = 0; i <= 1; i++)
+			{
+				var text = Localization.Localize($"{nameof(Config)}/PannoResolutionOption{i}");
+				if (i == 0)
+				{
+					text += $" ({screenResolution.X}x{screenResolution.Y})";
+				}
+				pannoResolutionValue.AddItem(text);
+			}
 			pannoResolutionValue.ItemSelected += ResolutionOptionSelected;
 			var resolutionOptionIndex = Settings.Instance.UseCustomResolution ? 1 : 0;
 			pannoResolutionValue.Select(resolutionOptionIndex);
 			ResolutionOptionSelected(resolutionOptionIndex);
 			customPannoResolutionValue.Text = Settings.Instance.CustomResolution;
 
-			foreach (var method in generationMethods)
+			foreach (var method in GenerationMethods)
 			{
-				generationMethodValue.AddItem(method);
+				var text = Localization.Localize($"{nameof(Config)}/{nameof(GenerationMethods)}/{method}");
+				generationMethodValue.AddItem(text);
 			};
-			var selectedGenerationMethod = Math.Min(Math.Max(Settings.Instance.GenerationMethodOption, 0), generationMethods.Length - 1);
+			var selectedGenerationMethod = Math.Min(Math.Max(Settings.Instance.GenerationMethodOption, 0), GenerationMethods.Length - 1);
 			generationMethodValue.Select(selectedGenerationMethod);
 
-			foreach (var method in outpaintingMethods)
+			foreach (var method in OutpaintingMethods)
 			{
-				outpaintingMethodValue.AddItem(method);
+				var text = Localization.Localize($"{nameof(Config)}/{nameof(OutpaintingMethods)}/{method}");
+				outpaintingMethodValue.AddItem(text);
 			};
-			var selectedOutpaintingMethod = Math.Min(Math.Max(Settings.Instance.OutpaintingMethodOption, 0), outpaintingMethods.Length - 1);
+			var selectedOutpaintingMethod = Math.Min(Math.Max(Settings.Instance.OutpaintingMethodOption, 0), OutpaintingMethods.Length - 1);
 			outpaintingMethodValue.Select(selectedOutpaintingMethod);
 
 			minimalHoursValue.AddItem("1");
 			minimalHoursValue.AddItem("10");
 			minimalHoursValue.AddItem("100");
-			minimalHoursValue.AddItem("Custom");
+			minimalHoursValue.AddItem(Localization.Localize($"{nameof(Config)}/MinimalHoursOptionCustom"));
 			minimalHoursValue.ItemSelected += HoursOptionSelected;
 			var minimalHoursOptionIndex = Math.Clamp(Settings.Instance.MinimalHoursOption, 0, minimalHoursValue.ItemCount);
 			minimalHoursValue.Select(minimalHoursOptionIndex);
 			HoursOptionSelected(minimalHoursOptionIndex);
 			customMinimalHoursValue.Text = Settings.Instance.CustomMinimalHours;
-			showHoursValue.AddItem("Off");
-			showHoursValue.AddItem("Bottom");
-			showHoursValue.AddItem("Bottom Left");
-			showHoursValue.AddItem("Bottom Right");
-			showHoursValue.AddItem("Top");
-			showHoursValue.AddItem("Top Left");
-			showHoursValue.AddItem("Top Right");
+
+			for (int i = 0; i <= 6; i++)
+			{
+				var text = Localization.Localize($"{nameof(Config)}/ShowHoursOption{i}");
+				showHoursValue.AddItem(text);
+			}
 			var showHoursOptionIndex = Math.Clamp((int)Settings.Instance.ShowHoursOption, 0, showHoursValue.ItemCount - 1);
 			showHoursValue.Select(showHoursOptionIndex);
 		}
@@ -176,22 +205,6 @@ namespace SteamPanno.scenes
 						OnBackBtnPressed();
 						GetTree().Root.SetInputAsHandled();
 						break;
-				}
-			}
-		}
-
-		private void Localize(Node control)
-		{
-			if (control is Label label && !string.IsNullOrEmpty(label.Text))
-			{
-				var path = this.Name + "/" + label.Name;
-				label.Text = Localization.Localize(path);
-			}
-			else
-			{
-				foreach (var childControl in control.GetChildren())
-				{
-					Localize(childControl);
 				}
 			}
 		}
@@ -251,7 +264,7 @@ namespace SteamPanno.scenes
 					Settings.Instance.SelectedDiffSnapshots.TryGetValue(steamId, out selectedSnapshot);
 				}
 
-				diffSnapshotValue.AddItem("Off");
+				diffSnapshotValue.AddItem(Localization.Localize($"{nameof(Config)}/DiffSnapshotOptionOff"));
 				foreach (var snapshot in snapshots)
 				{
 					diffSnapshotValue.AddItem(snapshot.Key);

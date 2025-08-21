@@ -3,12 +3,39 @@
 	"Config":
 	{
 		"GenerationSettingsLbl": "Настройки генерации",
-		"AccountIdLbl": "Идентификатор Steam",
-		"DiffSnapshotLbl": "Снимок для сравнения",
-		"PannoResolutionLbl": "Разрешение",
+		"AccountIdLbl": "Аккаунт Steam",
+		"AccountIdOption0": "Мой аккаунт",
+		"AccountIdOption1": "Аккаунт друга",
+		"AccountIdOption2": "Указанный аккаунт",
+		"DiffSnapshotLbl": "Дата для сравнения",
+		"DiffSnapshotOptionOff": "Нет",
+		"PannoResolutionLbl": "Разрешение панно",
+		"PannoResolutionOption0": "Родное",
+		"PannoResolutionOption1": "Указанное",
 		"GenerationMethodLbl": "Метод генерации",
 		"OutpaintingMethodLbl": "Метод расширения",
 		"MinimalHoursLbl": "Минимум часов",
-		"ShowHoursLbl": "Показывать часы"
+		"MinimalHoursOptionCustom": "Указанный",
+		"ShowHoursLbl": "Показывать часы",
+		"ShowHoursOption0": "Нет",
+		"ShowHoursOption1": "Внизу",
+		"ShowHoursOption2": "Внизу слева",
+		"ShowHoursOption3": "Внизу справа",
+		"ShowHoursOption4": "Вверху",
+		"ShowHoursOption5": "Вверху слева",
+		"ShowHoursOption6": "Вверху справа",
+		"GenerationMethods":
+		{
+			"DivideAndConquer": "Разделяй и властвуй",
+			"GradualDescent": "Последовательный спуск"
+		},
+		"OutpaintingMethods":
+		{
+			"ResizeAndCut": "Отсечение",
+			"ResizeAndExpand": "Расширение",
+			"ResizeAndMirror": "Отражение",
+			"ResizeProportional": "Пропорционально",
+			"ResizeUnproportional": "Непропорционально"
+		}
 	}
 }
