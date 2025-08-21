@@ -28,9 +28,6 @@ namespace SteamPanno
 				}
 			}
 
-			GD.Print(Settings.Instance.Language);
-			GD.Print(localizations.ContainsKey(Settings.Instance.Language));
-
 			if (string.IsNullOrEmpty(Settings.Instance.Language) ||
 				!localizations.ContainsKey(Settings.Instance.Language))
 			{

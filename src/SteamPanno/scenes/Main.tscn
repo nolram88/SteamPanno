@@ -12,6 +12,7 @@
 
 [node name="Main" type="Node"]
 script = ExtResource("1_4kbnv")
+ConfigScene = ExtResource("8_jlsqs")
 
 [node name="Panno" parent="." instance=ExtResource("2_tmwwy")]
 anchors_preset = 0
@@ -112,6 +113,3 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 0
 texture = ExtResource("5_nxtc6")
-
-[node name="Config" parent="." instance=ExtResource("8_jlsqs")]
-visible = false

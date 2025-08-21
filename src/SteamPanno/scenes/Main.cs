@@ -31,7 +31,10 @@ namespace SteamPanno.scenes
 		private bool saveButtonVisible;
 		private bool warningButtonVisible;
 		private Channel<string> reportBuffer = Channel.CreateUnbounded<string>();
-		
+
+		[Export]
+		public PackedScene ConfigScene { get; set; }
+
 		public override void _Ready()
 		{
 			var screenResolution = DisplayServer.ScreenGetSize();
@@ -44,15 +47,7 @@ namespace SteamPanno.scenes
 			
 			panno = GetNode<Panno>("./Panno");
 			gui = GetNode<Control>("./GUI");
-			config = GetNode<Config>("./Config");
-			config.OnExit = (applied) =>
-			{
-				ShowConfig(false);
-				if (applied)
-				{
-					Task.Run(async () => await GeneratePannoBackThread());
-				}
-			};
+			PrepareConfig();
 			report = GetNode<TextEdit>("./GUI/Report");
 			progressContainer = GetNode<VBoxContainer>("./GUI/Center/Progress");
 			pannoProgressBar = GetNode<ProgressBar>("./GUI/Center/Progress/Bar");
@@ -70,16 +65,20 @@ namespace SteamPanno.scenes
 			}
 			languageMenu.IndexPressed += (index) =>
 			{
-				for (int i = 0; i < languageMenu.ItemCount; i++)
+				if (!languageMenu.IsItemChecked((int)index))
 				{
-					if (languageMenu.IsItemChecked(i))
+					for (int i = 0; i < languageMenu.ItemCount; i++)
 					{
-						languageMenu.SetItemChecked(i, false);
-						break;
+						if (languageMenu.IsItemChecked(i))
+						{
+							languageMenu.SetItemChecked(i, false);
+							break;
+						}
 					}
+					languageMenu.SetItemChecked((int)index, true);
+					Localization.SetLocalization((int)index);
+					PrepareConfig();
 				}
-				languageMenu.SetItemChecked((int)index, true);
-				Localization.SetLocalization((int)index);
 			};
 			var languageButton = GetNode<ImageButton>("./GUI/Top/LanguageButton");
 			languageButton.OnClick = () => languageMenu.Popup(new Rect2I()
@@ -185,6 +184,28 @@ namespace SteamPanno.scenes
 			reportBuffer.Writer.TryWrite(
 				$"{DateTime.Now.ToString()}: {text}{nl}");
 			warningButtonVisible = true;
+		}
+
+		protected void PrepareConfig()
+		{
+			if (config != null)
+			{
+				RemoveChild(config);
+				config.QueueFree();
+			}
+
+			config = ConfigScene.Instantiate<Config>();
+			config.Name = nameof(Config);
+			config.Visible = false;
+			config.OnExit = (applied) =>
+			{
+				ShowConfig(false);
+				if (applied)
+				{
+					Task.Run(async () => await GeneratePannoBackThread());
+				}
+			};
+			AddChild(config);
 		}
 
 		protected async Task GeneratePannoBackThread()
