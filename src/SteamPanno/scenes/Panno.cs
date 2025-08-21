@@ -48,6 +48,7 @@ namespace SteamPanno.scenes
 					textureIn.Size = pannoImage.Size;
 					textureIn.Texture = ImageTexture.CreateFromImage(pannoImage);
 
+					var hoursText = Localization.Localize("Hours");
 					foreach (var textGame in pannoGamesInText)
 					{
 						if (textGame.Area.Size.X < Settings.Instance.MinimalGameAreaSize)
@@ -59,7 +60,7 @@ namespace SteamPanno.scenes
 						textureIn.AddChild(titleLabel);
 						if (Settings.Instance.ShowHoursOption != 0)
 						{
-							var hoursLabel = CreateHoursLabel(textGame.Area, textGame.Game.HoursOnRecord);
+							var hoursLabel = CreateHoursLabel(textGame.Area, textGame.Game.HoursOnRecord, hoursText);
 							textureIn.AddChild(hoursLabel);
 						}
 					}
@@ -156,7 +157,7 @@ namespace SteamPanno.scenes
 			return label;
 		}
 
-		private RichTextLabel CreateHoursLabel(Rect2I area, float hours)
+		private RichTextLabel CreateHoursLabel(Rect2I area, float hours, string hoursText)
 		{
 			var label = new RichTextLabel();
 			label.AddThemeFontOverride("normal_font", ThemeDB.FallbackFont);
@@ -180,7 +181,7 @@ namespace SteamPanno.scenes
 				Settings.Dto.ShowHoursOptions.TOP_RIGHT => VerticalAlignment.Top,
 				_ => VerticalAlignment.Bottom,
 			};
-			label.ParseBbcode($"[bgcolor=#000000ff]{Math.Round(hours)} h[/bgcolor]");
+			label.ParseBbcode($"[bgcolor=#000000ff]{Math.Round(hours)} {hoursText}[/bgcolor]");
 			label.Position = area.Position;
 			label.Size = area.Size;
 

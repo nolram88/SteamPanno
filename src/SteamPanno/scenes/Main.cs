@@ -152,7 +152,6 @@ namespace SteamPanno.scenes
 			}
 			if (what == NotificationWMCloseRequest)
 			{
-				GD.Print("ALT+F4 !");
 				Quit();
 			}
 		}
@@ -220,7 +219,7 @@ namespace SteamPanno.scenes
 				pannoSteamId = Settings.GetSteamId();
 				if (string.IsNullOrEmpty(pannoSteamId))
 				{
-					Report("Could not get Steam ID.");
+					Report(Localization.Localize("CouldNotGetSteamId"));
 					return;
 				}
 
@@ -243,7 +242,7 @@ namespace SteamPanno.scenes
 					_ => new PannoGameLayoutGeneratorDivideAndConquer(),
 				};
 				
-				this.ProgressSet(0, "Profile loading...");
+				this.ProgressSet(0, Localization.Localize("ProfileLoading"));
 				var games = await loader.GetProfileGames(pannoSteamId);
 				if (Settings.Instance.SelectedDiffSnapshots.TryGetValue(pannoSteamId, out var snapshot))
 				{
@@ -278,11 +277,11 @@ namespace SteamPanno.scenes
 					.ToArray();
 				if (games.Length == 0)
 				{
-					Report("No games meet the given criteria.");
+					Report(Localization.Localize("NoGamesMeetTheGivenCriteria"));
 					return;
 				}
 
-				ProgressSet(0, "Panno layout generation...");
+				ProgressSet(0, Localization.Localize("PannoLayoutGeneration"));
 				var pannoStructure = await generator.Generate(
 					games.ToArray(),
 					new Rect2I(0, 0, pannoSize.X, pannoSize.Y));

@@ -37,5 +37,10 @@
 			"ResizeProportional": "Resize Proportional",
 			"ResizeUnproportional": "Resize Unproportional"
 		}
-	}
+	},
+	"Hours": "h",
+	"ProfileLoading": "Profile loading...",
+	"PannoLayoutGeneration": "Panno layout generation...",
+	"CouldNotGetSteamId": "Could not get Steam ID.",
+	"NoGamesMeetTheGivenCriteria": "No games meet the given criteria."
 }

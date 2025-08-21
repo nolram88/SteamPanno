@@ -37,5 +37,10 @@
 			"ResizeProportional": "Пропорционально",
 			"ResizeUnproportional": "Непропорционально"
 		}
-	}
+	},
+	"Hours": "ч",
+	"ProfileLoading": "Загрузка профиля...",
+	"PannoLayoutGeneration": "Генерация макета...",
+	"CouldNotGetSteamId": "Аккаунт Steam не определен.",
+	"NoGamesMeetTheGivenCriteria": "Нет игр удовлетворящих заданным критериям."
 }
