@@ -28,52 +28,74 @@ namespace SteamPanno.panno.drawing
 			var gapSize = new Vector2I(
 				sizeXRatio < sizeYRatio ? isize.X : (size.X - isize.X) / 2,
 				sizeXRatio < sizeYRatio ? (size.Y - isize.Y) / 2 : isize.Y);
+			var gapSize1 = gapSize.X > 0 && gapSize.Y > 0
+				? gapSize
+				: Vector2I.Zero;
+			var gapSize2 = gapSize.X > 0 && gapSize.Y > 0
+				? gapSize
+				: new Vector2I(
+					sizeXRatio < sizeYRatio ? isize.X : (size.X - isize.X),
+					sizeXRatio < sizeYRatio ? (size.Y - isize.Y) : isize.Y);
 
-			var expansion1 = Builder(
-				sizeXRatio < sizeYRatio ? isize.X : gapSize.X,
-				sizeXRatio < sizeYRatio ? gapSize.Y : isize.Y);
-			var srcAreaForExpansion1 = new Rect2I(0, 0, expansion1.Size.X, expansion1.Size.Y);
-			expansion1.Draw(src, srcAreaForExpansion1, Vector2I.Zero);
-			if (sizeXRatio < sizeYRatio)
+			PannoImage expansion1 = null;
+			if (gapSize1.X > 0 && gapSize1.Y > 0)
 			{
-				expansion1.MirrorY();
-			}
-			else
-			{
-				expansion1.MirrorX();
+				expansion1 = Builder(
+					sizeXRatio < sizeYRatio ? isize.X : gapSize1.X,
+					sizeXRatio < sizeYRatio ? gapSize1.Y : isize.Y);
+				var srcAreaForExpansion1 = new Rect2I(0, 0, expansion1.Size.X, expansion1.Size.Y);
+				expansion1.Draw(src, srcAreaForExpansion1, Vector2I.Zero);
+				if (sizeXRatio < sizeYRatio)
+				{
+					expansion1.MirrorY();
+				}
+				else
+				{
+					expansion1.MirrorX();
+				}
 			}
 
-			var expansion2 = Builder(
-				sizeXRatio < sizeYRatio ? isize.X : gapSize.X,
-				sizeXRatio < sizeYRatio ? gapSize.Y : isize.Y);
-			var srcAreaForExpansion2 = new Rect2I(
-					sizeXRatio < sizeYRatio ? 0 : isize.X - gapSize.X,
-					sizeXRatio < sizeYRatio ? isize.Y - gapSize.Y : 0,
+			PannoImage expansion2 = null;
+			if (gapSize2.X > 0 && gapSize2.Y > 0)
+			{
+				expansion2 = Builder(
+					sizeXRatio < sizeYRatio ? isize.X : gapSize2.X,
+					sizeXRatio < sizeYRatio ? gapSize2.Y : isize.Y);
+				var srcAreaForExpansion2 = new Rect2I(
+					sizeXRatio < sizeYRatio ? 0 : isize.X - gapSize2.X,
+					sizeXRatio < sizeYRatio ? isize.Y - gapSize2.Y : 0,
 					expansion2.Size.X,
 					expansion2.Size.Y);
-			expansion2.Draw(src, srcAreaForExpansion2, Vector2I.Zero);
-			if (sizeXRatio < sizeYRatio)
-			{
-				expansion2.MirrorY();
-			}
-			else
-			{
-				expansion2.MirrorX();
+				expansion2.Draw(src, srcAreaForExpansion2, Vector2I.Zero);
+				if (sizeXRatio < sizeYRatio)
+				{
+					expansion2.MirrorY();
+				}
+				else
+				{
+					expansion2.MirrorX();
+				}
 			}
 
 			var srcArea = new Rect2I(Vector2I.Zero, isize);
-			var srcPosition = destArea.Position + gapSize * (sizeXRatio < sizeYRatio ? new Vector2I(0, 1) : new Vector2I(1, 0));
+			var srcPosition = destArea.Position + gapSize1 * (sizeXRatio < sizeYRatio ? new Vector2I(0, 1) : new Vector2I(1, 0));
 			Dest.Draw(src, srcArea, srcPosition);
 
-			var expansion1Area = new Rect2I(Vector2I.Zero, expansion1.Size);
-			var expansion1Position = destArea.Position;
-			Dest.Draw(expansion1, expansion1Area, expansion1Position);
+			if (expansion1 != null)
+			{
+				var expansion1Area = new Rect2I(Vector2I.Zero, expansion1.Size);
+				var expansion1Position = destArea.Position;
+				Dest.Draw(expansion1, expansion1Area, expansion1Position);
+			}
 
-			var expansion2Area = new Rect2I(Vector2I.Zero, expansion2.Size);
-			var expansion2Position = destArea.Position + new Vector2I(
-				sizeXRatio < sizeYRatio ? 0 : gapSize.X + isize.X,
-				sizeXRatio < sizeYRatio ? gapSize.Y + isize.Y : 0);
-			Dest.Draw(expansion2, expansion2Area, expansion2Position);
+			if (expansion2 != null)
+			{
+				var expansion2Area = new Rect2I(Vector2I.Zero, expansion2.Size);
+				var expansion2Position = destArea.Position + new Vector2I(
+					sizeXRatio < sizeYRatio ? 0 : gapSize.X + isize.X,
+					sizeXRatio < sizeYRatio ? gapSize.Y + isize.Y : 0);
+				Dest.Draw(expansion2, expansion2Area, expansion2Position);
+			}
 		}
 	}
 }
