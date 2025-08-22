@@ -5,21 +5,25 @@ namespace SteamPanno.scenes.controls
 {
 	public partial class ImageButton : TextureRect
 	{
-		private float alphaMin = 0.3f;
-		private float alphaMax = 0.8f;
+		private const float alphaMin = 0.3f;
+		private const float alphaMax = 0.8f;
+		private const float alphaChangePerSecond = 1.5f;
+		private const double clickedDelay = 0.2f;
+
 		private float alphaCurrent = 0;
 		private float alphaTarget = 0;
-		private float alphaChangePerSecond = 1.5f;
-
-		private double alphaBlinkDelta = 0;
 		private bool alphaBlink = false;
+		private double alphaBlinkDelta = 0;
+		private bool clicked = false;
+		private double clickedDelta = 0;
+		private bool scaledUp = false;
 
 		public Action OnClick { get; set; }
 
 		public void Blink(bool on)
 		{
-			alphaBlinkDelta = 0;
 			alphaBlink = on;
+			alphaBlinkDelta = 0;
 		}
 
 		public override void _Ready()
@@ -30,6 +34,18 @@ namespace SteamPanno.scenes.controls
 
 		public override void _Process(double delta)
 		{
+			if (clicked)
+			{
+				clickedDelta += delta;
+				if (clickedDelta > clickedDelay)
+				{
+					clicked = false;
+					clickedDelta = 0;
+					PrimitiveScaleUp();
+					OnClick?.Invoke();
+				}
+			}
+
 			if (alphaBlink)
 			{
 				alphaCurrent = ((float)Math.Sin(alphaBlinkDelta * Math.PI * 2) * 0.5f + 0.5f) * (alphaMax - alphaMin) + alphaMin;
@@ -48,9 +64,11 @@ namespace SteamPanno.scenes.controls
 		{
 			if (@event is InputEventMouseButton mouseEvent &&
 				mouseEvent.ButtonIndex == MouseButton.Left &&
-				!mouseEvent.Pressed)
+				!mouseEvent.Pressed &&
+				!clicked)
 			{
-				OnClick?.Invoke();
+				clicked = true;
+				PrimitiveScaleDown();
 			}
 		}
 
@@ -58,11 +76,40 @@ namespace SteamPanno.scenes.controls
 		{
 			alphaTarget = alphaMax;
 			Blink(false);
+			if (!clicked)
+			{
+				PrimitiveScaleUp();
+			}
 		}
 
 		public void OnMouseExited()
 		{
 			alphaTarget = alphaMin;
+			PrimitiveScaleDown();
+		}
+
+		private void PrimitiveScaleUp()
+		{
+			if (!scaledUp)
+			{
+				PrimitiveScale(Vector2.One * -2);
+				scaledUp = true;
+			}
+		}
+
+		private void PrimitiveScaleDown()
+		{
+			if (scaledUp)
+			{
+				PrimitiveScale(Vector2.One * +2);
+				scaledUp = false;
+			}
+		}
+
+		private void PrimitiveScale(Vector2 delta)
+		{
+			Position += delta;
+			Size -= delta * 2;
 		}
 	}
 }
