@@ -19,7 +19,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
-    <PackageReference Include="TextCopy" Version="6.2.1" />
   </ItemGroup>
   <Target Condition=" '$(STEAM)' == '' and '$(GodotTargetPlatform)' == 'windows' " Name="PostBuildWindows" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy /Y &quot;$(GodotProjectDir)addons\steam\windows\steam_api64.dll&quot; &quot;$(GodotProjectDir)&quot;" />

@@ -2,7 +2,6 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TextCopy;
 using SteamPanno.panno.loading;
 using SteamPanno.scenes.controls;
 
@@ -283,7 +282,9 @@ namespace SteamPanno.scenes
 
 		private async Task GetSteamIdBackThread()
 		{
-			var text = ClipboardService.GetText();
+			var text = DisplayServer.ClipboardHas()
+				? DisplayServer.ClipboardGet()
+				: null;
 
 			if (text != null && text.Length < 1000)
 			{
