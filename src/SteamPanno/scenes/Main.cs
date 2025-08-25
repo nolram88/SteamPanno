@@ -95,7 +95,14 @@ namespace SteamPanno.scenes
 				report.Visible = !report.Visible;
 			};
 
-			Task.Run(async () => await GeneratePannoBackThread());
+			if (Settings.Instance.ShowConfigOnStart)
+			{
+				ShowConfig(true);
+			}
+			else
+			{
+				Task.Run(async () => await GeneratePannoBackThread());
+			}
 		}
 
 		public override void _Process(double delta)

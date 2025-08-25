@@ -35,6 +35,8 @@ namespace SteamPanno
 
 			// hidden settings
 			public int MinimalGameAreaSize { get; set; } = 8;
+			public int HttpTimeoutSeconds { get; set; } = 20;
+			public bool ShowConfigOnStart { get; set; } = false;
 		}
 
 		static Settings()

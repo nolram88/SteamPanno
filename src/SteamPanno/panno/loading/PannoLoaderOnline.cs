@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -20,11 +21,18 @@ namespace SteamPanno.panno.loading
 		private const string GetLogoH = "https://steamcdn-a.akamaihd.net/steam/apps/{0}/capsule_616x353.jpg";
 		private const string GetLogoHeader = "https://steamcdn-a.akamaihd.net/steam/apps/{0}/header.jpg";
 
+		private static System.Net.Http.HttpClient httpClient;
+
+		public PannoLoaderOnline()
+		{
+			httpClient = new System.Net.Http.HttpClient();
+			httpClient.Timeout = TimeSpan.FromSeconds(Settings.Instance.HttpTimeoutSeconds);
+		}
+
 		public async Task<string> GetProfileSteamId(string steamName)
 		{
-			var client = new System.Net.Http.HttpClient();
 			var url = string.Format(GetProfileBySteamNameUrl, steamName);
-			using (var response = await client.GetAsync(url))
+			using (var response = await httpClient.GetAsync(url))
 			{
 				response.EnsureSuccessStatusCode();
 				var responseBody = await response.Content.ReadAsStringAsync();
@@ -35,9 +43,8 @@ namespace SteamPanno.panno.loading
 
 		public override async Task<PannoGame[]> GetProfileGames(string steamId)
 		{
-			var client = new System.Net.Http.HttpClient();
 			var url = string.Format(GetProfileBySteamIdUrl, steamId);
-			using (var response = await client.GetAsync(url))
+			using (var response = await httpClient.GetAsync(url))
 			{
 				response.EnsureSuccessStatusCode();
 				var responseBody = await response.Content.ReadAsStringAsync();
@@ -73,8 +80,7 @@ namespace SteamPanno.panno.loading
 			{
 				url = string.Format(url, appId);
 
-				var client = new System.Net.Http.HttpClient();
-				using (var response = await client.GetAsync(url))
+				using (var response = await httpClient.GetAsync(url))
 				{
 					if (response.IsSuccessStatusCode)
 					{
