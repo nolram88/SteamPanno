@@ -282,26 +282,33 @@ namespace SteamPanno.scenes
 
 		private async Task GetSteamIdBackThread()
 		{
-			var text = DisplayServer.ClipboardHas()
+			try
+			{
+				var text = DisplayServer.ClipboardHas()
 				? DisplayServer.ClipboardGet()
 				: null;
 
-			if (text != null && text.Length < 1000)
-			{
-				if (text.StartsWith("https://steamcommunity.com/profiles/"))
+				if (text != null && text.Length < 1000)
 				{
-					if (text.TryParseSteamId(out var steamIdParsed))
+					if (text.StartsWith("https://steamcommunity.com/profiles/"))
 					{
-						customAccountIdFromClipboard = steamIdParsed;
+						if (text.TryParseSteamId(out var steamIdParsed))
+						{
+							customAccountIdFromClipboard = steamIdParsed;
+						}
+					}
+					else if (text.StartsWith("https://steamcommunity.com/id/"))
+					{
+						var name = text.Replace("https://steamcommunity.com/id/", "").TrimEnd('/');
+						var loader = new PannoLoaderOnline();
+						var steamIdLoaded = await loader.GetProfileSteamId(name);
+						customAccountIdFromClipboard = steamIdLoaded ?? string.Empty;
 					}
 				}
-				else if (text.StartsWith("https://steamcommunity.com/id/"))
-				{
-					var name = text.Replace("https://steamcommunity.com/id/", "").TrimEnd('/');
-					var loader = new PannoLoaderOnline();
-					var steamIdLoaded = await loader.GetProfileSteamId(name);
-					customAccountIdFromClipboard = steamIdLoaded ?? string.Empty;
-				}
+			}
+			catch (Exception e)
+			{
+				// report
 			}
 		}
 
