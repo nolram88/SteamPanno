@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://cjbg01q6avlwd"]
+[gd_scene load_steps=6 format=3 uid="uid://cjbg01q6avlwd"]
 
 [ext_resource type="Script" uid="uid://6f2c4uibxicc" path="res://scenes/Config.cs" id="1_ha6ln"]
 [ext_resource type="PackedScene" uid="uid://csddb8mltqpvc" path="res://scenes/controls/ImageButton.tscn" id="2_wfw86"]
 [ext_resource type="Texture2D" uid="uid://cjo8qtd4is6es" path="res://assets/images/steam.png" id="3_wfw86"]
+[ext_resource type="Texture2D" uid="uid://cn8gl2g663ora" path="res://assets/images/ok.png" id="4_u5tr3"]
+[ext_resource type="Texture2D" uid="uid://cjel17i5uyr7n" path="res://assets/images/exit.png" id="5_pla6w"]
 
 [node name="Config" type="Control"]
 layout_mode = 3
@@ -227,27 +229,20 @@ custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_vertical = 8
 
-[node name="Back" type="VBoxContainer" parent="VBoxContainer/Bottom"]
+[node name="BottomCenter" type="HBoxContainer" parent="VBoxContainer/Bottom"]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[node name="OkButton" parent="VBoxContainer/Bottom/BottomCenter" instance=ExtResource("2_wfw86")]
 layout_mode = 2
 size_flags_horizontal = 2
-size_flags_vertical = 8
+size_flags_vertical = 4
+texture = ExtResource("4_u5tr3")
 
-[node name="BackBtn" type="Button" parent="VBoxContainer/Bottom/Back"]
-custom_minimum_size = Vector2(400, 60)
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "Back"
-
-[node name="Apply" type="VBoxContainer" parent="VBoxContainer/Bottom"]
+[node name="CancelButton" parent="VBoxContainer/Bottom/BottomCenter" instance=ExtResource("2_wfw86")]
 layout_mode = 2
 size_flags_horizontal = 10
-size_flags_vertical = 8
-
-[node name="ApplyBtn" type="Button" parent="VBoxContainer/Bottom/Apply"]
-custom_minimum_size = Vector2(400, 60)
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "Apply"
-
-[connection signal="pressed" from="VBoxContainer/Bottom/Back/BackBtn" to="." method="OnBackBtnPressed"]
-[connection signal="pressed" from="VBoxContainer/Bottom/Apply/ApplyBtn" to="." method="OnApplyBtnPressed"]
+size_flags_vertical = 4
+texture = ExtResource("5_pla6w")

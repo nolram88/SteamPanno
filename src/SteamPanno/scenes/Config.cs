@@ -180,6 +180,11 @@ namespace SteamPanno.scenes
 			}
 			var showHoursOptionIndex = Math.Clamp((int)Settings.Instance.ShowHoursOption, 0, showHoursValue.ItemCount - 1);
 			showHoursValue.Select(showHoursOptionIndex);
+
+			var okBtn = GetNode<ImageButton>("./VBoxContainer/Bottom/BottomCenter/OkButton");
+			okBtn.OnClick = OnOkPressed;
+			var cancelBtn = GetNode<ImageButton>("./VBoxContainer/Bottom/BottomCenter/CancelButton");
+			cancelBtn.OnClick = OnCancelPressed;
 		}
 
 		public override void _Process(double delta)
@@ -201,7 +206,7 @@ namespace SteamPanno.scenes
 				switch (keyEvent.PhysicalKeycode)
 				{
 					case Key.Escape:
-						OnBackBtnPressed();
+						OnCancelPressed();
 						GetTree().Root.SetInputAsHandled();
 						break;
 				}
@@ -339,12 +344,12 @@ namespace SteamPanno.scenes
 			customMinimalHours.Visible = index == 3;
 		}
 
-		private void OnBackBtnPressed()
+		private void OnCancelPressed()
 		{
 			OnExit?.Invoke(false);
 		}
 
-		private void OnApplyBtnPressed()
+		private void OnOkPressed()
 		{
 			var maxTextureSize = RenderingServer.GetRenderingDevice().LimitGet(RenderingDevice.Limit.MaxTextureSize2D);
 
