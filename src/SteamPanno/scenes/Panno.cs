@@ -131,7 +131,10 @@ namespace SteamPanno.scenes
 				{
 					drawer.Draw(image, game.Area);
 				}
-				pannoGamesInText.Add(game);
+				else
+				{
+					pannoGamesInText.Add(game);
+				}
 
 				current++;
 			}

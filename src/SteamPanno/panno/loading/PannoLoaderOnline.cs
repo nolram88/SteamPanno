@@ -82,9 +82,11 @@ namespace SteamPanno.panno.loading
 
 				using (var response = await httpClient.GetAsync(url))
 				{
-					response.EnsureSuccessStatusCode();
-					var responseBody = await response.Content.ReadAsByteArrayAsync();
-					return PannoImage.Load(responseBody);
+					if (response.IsSuccessStatusCode)
+					{
+						var responseBody = await response.Content.ReadAsByteArrayAsync();
+						return PannoImage.Load(responseBody);
+					}
 				}
 			}
 
