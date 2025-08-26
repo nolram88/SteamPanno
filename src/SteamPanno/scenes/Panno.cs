@@ -1,7 +1,8 @@
 using Godot;
 using SteamPanno.panno;
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SteamPanno.scenes
@@ -22,7 +23,7 @@ namespace SteamPanno.scenes
 		private TextureRect textureOut;
 		private PannoImage pannoImage;
 		private PannoState pannoState;
-		private List<PannoGameLayout> pannoGamesInText;
+		private ConcurrentBag<PannoGameLayout> pannoGamesInText;
 
 		public override void _Ready()
 		{
@@ -116,28 +117,40 @@ namespace SteamPanno.scenes
 
 		public async Task LoadAndDraw(PannoGameLayout[] games, PannoLoader loader, PannoDrawer drawer, ICallBack callBack)
 		{
-			pannoGamesInText = new List<PannoGameLayout>();
+			pannoGamesInText = new ConcurrentBag<PannoGameLayout>();
+			var locker = new SemaphoreSlim(1, 1);
 
 			var current = 0;
-			foreach (var game in games)
-			{
-				callBack.ProgressSet(((double)current / games.Length) * 100, $"{game.Game.Name} ({current}/{games.Length})");
-
-				var image = game.Area.PreferHorizontal()
-					? await loader.GetGameLogoH(game.Game.Id)
-					: await loader.GetGameLogoV(game.Game.Id);
-
-				if (image != null)
+			await Parallel.ForEachAsync(
+				games,
+				new ParallelOptions
 				{
-					drawer.Draw(image, game.Area);
-				}
-				else
+					MaxDegreeOfParallelism = Math.Min(
+						games.Length,
+						Math.Min(
+							Settings.Instance.MaxDegreeOfParallelism,
+							Math.Max(OS.GetProcessorCount(), 1)))
+				},
+				async (game, ct) =>
 				{
-					pannoGamesInText.Add(game);
-				}
+					var image = game.Area.PreferHorizontal()
+						? await loader.GetGameLogoH(game.Game.Id)
+						: await loader.GetGameLogoV(game.Game.Id);
 
-				current++;
-			}
+					if (image != null)
+					{
+						drawer.Draw(image, game.Area);
+					}
+					else
+					{
+						pannoGamesInText.Add(game);
+					}
+
+					locker.Wait();
+					current++;
+					callBack.ProgressSet(((double)current / games.Length) * 100, $"{game.Game.Name} ({current}/{games.Length})");
+					locker.Release();
+				});
 
 			pannoImage = drawer.Dest;
 			pannoState = PannoState.Ready;

@@ -5,6 +5,7 @@ using SteamPanno.panno.generation;
 using SteamPanno.panno.loading;
 using SteamPanno.scenes.controls;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -216,6 +217,8 @@ namespace SteamPanno.scenes
 
 		protected async Task GeneratePannoBackThread()
 		{
+			Stopwatch time = Stopwatch.StartNew();
+
 			try
 			{
 				pannoSteamId = null;
@@ -296,6 +299,7 @@ namespace SteamPanno.scenes
 				await panno.LoadAndDraw(pannoStructure, loader, drawer, this);
 
 				saveButtonVisible = true;
+				GD.Print($"Generation time: {TimeSpan.FromMilliseconds(time.ElapsedMilliseconds).ToString()}");
 			}
 			catch (Exception e)
 			{
@@ -304,6 +308,7 @@ namespace SteamPanno.scenes
 			finally
 			{
 				ProgressStop();
+				time.Stop();
 			}
 		}
 
