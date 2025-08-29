@@ -51,6 +51,11 @@ namespace SteamPanno.panno
 			return image.Dest;
 		}
 
+		public static implicit operator Texture2D(PannoImage image)
+		{
+			return ImageTexture.CreateFromImage(image.Dest);
+		}
+
 		public virtual Vector2I Size
 		{
 			get => Dest.GetSize();

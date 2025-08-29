@@ -1,10 +1,11 @@
-﻿using Godot;
+﻿using System.Threading.Tasks;
+using Godot;
 
 namespace SteamPanno.panno.drawing
 {
 	public abstract class PannoDrawerGapFiller : PannoDrawer
 	{
-		public override void Draw(PannoImage src, Rect2I destArea)
+		public override async Task Draw(PannoImage src, Rect2I destArea)
 		{
 			var size = destArea.Size;
 			var isize = src.Size;
@@ -38,10 +39,10 @@ namespace SteamPanno.panno.drawing
 					sizeXRatio < sizeYRatio ? (size.Y - isize.Y) : isize.Y);
 
 			PannoImage expansion1 = gapSize1.X > 0 && gapSize1.Y > 0
-				? PrepareExpansion1(src, sizeXRatio, sizeYRatio, isize, gapSize1)
+				? await PrepareExpansion1(src, sizeXRatio, sizeYRatio, isize, gapSize1)
 				: null;
 			PannoImage expansion2 = gapSize2.X > 0 && gapSize2.Y > 0
-				? PrepareExpansion2(src, sizeXRatio, sizeYRatio, isize, gapSize2)
+				? await PrepareExpansion2(src, sizeXRatio, sizeYRatio, isize, gapSize2)
 				: null;
 
 			var srcArea = new Rect2I(Vector2I.Zero, isize);
@@ -65,14 +66,14 @@ namespace SteamPanno.panno.drawing
 			}
 		}
 
-		protected abstract PannoImage PrepareExpansion1(
+		protected abstract Task<PannoImage> PrepareExpansion1(
 			PannoImage src,
 			float sizeXRatio,
 			float sizeYRatio,
 			Vector2I isize,
 			Vector2I gapSize);
 
-		protected abstract PannoImage PrepareExpansion2(
+		protected abstract Task<PannoImage> PrepareExpansion2(
 			PannoImage src,
 			float sizeXRatio,
 			float sizeYRatio,

@@ -169,9 +169,28 @@ namespace SteamPanno.scenes
 			return PannoImage.Create(x, y);
 		}
 
-		public PannoImage Blur(PannoImage src)
+		public async Task<PannoImage> Blur(PannoImage src)
 		{
-			return null;
+			var viewport = new SubViewport();
+			viewport.Size = src.Size;
+			viewport.TransparentBg = true;
+			AddChild(this);
+
+			var shader = GD.Load<Shader>("res://assets/shaders/pannoblur.gdshader");
+			var material = new ShaderMaterial();
+			material.Shader = shader;
+			Texture2D texture = src;
+			material.SetShaderParameter("src", texture);
+
+			var blurSprite = new Sprite2D();
+			blurSprite.Texture = texture;
+			blurSprite.Material = material;
+			blurSprite.Centered = false;
+			viewport.AddChild(blurSprite);
+
+			await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+
+			return PannoImage.Create(viewport.GetTexture().GetImage());
 		}
 
 		public void ProgressSet(double value, string text = null)

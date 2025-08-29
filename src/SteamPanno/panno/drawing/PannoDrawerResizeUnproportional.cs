@@ -1,10 +1,11 @@
-﻿using Godot;
+﻿using System.Threading.Tasks;
+using Godot;
 
 namespace SteamPanno.panno.drawing
 {
 	public class PannoDrawerResizeUnproportional : PannoDrawer
 	{
-		public override void Draw(PannoImage src, Rect2I destArea)
+		public override Task Draw(PannoImage src, Rect2I destArea)
 		{
 			var position = destArea.Position;
 			var size = destArea.Size;
@@ -13,6 +14,8 @@ namespace SteamPanno.panno.drawing
 			var rect = new Rect2I(Vector2I.Zero, size);
 
 			Dest.Draw(src, rect, position);
+
+			return Task.CompletedTask;
 		}
 	}
 }

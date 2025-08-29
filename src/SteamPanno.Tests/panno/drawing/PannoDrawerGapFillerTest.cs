@@ -3,6 +3,7 @@ using System.Linq;
 using Xunit;
 using Shouldly;
 using NSubstitute;
+using System.Threading.Tasks;
 
 namespace SteamPanno.panno.drawing
 {
@@ -36,11 +37,11 @@ namespace SteamPanno.panno.drawing
 		[Theory]
 		[InlineData(200, 100)]
 		[InlineData(20, 10)]
-		public void ShouldResizeImageAndDrawFullAreaWithThreeFragments(int srcWidth, int srcHeight)
+		public async Task ShouldResizeImageAndDrawFullAreaWithThreeFragments(int srcWidth, int srcHeight)
 		{
 			var src = drawer.Processor.Create(srcWidth, srcHeight);
 
-			drawer.Draw(src, new Rect2I(0, 0, 100, 100));
+			await drawer.Draw(src, new Rect2I(0, 0, 100, 100));
 
 			src.Size.ShouldBe(new Vector2I(100, 50));
 			dest.Received(1).Draw(
@@ -59,11 +60,11 @@ namespace SteamPanno.panno.drawing
 
 		[Theory]
 		[InlineData(200, 100)]
-		public void ShouldDrawSingleFragmentWhenSizeIsExactMatch(int srcWidth, int srcHeight)
+		public async Task ShouldDrawSingleFragmentWhenSizeIsExactMatch(int srcWidth, int srcHeight)
 		{
 			var src = drawer.Processor.Create(srcWidth, srcHeight);
 
-			drawer.Draw(src, new Rect2I(0, 0, 200, 100));
+			await drawer.Draw(src, new Rect2I(0, 0, 200, 100));
 
 			src.Size.ShouldBe(new Vector2I(200, 100));
 			dest.Received(1).Draw(
@@ -75,11 +76,11 @@ namespace SteamPanno.panno.drawing
 
 		[Theory]
 		[InlineData(200, 100)]
-		public void ShouldDrawGapsOnlyWhenNecessary(int srcWidth, int srcHeight)
+		public async Task ShouldDrawGapsOnlyWhenNecessary(int srcWidth, int srcHeight)
 		{
 			var src = drawer.Processor.Create(srcWidth, srcHeight);
 
-			drawer.Draw(src, new Rect2I(0, 0, 2, 2));
+			await drawer.Draw(src, new Rect2I(0, 0, 2, 2));
 
 			src.Size.ShouldBe(new Vector2I(2, 1));
 			dest.Received(1).Draw(

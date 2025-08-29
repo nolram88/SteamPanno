@@ -1,4 +1,5 @@
-﻿using Godot;
+﻿using System.Threading.Tasks;
+using Godot;
 
 namespace SteamPanno.panno
 {
@@ -7,6 +8,6 @@ namespace SteamPanno.panno
 		public PannoImage Dest { get; init; }
 		public IPannoImageProcessor Processor { get; init; }
 
-		public abstract void Draw(PannoImage src, Rect2I destArea);
+		public abstract Task Draw(PannoImage src, Rect2I destArea);
 	}
 }

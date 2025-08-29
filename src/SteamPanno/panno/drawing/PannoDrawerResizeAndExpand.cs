@@ -1,10 +1,11 @@
-﻿using Godot;
+﻿using System.Threading.Tasks;
+using Godot;
 
 namespace SteamPanno.panno.drawing
 {
 	public class PannoDrawerResizeAndExpand : PannoDrawerGapFiller
 	{
-		protected override PannoImage PrepareExpansion1(
+		protected override Task<PannoImage> PrepareExpansion1(
 			PannoImage src,
 			float sizeXRatio,
 			float sizeYRatio,
@@ -18,10 +19,10 @@ namespace SteamPanno.panno.drawing
 			expansion1.Draw(src, srcAreaForExpansion1, Vector2I.Zero);
 			expansion1.Size = gapSize;
 
-			return expansion1;
+			return Task.FromResult(expansion1);
 		}
 
-		protected override PannoImage PrepareExpansion2(
+		protected override Task<PannoImage> PrepareExpansion2(
 			PannoImage src,
 			float sizeXRatio,
 			float sizeYRatio,
@@ -39,7 +40,7 @@ namespace SteamPanno.panno.drawing
 			expansion2.Draw(src, srcAreaForExpansion2, Vector2I.Zero);
 			expansion2.Size = gapSize;
 
-			return expansion2;
+			return Task.FromResult(expansion2);
 		}
 	}
 }

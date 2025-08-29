@@ -290,8 +290,8 @@ namespace SteamPanno.scenes
 			try
 			{
 				var text = DisplayServer.ClipboardHas()
-				? DisplayServer.ClipboardGet()
-				: null;
+					? DisplayServer.ClipboardGet()
+					: null;
 
 				if (text != null && text.Length < 1000)
 				{
@@ -311,9 +311,8 @@ namespace SteamPanno.scenes
 					}
 				}
 			}
-			catch (Exception e)
+			catch
 			{
-				// report
 			}
 		}
 

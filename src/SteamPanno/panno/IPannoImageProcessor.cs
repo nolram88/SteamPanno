@@ -1,8 +1,10 @@
-﻿namespace SteamPanno.panno
+﻿using System.Threading.Tasks;
+
+namespace SteamPanno.panno
 {
 	public interface IPannoImageProcessor
 	{
 		PannoImage Create(int x, int y);
-		PannoImage Blur(PannoImage src);
+		Task<PannoImage> Blur(PannoImage src);
 	}
 }
