@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace SteamPanno.scenes
 {
-	public partial class Main : Node, ICallBack
+	public partial class Main : Node, IPannoImageProcessor, IPannoObserver
 	{
 		private Panno panno;
 		private Control gui;
@@ -162,6 +162,16 @@ namespace SteamPanno.scenes
 			{
 				Quit();
 			}
+		}
+
+		public PannoImage Create(int x, int y)
+		{
+			return PannoImage.Create(x, y);
+		}
+
+		public PannoImage Blur(PannoImage src)
+		{
+			return null;
 		}
 
 		public void ProgressSet(double value, string text = null)
@@ -346,12 +356,12 @@ namespace SteamPanno.scenes
 			return DisplayServer.ScreenGetSize();
 		}
 
-		protected PannoDrawer CreateDrawer<T>(Vector2I pannoSize) where T : PannoDrawer, new()
+		protected T CreateDrawer<T>(Vector2I pannoSize) where T : PannoDrawer, new()
 		{
 			return new T()
 			{
 				Dest = PannoImage.Create(pannoSize.X, pannoSize.Y),
-				Builder = PannoImage.Create,
+				Processor = this,
 			};
 		}
 

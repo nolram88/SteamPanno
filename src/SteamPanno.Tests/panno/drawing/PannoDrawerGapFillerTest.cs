@@ -11,10 +11,23 @@ namespace SteamPanno.panno.drawing
 	{
 		protected readonly T drawer;
 		protected readonly PannoImage dest;
+		protected readonly IPannoImageProcessor processor;
 
 		public PannoDrawerGapFillerTest()
 		{
 			dest = Substitute.For<PannoImage>();
+			processor = Substitute.For<IPannoImageProcessor>();
+			processor.Create(
+				Arg.Any<int>(),
+				Arg.Any<int>())
+				.Returns(ci =>
+				{
+					var newImage = Substitute.For<PannoImage>();
+					var width = (int)ci[0];
+					var height = (int)ci[1];
+					newImage.Size = new Vector2I(width, height);
+					return newImage;
+				});
 			drawer = CreateDrawer();
 		}
 
@@ -25,7 +38,7 @@ namespace SteamPanno.panno.drawing
 		[InlineData(20, 10)]
 		public void ShouldResizeImageAndDrawFullAreaWithThreeFragments(int srcWidth, int srcHeight)
 		{
-			var src = drawer.Builder(srcWidth, srcHeight);
+			var src = drawer.Processor.Create(srcWidth, srcHeight);
 
 			drawer.Draw(src, new Rect2I(0, 0, 100, 100));
 
@@ -48,7 +61,7 @@ namespace SteamPanno.panno.drawing
 		[InlineData(200, 100)]
 		public void ShouldDrawSingleFragmentWhenSizeIsExactMatch(int srcWidth, int srcHeight)
 		{
-			var src = drawer.Builder(srcWidth, srcHeight);
+			var src = drawer.Processor.Create(srcWidth, srcHeight);
 
 			drawer.Draw(src, new Rect2I(0, 0, 200, 100));
 
@@ -64,7 +77,7 @@ namespace SteamPanno.panno.drawing
 		[InlineData(200, 100)]
 		public void ShouldDrawGapsOnlyWhenNecessary(int srcWidth, int srcHeight)
 		{
-			var src = drawer.Builder(srcWidth, srcHeight);
+			var src = drawer.Processor.Create(srcWidth, srcHeight);
 
 			drawer.Draw(src, new Rect2I(0, 0, 2, 2));
 

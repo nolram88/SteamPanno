@@ -115,7 +115,7 @@ namespace SteamPanno.scenes
 			pannoState = PannoState.Dirty;
 		}
 
-		public async Task LoadAndDraw(PannoGameLayout[] games, PannoLoader loader, PannoDrawer drawer, ICallBack callBack)
+		public async Task LoadAndDraw(PannoGameLayout[] games, PannoLoader loader, PannoDrawer drawer, IPannoObserver observer)
 		{
 			pannoGamesInText = new ConcurrentBag<PannoGameLayout>();
 			var locker = new SemaphoreSlim(1, 1);
@@ -148,7 +148,7 @@ namespace SteamPanno.scenes
 
 					locker.Wait();
 					current++;
-					callBack.ProgressSet(((double)current / games.Length) * 100, $"{game.Game.Name} ({current}/{games.Length})");
+					observer.ProgressSet(((double)current / games.Length) * 100, $"{game.Game.Name} ({current}/{games.Length})");
 					locker.Release();
 				});
 

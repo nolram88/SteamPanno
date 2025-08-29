@@ -1,7 +1,4 @@
-﻿using Godot;
-using NSubstitute;
-
-namespace SteamPanno.panno.drawing
+﻿namespace SteamPanno.panno.drawing
 {
 	public class PannoDrawerResizeAndMirrorTest : PannoDrawerGapFillerTest<PannoDrawerResizeAndMirror>
 	{
@@ -10,12 +7,7 @@ namespace SteamPanno.panno.drawing
 			return new PannoDrawerResizeAndMirror()
 			{
 				Dest = dest,
-				Builder = (width, height) =>
-				{
-					var newImage = Substitute.For<PannoImage>();
-					newImage.Size = new Vector2I(width, height);
-					return newImage;
-				}
+				Processor = processor,
 			};
 		}
 	}
