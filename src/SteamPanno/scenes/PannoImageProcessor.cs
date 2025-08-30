@@ -9,53 +9,44 @@ namespace SteamPanno.scenes
 	public partial class PannoImageProcessor : Control, IPannoImageProcessor
 	{
 		private SubViewport subViewport;
-		private TextureRect textureIn;
-		private ShaderMaterial blurMaterial;
+		private Sprite2D spriteIn;
+		private ShaderMaterial spriteInMaterial;
 		private Channel<PannoImage> imagesIn = Channel.CreateUnbounded<PannoImage>();
-		private Queue<Sprite2D> spritesToRemove = new Queue<Sprite2D>();
+		private Queue<SubViewport> subViewportOut = new Queue<SubViewport>();
 		private Channel<PannoImage> imagesOut = Channel.CreateUnbounded<PannoImage>();
 
 		public override void _Ready()
 		{
 			subViewport = GetNode<SubViewport>("./SubViewport");
-			textureIn = GetNode<TextureRect>("./SubViewport/TextureIn");
+			
 			var blurShader = GD.Load<Shader>("res://assets/shaders/pannoblur.gdshader");
-			blurMaterial = new ShaderMaterial();
-			blurMaterial.Shader = blurShader;
-			textureIn.Material = blurMaterial;
+			spriteInMaterial = new ShaderMaterial();
+			spriteInMaterial.Shader = blurShader;
+
+			spriteIn = new Sprite2D();
+			spriteIn.Centered = false;
+			spriteIn.Material = spriteInMaterial;
+			subViewport.AddChild(spriteIn);
 		}
 
 		public override void _Process(double delta)
 		{
-			while (spritesToRemove.Count > 0)
+			while (subViewportOut.Count > 0)
 			{
+				var subViewport = subViewportOut.Dequeue();
 				var image = subViewport.GetTexture().GetImage();
 				image.Convert(Image.Format.Rgb8);
 				imagesOut.Writer.TryWrite(PannoImage.Create(image));
-
-				var sprite = spritesToRemove.Dequeue();
-				subViewport.RemoveChild(sprite);
 			}
 
 			while (imagesIn.Reader.TryRead(out var imageToAdd))
 			{
 				Texture2D texture = imageToAdd;
 
-				blurMaterial.SetShaderParameter("src", texture);
-				var blurSprite = new Sprite2D();
-				blurSprite.Texture = texture;
-				blurSprite.Material = blurMaterial;
-				blurSprite.Centered = false;
-				blurSprite.Visible = true;
-
-				textureIn.Size = imageToAdd.Size;
-				textureIn.Texture = texture;
-				textureIn.Visible = true;
-
+				spriteInMaterial.SetShaderParameter("src", texture);
+				spriteIn.Texture = texture;
 				subViewport.Size = imageToAdd.Size;
-				subViewport.AddChild(blurSprite);
-
-				spritesToRemove.Enqueue(blurSprite);
+				subViewportOut.Enqueue(subViewport);
 			}
 		}
 
