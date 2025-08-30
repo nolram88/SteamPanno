@@ -11,9 +11,9 @@ namespace SteamPanno.scenes
 		private record ProcessorLine
 		{
 			public SubViewport SubViewport { get; init; }
-			public Sprite2D SpriteIn { get; init; }
-			public ShaderMaterial SpriteInMaterial { get; init; }
-			public PannoImage Input { get; set; }
+			public Sprite2D Sprite { get; init; }
+			public ShaderMaterial SpriteMaterial { get; init; }
+			public (PannoImage Image, string ShaderPath, Dictionary<string, Variant> ShaderParams) Input { get; set; }
 			public Channel<PannoImage> Output { get; init; }
 		}
 
@@ -23,8 +23,6 @@ namespace SteamPanno.scenes
 
 		public override void _Ready()
 		{
-			var blurShader = GD.Load<Shader>("res://assets/shaders/pannoblur.gdshader");
-
 			for (int i = 0; i < Settings.Instance.MaxDegreeOfParallelism; i++)
 			{
 				var subViewport = new SubViewport();
@@ -32,19 +30,17 @@ namespace SteamPanno.scenes
 				subViewport.RenderTargetUpdateMode = SubViewport.UpdateMode.Always;
 				subViewport.ProcessMode = ProcessModeEnum.Always;
 				var material = new ShaderMaterial();
-				material.Shader = blurShader;
-				var spriteIn = new Sprite2D();
-				spriteIn.Centered = false;
-				spriteIn.Material = material;
-				subViewport.AddChild(spriteIn);
+				var sprite = new Sprite2D();
+				sprite.Centered = false;
+				sprite.Material = material;
+				subViewport.AddChild(sprite);
 				AddChild(subViewport);
 
 				freeLines.Writer.TryWrite(new ProcessorLine()
 				{
 					SubViewport = subViewport,
-					SpriteIn = spriteIn,
-					SpriteInMaterial = material,
-					Input = null,
+					Sprite = sprite,
+					SpriteMaterial = material,
 					Output = Channel.CreateUnbounded<PannoImage>(),
 				});
 			}
@@ -71,10 +67,19 @@ namespace SteamPanno.scenes
 			{
 				try
 				{
-					Texture2D texture = workLine.Input;
-					workLine.SpriteInMaterial.SetShaderParameter("src", texture);
-					workLine.SpriteIn.Texture = texture;
-					workLine.SubViewport.Size = workLine.Input.Size;
+					(Texture2D texture, string shaderPath, Dictionary<string, Variant> shaderParams) = workLine.Input;
+
+					workLine.SubViewport.Size = workLine.Input.Image.Size;
+					workLine.Sprite.Texture = texture;
+					workLine.SpriteMaterial.Shader = GD.Load<Shader>(shaderPath);
+					workLine.SpriteMaterial.SetShaderParameter("src", texture);
+					if (shaderParams != null)
+					{
+						foreach (var shaderParam in shaderParams)
+						{
+							workLine.SpriteMaterial.SetShaderParameter(shaderParam.Key, shaderParam.Value);
+						}
+					}
 				}
 				finally
 				{
@@ -88,15 +93,10 @@ namespace SteamPanno.scenes
 			return PannoImage.Create(x, y);
 		}
 
-		public async Task<PannoImage> Blur(PannoImage src)
-		{
-			return await BlurOnGPU(src);
-		}
-
-		private async Task<PannoImage> BlurOnGPU(PannoImage src)
+		public async Task<PannoImage> Effect(PannoImage src, string path, Dictionary<string, Variant> parameters = null)
 		{
 			var line = await freeLines.Reader.ReadAsync();
-			line.Input = src;
+			line.Input = (src, path, parameters);
 			await workLines.Writer.WriteAsync(line);
 
 			return await line.Output.Reader.ReadAsync();

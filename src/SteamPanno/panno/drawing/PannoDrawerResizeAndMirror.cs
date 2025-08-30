@@ -26,7 +26,7 @@ namespace SteamPanno.panno.drawing
 				expansion1.MirrorX();
 			}
 
-			return await Processor.Blur(expansion1);
+			return await Processor.Effect(expansion1, "res://assets/shaders/pannoblur.gdshader");
 		}
 
 		protected override async Task<PannoImage> PrepareExpansion2(
@@ -54,7 +54,7 @@ namespace SteamPanno.panno.drawing
 				expansion2.MirrorX();
 			}
 
-			return await Processor.Blur(expansion2);
+			return await Processor.Effect(expansion2, "res://assets/shaders/pannoblur.gdshader");
 		}
 	}
 }
