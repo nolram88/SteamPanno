@@ -9,6 +9,7 @@ namespace SteamPanno.scenes
 	public partial class PannoImageProcessor : Control, IPannoImageProcessor
 	{
 		private SubViewport subViewport;
+		private TextureRect textureIn;
 		private ShaderMaterial blurMaterial;
 		private Channel<PannoImage> imagesIn = Channel.CreateUnbounded<PannoImage>();
 		private Queue<Sprite2D> spritesToRemove = new Queue<Sprite2D>();
@@ -17,9 +18,11 @@ namespace SteamPanno.scenes
 		public override void _Ready()
 		{
 			subViewport = GetNode<SubViewport>("./SubViewport");
+			textureIn = GetNode<TextureRect>("./SubViewport/TextureIn");
 			var blurShader = GD.Load<Shader>("res://assets/shaders/pannoblur.gdshader");
 			blurMaterial = new ShaderMaterial();
 			blurMaterial.Shader = blurShader;
+			textureIn.Material = blurMaterial;
 		}
 
 		public override void _Process(double delta)
@@ -42,9 +45,16 @@ namespace SteamPanno.scenes
 				var blurSprite = new Sprite2D();
 				blurSprite.Texture = texture;
 				blurSprite.Material = blurMaterial;
-				blurSprite.Centered = true;
+				blurSprite.Centered = false;
+				blurSprite.Visible = true;
+
+				textureIn.Size = imageToAdd.Size;
+				textureIn.Texture = texture;
+				textureIn.Visible = true;
+
 				subViewport.Size = imageToAdd.Size;
 				subViewport.AddChild(blurSprite);
+
 				spritesToRemove.Enqueue(blurSprite);
 			}
 		}
