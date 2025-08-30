@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://gfm774k1w8sk"]
+
+[ext_resource type="Script" uid="uid://bxyf58idfun03" path="res://scenes/PannoImageProcessor.cs" id="1_08dm2"]
+
+[node name="PannoImageProcessor" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_08dm2")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+process_mode = 3

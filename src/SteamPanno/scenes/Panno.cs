@@ -137,6 +137,8 @@ namespace SteamPanno.scenes
 						? await loader.GetGameLogoH(game.Game.Id)
 						: await loader.GetGameLogoV(game.Game.Id);
 
+					locker.Wait();
+
 					if (image != null)
 					{
 						await drawer.Draw(image, game.Area);
@@ -146,7 +148,6 @@ namespace SteamPanno.scenes
 						pannoGamesInText.Add(game);
 					}
 
-					locker.Wait();
 					current++;
 					observer.ProgressSet(((double)current / games.Length) * 100, $"{game.Game.Name} ({current}/{games.Length})");
 					locker.Release();

@@ -14,11 +14,12 @@ using System.Threading.Tasks;
 
 namespace SteamPanno.scenes
 {
-	public partial class Main : Node, IPannoImageProcessor, IPannoObserver
+	public partial class Main : Node, IPannoObserver
 	{
 		private Panno panno;
 		private Control gui;
 		private Config config;
+		private PannoImageProcessor processor;
 		private TextEdit report;
 		private Control progressContainer;
 		private ProgressBar pannoProgressBar;
@@ -35,6 +36,8 @@ namespace SteamPanno.scenes
 
 		[Export]
 		public PackedScene ConfigScene { get; set; }
+		[Export]
+		public PackedScene PannoImageProcessorScene { get; set; }
 
 		public override void _Ready()
 		{
@@ -49,6 +52,10 @@ namespace SteamPanno.scenes
 			panno = GetNode<Panno>("./Panno");
 			gui = GetNode<Control>("./GUI");
 			PrepareConfig();
+			processor = PannoImageProcessorScene.Instantiate<PannoImageProcessor>();
+			processor.Name = nameof(PannoImageProcessor);
+			processor.Visible = true;
+			AddChild(processor);
 			report = GetNode<TextEdit>("./GUI/Report");
 			progressContainer = GetNode<VBoxContainer>("./GUI/Center/Progress");
 			pannoProgressBar = GetNode<ProgressBar>("./GUI/Center/Progress/Bar");
@@ -162,35 +169,6 @@ namespace SteamPanno.scenes
 			{
 				Quit();
 			}
-		}
-
-		public PannoImage Create(int x, int y)
-		{
-			return PannoImage.Create(x, y);
-		}
-
-		public async Task<PannoImage> Blur(PannoImage src)
-		{
-			var viewport = new SubViewport();
-			viewport.Size = src.Size;
-			viewport.TransparentBg = true;
-			AddChild(this);
-
-			var shader = GD.Load<Shader>("res://assets/shaders/pannoblur.gdshader");
-			var material = new ShaderMaterial();
-			material.Shader = shader;
-			Texture2D texture = src;
-			material.SetShaderParameter("src", texture);
-
-			var blurSprite = new Sprite2D();
-			blurSprite.Texture = texture;
-			blurSprite.Material = material;
-			blurSprite.Centered = false;
-			viewport.AddChild(blurSprite);
-
-			await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-
-			return PannoImage.Create(viewport.GetTexture().GetImage());
 		}
 
 		public void ProgressSet(double value, string text = null)
@@ -380,7 +358,7 @@ namespace SteamPanno.scenes
 			return new T()
 			{
 				Dest = PannoImage.Create(pannoSize.X, pannoSize.Y),
-				Processor = this,
+				Processor = processor,
 			};
 		}
 

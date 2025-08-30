@@ -5,7 +5,7 @@ namespace SteamPanno.panno.drawing
 {
 	public class PannoDrawerResizeAndMirror : PannoDrawerGapFiller
 	{
-		protected override Task<PannoImage> PrepareExpansion1(
+		protected override async Task<PannoImage> PrepareExpansion1(
 			PannoImage src,
 			float sizeXRatio,
 			float sizeYRatio,
@@ -25,10 +25,11 @@ namespace SteamPanno.panno.drawing
 			{
 				expansion1.MirrorX();
 			}
-			return Task.FromResult(expansion1);
+
+			return await Processor.Blur(expansion1);
 		}
 
-		protected override Task<PannoImage> PrepareExpansion2(
+		protected override async Task<PannoImage> PrepareExpansion2(
 			PannoImage src,
 			float sizeXRatio,
 			float sizeYRatio,
@@ -52,7 +53,8 @@ namespace SteamPanno.panno.drawing
 			{
 				expansion2.MirrorX();
 			}
-			return Task.FromResult(expansion2);
+
+			return await Processor.Blur(expansion2);
 		}
 	}
 }
