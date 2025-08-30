@@ -8,45 +8,78 @@ namespace SteamPanno.scenes
 {
 	public partial class PannoImageProcessor : Control, IPannoImageProcessor
 	{
-		private SubViewport subViewport;
-		private Sprite2D spriteIn;
-		private ShaderMaterial spriteInMaterial;
-		private Channel<PannoImage> imagesIn = Channel.CreateUnbounded<PannoImage>();
-		private Queue<SubViewport> subViewportOut = new Queue<SubViewport>();
-		private Channel<PannoImage> imagesOut = Channel.CreateUnbounded<PannoImage>();
+		private record ProcessorLine
+		{
+			public SubViewport SubViewport { get; init; }
+			public Sprite2D SpriteIn { get; init; }
+			public ShaderMaterial SpriteInMaterial { get; init; }
+			public PannoImage Input { get; set; }
+			public Channel<PannoImage> Output { get; init; }
+		}
+
+		private Channel<ProcessorLine> freeLines = Channel.CreateUnbounded<ProcessorLine>();
+		private Channel<ProcessorLine> workLines = Channel.CreateUnbounded<ProcessorLine>();
+		private Queue<ProcessorLine> doneLines = new Queue<ProcessorLine>();
 
 		public override void _Ready()
 		{
-			subViewport = GetNode<SubViewport>("./SubViewport");
-			
 			var blurShader = GD.Load<Shader>("res://assets/shaders/pannoblur.gdshader");
-			spriteInMaterial = new ShaderMaterial();
-			spriteInMaterial.Shader = blurShader;
 
-			spriteIn = new Sprite2D();
-			spriteIn.Centered = false;
-			spriteIn.Material = spriteInMaterial;
-			subViewport.AddChild(spriteIn);
+			for (int i = 0; i < Settings.Instance.MaxDegreeOfParallelism; i++)
+			{
+				var subViewport = new SubViewport();
+				subViewport.RenderTargetClearMode = SubViewport.ClearMode.Always;
+				subViewport.RenderTargetUpdateMode = SubViewport.UpdateMode.Always;
+				subViewport.ProcessMode = ProcessModeEnum.Always;
+				var material = new ShaderMaterial();
+				material.Shader = blurShader;
+				var spriteIn = new Sprite2D();
+				spriteIn.Centered = false;
+				spriteIn.Material = material;
+				subViewport.AddChild(spriteIn);
+				AddChild(subViewport);
+
+				freeLines.Writer.TryWrite(new ProcessorLine()
+				{
+					SubViewport = subViewport,
+					SpriteIn = spriteIn,
+					SpriteInMaterial = material,
+					Input = null,
+					Output = Channel.CreateUnbounded<PannoImage>(),
+				});
+			}
 		}
 
 		public override void _Process(double delta)
 		{
-			while (subViewportOut.Count > 0)
+			while (doneLines.Count > 0)
 			{
-				var subViewport = subViewportOut.Dequeue();
-				var image = subViewport.GetTexture().GetImage();
-				image.Convert(Image.Format.Rgb8);
-				imagesOut.Writer.TryWrite(PannoImage.Create(image));
+				var doneLine = doneLines.Dequeue();
+				try
+				{
+					var image = doneLine.SubViewport.GetTexture().GetImage();
+					image.Convert(Image.Format.Rgb8);
+					doneLine.Output.Writer.TryWrite(PannoImage.Create(image));
+				}
+				finally
+				{
+					freeLines.Writer.TryWrite(doneLine);
+				}
 			}
 
-			while (imagesIn.Reader.TryRead(out var imageToAdd))
+			while (workLines.Reader.TryRead(out var workLine))
 			{
-				Texture2D texture = imageToAdd;
-
-				spriteInMaterial.SetShaderParameter("src", texture);
-				spriteIn.Texture = texture;
-				subViewport.Size = imageToAdd.Size;
-				subViewportOut.Enqueue(subViewport);
+				try
+				{
+					Texture2D texture = workLine.Input;
+					workLine.SpriteInMaterial.SetShaderParameter("src", texture);
+					workLine.SpriteIn.Texture = texture;
+					workLine.SubViewport.Size = workLine.Input.Size;
+				}
+				finally
+				{
+					doneLines.Enqueue(workLine);
+				}
 			}
 		}
 
@@ -62,8 +95,11 @@ namespace SteamPanno.scenes
 
 		private async Task<PannoImage> BlurOnGPU(PannoImage src)
 		{
-			await imagesIn.Writer.WriteAsync(src);
-			return await imagesOut.Reader.ReadAsync();
+			var line = await freeLines.Reader.ReadAsync();
+			line.Input = src;
+			await workLines.Writer.WriteAsync(line);
+
+			return await line.Output.Reader.ReadAsync();
 		}
 	}
 }
