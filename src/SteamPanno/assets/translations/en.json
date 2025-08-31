@@ -31,9 +31,10 @@
 		},
 		"OutpaintingMethods":
 		{
-			"ResizeAndCut": "Resize+Cut",
-			"ResizeAndExpand": "Resize+Expand",
-			"ResizeAndMirror": "Resize+Mirror",
+			"ResizeCut": "Resize+Cut",
+			"ResizeExpand": "Resize+Expand",
+			"ResizeMirror": "Resize+Mirror",
+			"ResizeMirrorBlur": "Resize+Mirror+Blur",
 			"ResizeProportional": "Resize Proportional",
 			"ResizeUnproportional": "Resize Unproportional"
 		}

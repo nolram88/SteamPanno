@@ -245,12 +245,13 @@ namespace SteamPanno.scenes
 				var loader = new PannoLoaderCache(new PannoLoaderOnline());
 				PannoDrawer drawer = Settings.Instance.OutpaintingMethodOption switch
 				{
-					0 => CreateDrawer<PannoDrawerResizeAndCut>(pannoSize),
-					1 => CreateDrawer<PannoDrawerResizeAndExpand>(pannoSize),
-					2 => CreateDrawer<PannoDrawerResizeAndMirror>(pannoSize),
-					3 => CreateDrawer<PannoDrawerResizeProportional>(pannoSize),
-					4 => CreateDrawer<PannoDrawerResizeUnproportional>(pannoSize),
-					_ => CreateDrawer<PannoDrawerResizeAndCut>(pannoSize),
+					0 => CreateDrawer<PannoDrawerResizeCut>(pannoSize),
+					1 => CreateDrawer<PannoDrawerResizeExpand>(pannoSize),
+					2 => CreateDrawer<PannoDrawerResizeMirror>(pannoSize),
+					3 => CreateDrawer<PannoDrawerResizeMirrorBlur>(pannoSize),
+					4 => CreateDrawer<PannoDrawerResizeProportional>(pannoSize),
+					5 => CreateDrawer<PannoDrawerResizeUnproportional>(pannoSize),
+					_ => CreateDrawer<PannoDrawerResizeCut>(pannoSize),
 				};
 				PannoGameLayoutGenerator generator = (Settings.Instance.GenerationMethodOption) switch
 				{

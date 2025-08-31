@@ -17,9 +17,10 @@ namespace SteamPanno.scenes
 
 		private readonly string[] OutpaintingMethods = new string[]
 		{
-			"ResizeAndCut",
-			"ResizeAndExpand",
-			"ResizeAndMirror",
+			"ResizeCut",
+			"ResizeExpand",
+			"ResizeMirror",
+			"ResizeMirrorBlur",
 			"ResizeProportional",
 			"ResizeUnproportional",
 		};

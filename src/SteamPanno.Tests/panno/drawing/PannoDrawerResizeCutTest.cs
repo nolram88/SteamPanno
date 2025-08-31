@@ -5,15 +5,15 @@ using NSubstitute;
 
 namespace SteamPanno.panno.drawing
 {
-	public class PannoDrawerResizeAndCutTest
+	public class PannoDrawerResizeCutTest
 	{
-		private readonly PannoDrawerResizeAndCut drawer;
+		private readonly PannoDrawerResizeCut drawer;
 		private readonly PannoImage dest;
 
-		public PannoDrawerResizeAndCutTest()
+		public PannoDrawerResizeCutTest()
 		{
 			dest = Substitute.For<PannoImage>();
-			drawer = new PannoDrawerResizeAndCut() { Dest = dest };
+			drawer = new PannoDrawerResizeCut() { Dest = dest };
 		}
 
 		[Theory]

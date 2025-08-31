@@ -3,7 +3,7 @@ using Godot;
 
 namespace SteamPanno.panno.drawing
 {
-	public class PannoDrawerResizeAndExpand : PannoDrawerGapFiller
+	public class PannoDrawerResizeExpand : PannoDrawerGapFiller
 	{
 		protected override Task<PannoImage> PrepareExpansion1(
 			PannoImage src,

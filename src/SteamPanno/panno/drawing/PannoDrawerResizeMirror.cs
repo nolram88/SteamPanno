@@ -3,9 +3,9 @@ using Godot;
 
 namespace SteamPanno.panno.drawing
 {
-	public class PannoDrawerResizeAndMirror : PannoDrawerGapFiller
+	public class PannoDrawerResizeMirror : PannoDrawerGapFiller
 	{
-		protected override async Task<PannoImage> PrepareExpansion1(
+		protected override Task<PannoImage> PrepareExpansion1(
 			PannoImage src,
 			float sizeXRatio,
 			float sizeYRatio,
@@ -26,10 +26,10 @@ namespace SteamPanno.panno.drawing
 				expansion1.MirrorX();
 			}
 
-			return await Processor.Effect(expansion1, "res://assets/shaders/pannoblur.gdshader");
+			return Task.FromResult(expansion1);
 		}
 
-		protected override async Task<PannoImage> PrepareExpansion2(
+		protected override Task<PannoImage> PrepareExpansion2(
 			PannoImage src,
 			float sizeXRatio,
 			float sizeYRatio,
@@ -54,7 +54,7 @@ namespace SteamPanno.panno.drawing
 				expansion2.MirrorX();
 			}
 
-			return await Processor.Effect(expansion2, "res://assets/shaders/pannoblur.gdshader");
+			return Task.FromResult(expansion2);
 		}
 	}
 }

@@ -13,7 +13,7 @@
 		"PannoResolutionOption0": "Родное",
 		"PannoResolutionOption1": "Указанное",
 		"GenerationMethodLbl": "Метод генерации",
-		"OutpaintingMethodLbl": "Метод расширения",
+		"OutpaintingMethodLbl": "Метод дорисовки",
 		"MinimalHoursLbl": "Минимум часов",
 		"MinimalHoursOptionCustom": "Указанный",
 		"ShowHoursLbl": "Показывать часы",
@@ -31,9 +31,10 @@
 		},
 		"OutpaintingMethods":
 		{
-			"ResizeAndCut": "Отсечение",
-			"ResizeAndExpand": "Расширение",
-			"ResizeAndMirror": "Отражение",
+			"ResizeCut": "Отсечение",
+			"ResizeExpand": "Расширение",
+			"ResizeMirror": "Отражение",
+			"ResizeMirrorBlur": "Отражение и размытие",
 			"ResizeProportional": "Пропорционально",
 			"ResizeUnproportional": "Непропорционально"
 		}

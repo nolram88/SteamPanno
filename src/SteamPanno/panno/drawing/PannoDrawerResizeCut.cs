@@ -3,7 +3,7 @@ using Godot;
 
 namespace SteamPanno.panno.drawing
 {
-	public class PannoDrawerResizeAndCut : PannoDrawer
+	public class PannoDrawerResizeCut : PannoDrawer
 	{
 		public override Task Draw(PannoImage src, Rect2I destArea)
 		{
