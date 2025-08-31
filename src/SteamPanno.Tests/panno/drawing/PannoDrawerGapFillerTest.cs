@@ -113,18 +113,19 @@ namespace SteamPanno.panno.drawing
 			await drawer.Draw(src, new Rect2I(0, 0, 100, 100));
 
 			src.Size.ShouldBe(new Vector2I(srcWidth, srcHeight));
+			var horizontal = srcWidth > srcHeight;
 			dest.Received(1).Draw(
 				Arg.Is<PannoImage>(x => x == src),
-				Arg.Is<Rect2I>(x => x == new Rect2I(0, 0, 100, 91)),
-				Arg.Is<Vector2I>(x => x == new Vector2I(0, 5)));
+				Arg.Is<Rect2I>(x => x == (horizontal ? new Rect2I(0, 0, 100, 91) : new Rect2I(0, 0, 91, 100))),
+				Arg.Is<Vector2I>(x => x == (horizontal ? new Vector2I(0, 4) : new Vector2I(4, 0))));
 			dest.Received(1).Draw(
 				Arg.Is<PannoImage>(x => x != src),
-				Arg.Is<Rect2I>(x => x == new Rect2I(0, 0, 100, 4)),
+				Arg.Is<Rect2I>(x => x == (horizontal ? new Rect2I(0, 0, 100, 4) : new Rect2I(0, 0, 4, 100))),
 				Arg.Is<Vector2I>(x => x == new Vector2I(0, 0)));
 			dest.Received(1).Draw(
 				Arg.Is<PannoImage>(x => x != src),
-				Arg.Is<Rect2I>(x => x == new Rect2I(0, 0, 100, 5)),
-				Arg.Is<Vector2I>(x => x == new Vector2I(0, 95)));
+				Arg.Is<Rect2I>(x => x == (horizontal ? new Rect2I(0, 0, 100, 5) : new Rect2I(0, 0, 5, 100))),
+				Arg.Is<Vector2I>(x => x == (horizontal ? new Vector2I(0, 95) : new Vector2I(95, 0))));
 			dest.ReceivedCalls().Count().ShouldBe(3);
 		}
 	}

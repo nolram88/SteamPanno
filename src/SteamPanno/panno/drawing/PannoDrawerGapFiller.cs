@@ -26,17 +26,12 @@ namespace SteamPanno.panno.drawing
 
 			src.Size = new Vector2I(isize.X, isize.Y);
 
-			var gapSize = new Vector2I(
+			var gapSize1 = new Vector2I(
 				sizeXRatio < sizeYRatio ? isize.X : (size.X - isize.X) / 2,
 				sizeXRatio < sizeYRatio ? (size.Y - isize.Y) / 2 : isize.Y);
-			var gapSize1 = gapSize.X > 0 && gapSize.Y > 0
-				? gapSize
-				: Vector2I.Zero;
-			var gapSize2 = gapSize.X > 0 && gapSize.Y > 0
-				? gapSize
-				: new Vector2I(
-					sizeXRatio < sizeYRatio ? isize.X : (size.X - isize.X),
-					sizeXRatio < sizeYRatio ? (size.Y - isize.Y) : isize.Y);
+			var gapSize2 = new Vector2I(
+				sizeXRatio < sizeYRatio ? isize.X : size.X - isize.X - gapSize1.X,
+				sizeXRatio < sizeYRatio ? size.Y - isize.Y - gapSize1.Y : isize.Y);
 
 			PannoImage expansion1 = gapSize1.X > 0 && gapSize1.Y > 0
 				? await PrepareExpansion1(src, sizeXRatio, sizeYRatio, isize, gapSize1)
@@ -60,8 +55,8 @@ namespace SteamPanno.panno.drawing
 			{
 				var expansion2Area = new Rect2I(Vector2I.Zero, expansion2.Size);
 				var expansion2Position = destArea.Position + new Vector2I(
-					sizeXRatio < sizeYRatio ? 0 : gapSize.X + isize.X,
-					sizeXRatio < sizeYRatio ? gapSize.Y + isize.Y : 0);
+					sizeXRatio < sizeYRatio ? 0 : gapSize1.X + isize.X,
+					sizeXRatio < sizeYRatio ? gapSize1.Y + isize.Y : 0);
 				Dest.Draw(expansion2, expansion2Area, expansion2Position);
 			}
 		}
