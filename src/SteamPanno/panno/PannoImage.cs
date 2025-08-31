@@ -59,7 +59,7 @@ namespace SteamPanno.panno
 		public virtual Vector2I Size
 		{
 			get => Dest.GetSize();
-			set => Dest.Resize(value.X, value.Y, Image.Interpolation.Cubic);
+			set => Dest.Resize(value.X, value.Y, Image.Interpolation.Nearest);
 		}
 
 		public virtual void MirrorX()
