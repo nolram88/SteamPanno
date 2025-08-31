@@ -262,7 +262,8 @@ namespace SteamPanno.scenes
 				
 				this.ProgressSet(0, Localization.Localize("ProfileLoading"));
 				var games = await loader.GetProfileGames(pannoSteamId);
-				if (Settings.Instance.SelectedDiffSnapshots.TryGetValue(pannoSteamId, out var snapshot))
+				if (Settings.Instance.SelectedDiffSnapshots != null &&
+					Settings.Instance.SelectedDiffSnapshots.TryGetValue(pannoSteamId, out var snapshot))
 				{
 					var snapshotData = FileExtensions.GetProfileSnapshot(snapshot);
 					if (snapshotData != null)
