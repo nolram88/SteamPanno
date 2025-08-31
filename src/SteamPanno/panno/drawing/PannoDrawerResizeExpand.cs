@@ -7,14 +7,13 @@ namespace SteamPanno.panno.drawing
 	{
 		protected override Task<PannoImage> PrepareExpansion1(
 			PannoImage src,
-			float sizeXRatio,
-			float sizeYRatio,
+			bool xFitting,
 			Vector2I isize,
 			Vector2I gapSize)
 		{
 			var expansion1 = Processor.Create(
-				sizeXRatio < sizeYRatio ? isize.X : 1,
-				sizeXRatio < sizeYRatio ? 1 : isize.Y);
+				xFitting ? isize.X : 1,
+				xFitting ? 1 : isize.Y);
 			var srcAreaForExpansion1 = new Rect2I(0, 0, expansion1.Size.X, expansion1.Size.Y);
 			expansion1.Draw(src, srcAreaForExpansion1, Vector2I.Zero);
 			expansion1.Size = gapSize;
@@ -24,17 +23,16 @@ namespace SteamPanno.panno.drawing
 
 		protected override Task<PannoImage> PrepareExpansion2(
 			PannoImage src,
-			float sizeXRatio,
-			float sizeYRatio,
+			bool xFitting,
 			Vector2I isize,
 			Vector2I gapSize)
 		{
 			var expansion2 = Processor.Create(
-				sizeXRatio < sizeYRatio ? isize.X : 1,
-				sizeXRatio < sizeYRatio ? 1 : isize.Y);
+				xFitting ? isize.X : 1,
+				xFitting ? 1 : isize.Y);
 			var srcAreaForExpansion2 = new Rect2I(
-				sizeXRatio < sizeYRatio ? 0 : isize.X - 1,
-				sizeXRatio < sizeYRatio ? isize.Y - 1 : 0,
+				xFitting ? 0 : isize.X - 1,
+				xFitting ? isize.Y - 1 : 0,
 				expansion2.Size.X,
 				expansion2.Size.Y);
 			expansion2.Draw(src, srcAreaForExpansion2, Vector2I.Zero);
