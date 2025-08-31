@@ -4,6 +4,7 @@ using Xunit;
 using Shouldly;
 using NSubstitute;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace SteamPanno.panno.drawing
 {
@@ -28,6 +29,14 @@ namespace SteamPanno.panno.drawing
 					var height = (int)ci[1];
 					newImage.Size = new Vector2I(width, height);
 					return newImage;
+				});
+			processor.Effect(
+				Arg.Any<PannoImage>(),
+				Arg.Any<string>(),
+				Arg.Any<Dictionary<string, Variant>>())
+				.Returns(ci =>
+				{
+					return Task.FromResult(ci[0] as PannoImage);
 				});
 			drawer = CreateDrawer();
 		}
@@ -92,6 +101,31 @@ namespace SteamPanno.panno.drawing
 				Arg.Is<Rect2I>(x => x == new Rect2I(0, 0, 2, 1)),
 				Arg.Is<Vector2I>(x => x == new Vector2I(0, 1)));
 			dest.ReceivedCalls().Count().ShouldBe(2);
+		}
+
+		[Theory]
+		[InlineData(100, 91)]
+		[InlineData(91, 100)]
+		public async Task ShouldDrawGapsWithDifferentSizes(int srcWidth, int srcHeight)
+		{
+			var src = drawer.Processor.Create(srcWidth, srcHeight);
+
+			await drawer.Draw(src, new Rect2I(0, 0, 100, 100));
+
+			src.Size.ShouldBe(new Vector2I(srcWidth, srcHeight));
+			dest.Received(1).Draw(
+				Arg.Is<PannoImage>(x => x == src),
+				Arg.Is<Rect2I>(x => x == new Rect2I(0, 0, 100, 91)),
+				Arg.Is<Vector2I>(x => x == new Vector2I(0, 5)));
+			dest.Received(1).Draw(
+				Arg.Is<PannoImage>(x => x != src),
+				Arg.Is<Rect2I>(x => x == new Rect2I(0, 0, 100, 4)),
+				Arg.Is<Vector2I>(x => x == new Vector2I(0, 0)));
+			dest.Received(1).Draw(
+				Arg.Is<PannoImage>(x => x != src),
+				Arg.Is<Rect2I>(x => x == new Rect2I(0, 0, 100, 5)),
+				Arg.Is<Vector2I>(x => x == new Vector2I(0, 95)));
+			dest.ReceivedCalls().Count().ShouldBe(3);
 		}
 	}
 }

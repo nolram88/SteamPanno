@@ -2,6 +2,7 @@
 using Xunit;
 using Shouldly;
 using NSubstitute;
+using System.Threading.Tasks;
 
 namespace SteamPanno.panno.drawing
 {
@@ -19,12 +20,12 @@ namespace SteamPanno.panno.drawing
 		[Theory]
 		[InlineData(200, 100)]
 		[InlineData(20, 10)]
-		public void ShouldResizeImageAndDrawWithOffset(int srcWidth, int srcHeight)
+		public async Task ShouldResizeImageAndDrawWithOffset(int srcWidth, int srcHeight)
 		{
 			var src = Substitute.For<PannoImage>();
 			src.Size = new Vector2I(srcWidth, srcHeight);
 
-			drawer.Draw(src, new Rect2I(0, 0, 100, 100));
+			await drawer.Draw(src, new Rect2I(0, 0, 100, 100));
 
 			src.Size.ShouldBe(new Vector2I(100, 50));
 			dest.Received(1).Draw(
