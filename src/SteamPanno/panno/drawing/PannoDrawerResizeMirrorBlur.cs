@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Godot;
 
 namespace SteamPanno.panno.drawing
@@ -14,7 +15,7 @@ namespace SteamPanno.panno.drawing
 			var expansion1 = await base.PrepareExpansion1(
 				src, xFitting, isize, gapSize);
 
-			return await Processor.Effect(expansion1, "res://assets/shaders/blur.gdshader");
+			return await EdgeBlur(expansion1);
 		}
 
 		protected override async Task<PannoImage> PrepareExpansion2(
@@ -26,7 +27,21 @@ namespace SteamPanno.panno.drawing
 			var expansion2 = await base.PrepareExpansion2(
 				src, xFitting, isize, gapSize);
 
-			return await Processor.Effect(expansion2, "res://assets/shaders/blur.gdshader");
+			return await EdgeBlur(expansion2);
+		}
+
+		protected async Task<PannoImage> EdgeBlur(PannoImage src)
+		{
+			return await Processor.Effect(
+				src,
+				"res://assets/shaders/edgeblur.gdshader",
+				new Dictionary<string, Variant>()
+				{
+					{ "radiusMinX", 0 },
+					{ "radiusMaxX", 0 },
+					{ "radiusMinY", 0 },
+					{ "radiusMaxY", 0 },
+				});
 		}
 	}
 }
