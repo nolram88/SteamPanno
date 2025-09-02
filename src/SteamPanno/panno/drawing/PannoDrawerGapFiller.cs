@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Godot;
 
 namespace SteamPanno.panno.drawing
@@ -62,6 +64,29 @@ namespace SteamPanno.panno.drawing
 				Dest.Draw(expansion2, expansion2Area, expansion2Position);
 			}
 		}
+
+		protected async Task<PannoImage> EdgeBlur(
+			PannoImage src, Vector2 direction, Vector2 intensityDirection)
+		{
+			var blurRadiusMult = direction.X > 0
+				? src.Size.X / BlurRadiusMaxPixels
+				: src.Size.Y / BlurRadiusMaxPixels;
+
+			return await Processor.Effect(
+				src,
+				"res://assets/shaders/edgeblur.gdshader",
+				new Dictionary<string, Variant>()
+				{
+					{ "direction", direction },
+					{ "intensity_direction", intensityDirection },
+					{ "radiusMin", Math.Min(BlurRadiusMin * blurRadiusMult, BlurRadiusMin) },
+					{ "radiusMax", Math.Min(BlurRadiusMax * blurRadiusMult, BlurRadiusMax) },
+				});
+		}
+
+		protected int BlurRadiusMin { get; set; } = 1;
+		protected int BlurRadiusMax { get; set; } = 10;
+		protected float BlurRadiusMaxPixels { get; set; } = 300;
 
 		protected abstract Task<PannoImage> PrepareExpansion1(
 			PannoImage src,
