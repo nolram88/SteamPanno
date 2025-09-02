@@ -67,9 +67,10 @@ namespace SteamPanno.scenes
 			{
 				try
 				{
-					(Texture2D texture, string shaderPath, Dictionary<string, Variant> shaderParams) = workLine.Input;
+					(PannoImage image, string shaderPath, Dictionary<string, Variant> shaderParams) = workLine.Input;
 
-					workLine.SubViewport.Size = workLine.Input.Image.Size;
+					var texture = image.CreateTexture();
+					workLine.SubViewport.Size = image.Size;
 					workLine.Sprite.Texture = texture;
 					workLine.SpriteMaterial.Shader = GD.Load<Shader>(shaderPath);
 					workLine.SpriteMaterial.SetShaderParameter("src", texture);

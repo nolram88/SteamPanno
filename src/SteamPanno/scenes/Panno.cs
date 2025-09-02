@@ -47,7 +47,7 @@ namespace SteamPanno.scenes
 					subViewport.Size = pannoImage.Size;
 					textureIn.Position = Vector2.Zero;
 					textureIn.Size = pannoImage.Size;
-					textureIn.Texture = pannoImage;
+					textureIn.Texture = pannoImage.CreateTexture();
 
 					var hoursText = Localization.Localize("Hours");
 					foreach (var textGame in pannoGamesInText)

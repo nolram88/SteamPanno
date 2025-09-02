@@ -38,9 +38,9 @@ namespace SteamPanno.panno.drawing
 				new Dictionary<string, Variant>()
 				{
 					{ "radiusMinX", 0 },
-					{ "radiusMaxX", 0 },
+					{ "radiusMaxX", 5 },
 					{ "radiusMinY", 0 },
-					{ "radiusMaxY", 0 },
+					{ "radiusMaxY", 5 },
 				});
 		}
 	}
