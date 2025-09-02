@@ -23,7 +23,7 @@ namespace SteamPanno.scenes
 		private TextureRect textureOut;
 		private PannoImage pannoImage;
 		private PannoState pannoState;
-		private ConcurrentBag<PannoGameLayout> pannoGamesInText;
+		private ConcurrentBag<(Rect2I Area, string Title, float? Hours)> pannoGamesInText;
 
 		public override void _Ready()
 		{
@@ -52,16 +52,14 @@ namespace SteamPanno.scenes
 					var hoursText = Localization.Localize("Hours");
 					foreach (var textGame in pannoGamesInText)
 					{
-						if (textGame.Area.Size.X < Settings.Instance.MinimalGameAreaSize)
+						if (!string.IsNullOrEmpty(textGame.Title))
 						{
-							continue;
+							var titleLabel = CreateTitleLabel(textGame.Area, textGame.Title);
+							textureIn.AddChild(titleLabel);
 						}
-
-						var titleLabel = CreateTitleLabel(textGame.Area, textGame.Game.Name);
-						textureIn.AddChild(titleLabel);
-						if (Settings.Instance.ShowHoursOption != 0)
+						if (textGame.Hours.HasValue)
 						{
-							var hoursLabel = CreateHoursLabel(textGame.Area, textGame.Game.HoursOnRecord, hoursText);
+							var hoursLabel = CreateHoursLabel(textGame.Area, textGame.Hours.Value, hoursText);
 							textureIn.AddChild(hoursLabel);
 						}
 					}
@@ -117,7 +115,7 @@ namespace SteamPanno.scenes
 
 		public async Task LoadAndDraw(PannoGameLayout[] games, PannoLoader loader, PannoDrawer drawer, IPannoObserver observer)
 		{
-			pannoGamesInText = new ConcurrentBag<PannoGameLayout>();
+			pannoGamesInText = new ConcurrentBag<(Rect2I Area, string Title, float? Hours)>();
 			var locker = new SemaphoreSlim(1, 1);
 
 			var current = 0;
@@ -141,9 +139,12 @@ namespace SteamPanno.scenes
 					{
 						await drawer.Draw(image, game.Area);
 					}
-					else
+					if (image == null || Settings.Instance.ShowHoursOption != 0)
 					{
-						pannoGamesInText.Add(game);
+						pannoGamesInText.Add((
+							game.Area,
+							image == null ? game.Game.Name : null,
+							Settings.Instance.ShowHoursOption != 0 ? game.Game.HoursOnRecord : null));
 					}
 
 					locker.Wait();
