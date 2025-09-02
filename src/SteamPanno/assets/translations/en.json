@@ -24,15 +24,16 @@
 		"ShowHoursOption4": "Top",
 		"ShowHoursOption5": "Top Left",
 		"ShowHoursOption6": "Top Right",
-		"GenerationMethods":
+		"GenerationTypes":
 		{
 			"DivideAndConquer": "Divide And Conquer",
 			"GradualDescent": "Gradual Descent"
 		},
-		"OutpaintingMethods":
+		"OutpaintingTypes":
 		{
 			"ResizeCut": "Resize+Cut",
 			"ResizeExpand": "Resize+Expand",
+			"ResizeExpandBlur": "Resize+Expand+Blur",
 			"ResizeMirror": "Resize+Mirror",
 			"ResizeMirrorBlur": "Resize+Mirror+Blur",
 			"ResizeProportional": "Resize Proportional",

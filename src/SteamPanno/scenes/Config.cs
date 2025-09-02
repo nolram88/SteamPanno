@@ -9,22 +9,6 @@ namespace SteamPanno.scenes
 {
 	public partial class Config : Control
 	{
-		private readonly string[] GenerationMethods = new string[]
-		{
-			"DivideAndConquer",
-			"GradualDescent",
-		};
-
-		private readonly string[] OutpaintingMethods = new string[]
-		{
-			"ResizeCut",
-			"ResizeExpand",
-			"ResizeMirror",
-			"ResizeMirrorBlur",
-			"ResizeProportional",
-			"ResizeUnproportional",
-		};
-
 		private Dictionary<string, Dictionary<string, string>> profileSnapshots;
 		private string steamId;
 		private string customAccountIdFromClipboard;
@@ -148,20 +132,20 @@ namespace SteamPanno.scenes
 			ResolutionOptionSelected(resolutionOptionIndex);
 			customPannoResolutionValue.Text = Settings.Instance.CustomResolution;
 
-			foreach (var method in GenerationMethods)
+			foreach (var method in MetaData.GenerationTypes.Keys)
 			{
-				var text = Localization.Localize($"{nameof(Config)}/{nameof(GenerationMethods)}/{method}");
+				var text = Localization.Localize($"{nameof(Config)}/{nameof(MetaData.GenerationTypes)}/{method}");
 				generationMethodValue.AddItem(text);
 			};
-			var selectedGenerationMethod = Math.Min(Math.Max(Settings.Instance.GenerationMethodOption, 0), GenerationMethods.Length - 1);
+			var selectedGenerationMethod = Math.Min(Math.Max(Settings.Instance.GenerationMethodOption, 0), MetaData.GenerationTypes.Count - 1);
 			generationMethodValue.Select(selectedGenerationMethod);
 
-			foreach (var method in OutpaintingMethods)
+			foreach (var method in MetaData.OutpaintingTypes.Keys)
 			{
-				var text = Localization.Localize($"{nameof(Config)}/{nameof(OutpaintingMethods)}/{method}");
+				var text = Localization.Localize($"{nameof(Config)}/{nameof(MetaData.OutpaintingTypes)}/{method}");
 				outpaintingMethodValue.AddItem(text);
 			};
-			var selectedOutpaintingMethod = Math.Min(Math.Max(Settings.Instance.OutpaintingMethodOption, 0), OutpaintingMethods.Length - 1);
+			var selectedOutpaintingMethod = Math.Min(Math.Max(Settings.Instance.OutpaintingMethodOption, 0), MetaData.OutpaintingTypes.Count - 1);
 			outpaintingMethodValue.Select(selectedOutpaintingMethod);
 
 			minimalHoursValue.AddItem("1");

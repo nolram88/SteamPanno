@@ -14,7 +14,7 @@ namespace SteamPanno.panno.drawing
 		public PannoDrawerResizeCutTest()
 		{
 			dest = Substitute.For<PannoImage>();
-			drawer = new PannoDrawerResizeCut() { Dest = dest };
+			drawer = new PannoDrawerResizeCut(dest, null);
 		}
 
 		[Theory]

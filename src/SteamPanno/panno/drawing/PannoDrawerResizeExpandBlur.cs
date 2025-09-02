@@ -3,9 +3,9 @@ using Godot;
 
 namespace SteamPanno.panno.drawing
 {
-	public class PannoDrawerResizeMirrorBlur : PannoDrawerResizeMirror
+	public class PannoDrawerResizeExpandBlur : PannoDrawerResizeExpand
 	{
-		public PannoDrawerResizeMirrorBlur(PannoImage dest, IPannoImageProcessor processor)
+		public PannoDrawerResizeExpandBlur(PannoImage dest, IPannoImageProcessor processor)
 			: base(dest, processor)
 		{
 		}
@@ -19,16 +19,10 @@ namespace SteamPanno.panno.drawing
 			var expansion1 = await base.PrepareExpansion1(
 				src, xFitting, isize, gapSize);
 
-			expansion1 = await EdgeBlur(
+			return await EdgeBlur(
 				expansion1,
 				xFitting ? new Vector2(1, 0) : new Vector2(0, 1),
 				xFitting ? new Vector2(0, -1) : new Vector2(-1, 0));
-			expansion1 = await EdgeBlur(
-				expansion1,
-				xFitting ? new Vector2(0, 1) : new Vector2(1, 0),
-				xFitting ? new Vector2(0, -1) : new Vector2(-1, 0));
-
-			return expansion1;
 		}
 
 		protected override async Task<PannoImage> PrepareExpansion2(
@@ -40,16 +34,10 @@ namespace SteamPanno.panno.drawing
 			var expansion2 = await base.PrepareExpansion2(
 				src, xFitting, isize, gapSize);
 
-			expansion2 = await EdgeBlur(
+			return await EdgeBlur(
 				expansion2,
 				xFitting ? new Vector2(1, 0) : new Vector2(0, 1),
 				xFitting ? new Vector2(0, 1) : new Vector2(1, 0));
-			expansion2 = await EdgeBlur(
-				expansion2,
-				xFitting ? new Vector2(0, 1) : new Vector2(1, 0),
-				xFitting ? new Vector2(0, 1) : new Vector2(1, 0));
-
-			return expansion2;
 		}
 	}
 }

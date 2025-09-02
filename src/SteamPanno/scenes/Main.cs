@@ -243,22 +243,16 @@ namespace SteamPanno.scenes
 				var pannoSize = GetPannoSize();
 				
 				var loader = new PannoLoaderCache(new PannoLoaderOnline());
-				PannoDrawer drawer = Settings.Instance.OutpaintingMethodOption switch
-				{
-					0 => CreateDrawer<PannoDrawerResizeCut>(pannoSize),
-					1 => CreateDrawer<PannoDrawerResizeExpand>(pannoSize),
-					2 => CreateDrawer<PannoDrawerResizeMirror>(pannoSize),
-					3 => CreateDrawer<PannoDrawerResizeMirrorBlur>(pannoSize),
-					4 => CreateDrawer<PannoDrawerResizeProportional>(pannoSize),
-					5 => CreateDrawer<PannoDrawerResizeUnproportional>(pannoSize),
-					_ => CreateDrawer<PannoDrawerResizeCut>(pannoSize),
-				};
-				PannoGameLayoutGenerator generator = (Settings.Instance.GenerationMethodOption) switch
-				{
-					0 => new PannoGameLayoutGeneratorDivideAndConquer(),
-					1 => new PannoGameLayoutGeneratorGradualDescent(),
-					_ => new PannoGameLayoutGeneratorDivideAndConquer(),
-				};
+				Type generatorType = MetaData.GenerationTypes
+					.Skip(Settings.Instance.GenerationMethodOption)
+					.Select(x => x.Value)
+					.FirstOrDefault() ?? typeof(PannoGameLayoutGeneratorDivideAndConquer);
+				var generator = (PannoGameLayoutGenerator)Activator.CreateInstance(generatorType);
+				Type drawerType = MetaData.OutpaintingTypes
+					.Skip(Settings.Instance.OutpaintingMethodOption)
+					.Select(x => x.Value)
+					.FirstOrDefault() ?? typeof(PannoDrawerResizeExpandBlur);
+				var drawer = CreateDrawer(drawerType, pannoSize);
 				
 				this.ProgressSet(0, Localization.Localize("ProfileLoading"));
 				var games = await loader.GetProfileGames(pannoSteamId);
@@ -355,13 +349,12 @@ namespace SteamPanno.scenes
 			return DisplayServer.ScreenGetSize();
 		}
 
-		protected T CreateDrawer<T>(Vector2I pannoSize) where T : PannoDrawer, new()
+		protected PannoDrawer CreateDrawer(Type type, Vector2I pannoSize)
 		{
-			return new T()
-			{
-				Dest = PannoImage.Create(pannoSize.X, pannoSize.Y),
-				Processor = processor,
-			};
+			return (PannoDrawer)Activator.CreateInstance(
+				type,
+				PannoImage.Create(pannoSize.X, pannoSize.Y),
+				processor);
 		}
 
 		protected float GetMinimalHours()

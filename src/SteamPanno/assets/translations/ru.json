@@ -24,15 +24,16 @@
 		"ShowHoursOption4": "Вверху",
 		"ShowHoursOption5": "Вверху слева",
 		"ShowHoursOption6": "Вверху справа",
-		"GenerationMethods":
+		"GenerationTypes":
 		{
 			"DivideAndConquer": "Разделяй и властвуй",
 			"GradualDescent": "Последовательный спуск"
 		},
-		"OutpaintingMethods":
+		"OutpaintingTypes":
 		{
 			"ResizeCut": "Отсечение",
 			"ResizeExpand": "Расширение",
+			"ResizeExpandBlur": "Расширение и размытие",
 			"ResizeMirror": "Отражение",
 			"ResizeMirrorBlur": "Отражение и размытие",
 			"ResizeProportional": "Пропорционально",

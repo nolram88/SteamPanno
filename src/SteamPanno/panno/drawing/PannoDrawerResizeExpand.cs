@@ -5,7 +5,12 @@ namespace SteamPanno.panno.drawing
 {
 	public class PannoDrawerResizeExpand : PannoDrawerGapFiller
 	{
-		protected override async Task<PannoImage> PrepareExpansion1(
+		public PannoDrawerResizeExpand(PannoImage dest, IPannoImageProcessor processor)
+			: base(dest, processor)
+		{
+		}
+
+		protected override Task<PannoImage> PrepareExpansion1(
 			PannoImage src,
 			bool xFitting,
 			Vector2I isize,
@@ -18,13 +23,10 @@ namespace SteamPanno.panno.drawing
 			expansion1.Draw(src, srcAreaForExpansion1, Vector2I.Zero);
 			expansion1.Size = gapSize;
 
-			return await EdgeBlur(
-				expansion1,
-				xFitting ? new Vector2(1, 0) : new Vector2(0, 1),
-				xFitting ? new Vector2(0, -1) : new Vector2(-1, 0));
+			return Task.FromResult(expansion1); 
 		}
 
-		protected override async Task<PannoImage> PrepareExpansion2(
+		protected override Task<PannoImage> PrepareExpansion2(
 			PannoImage src,
 			bool xFitting,
 			Vector2I isize,
@@ -41,10 +43,7 @@ namespace SteamPanno.panno.drawing
 			expansion2.Draw(src, srcAreaForExpansion2, Vector2I.Zero);
 			expansion2.Size = gapSize;
 
-			return await EdgeBlur(
-				expansion2,
-				xFitting ? new Vector2(1, 0) : new Vector2(0, 1),
-				xFitting ? new Vector2(0, 1) : new Vector2(1, 0));
+			return Task.FromResult(expansion2);
 		}
 	}
 }

@@ -4,11 +4,7 @@
 	{
 		protected override PannoDrawerResizeExpand CreateDrawer()
 		{
-			return new PannoDrawerResizeExpand()
-			{
-				Dest = dest,
-				Processor = processor,
-			};
+			return new PannoDrawerResizeExpand(dest, processor);
 		}
 	}
 }

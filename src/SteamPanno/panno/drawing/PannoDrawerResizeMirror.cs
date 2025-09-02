@@ -5,6 +5,11 @@ namespace SteamPanno.panno.drawing
 {
 	public class PannoDrawerResizeMirror : PannoDrawerGapFiller
 	{
+		public PannoDrawerResizeMirror(PannoImage dest, IPannoImageProcessor processor)
+			: base(dest, processor)
+		{
+		}
+
 		protected override Task<PannoImage> PrepareExpansion1(
 			PannoImage src,
 			bool xFitting,

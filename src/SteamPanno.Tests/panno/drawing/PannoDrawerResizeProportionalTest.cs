@@ -14,7 +14,7 @@ namespace SteamPanno.panno.drawing
 		public PannoDrawerResizeProportionalTest()
 		{
 			dest = Substitute.For<PannoImage>();
-			drawer = new PannoDrawerResizeProportional() { Dest = dest };
+			drawer = new PannoDrawerResizeProportional(dest, null);
 		}
 
 		[Theory]

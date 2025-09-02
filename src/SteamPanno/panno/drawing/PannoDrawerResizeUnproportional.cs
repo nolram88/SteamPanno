@@ -5,6 +5,11 @@ namespace SteamPanno.panno.drawing
 {
 	public class PannoDrawerResizeUnproportional : PannoDrawer
 	{
+		public PannoDrawerResizeUnproportional(PannoImage dest, IPannoImageProcessor processor)
+			: base(dest, processor)
+		{
+		}
+
 		public override Task Draw(PannoImage src, Rect2I destArea)
 		{
 			var position = destArea.Position;

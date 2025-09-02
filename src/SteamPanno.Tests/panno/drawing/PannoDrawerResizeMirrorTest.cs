@@ -4,11 +4,7 @@
 	{
 		protected override PannoDrawerResizeMirror CreateDrawer()
 		{
-			return new PannoDrawerResizeMirror()
-			{
-				Dest = dest,
-				Processor = processor,
-			};
+			return new PannoDrawerResizeMirror(dest, processor);
 		}
 	}
 }

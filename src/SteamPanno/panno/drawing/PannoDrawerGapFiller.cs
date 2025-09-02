@@ -7,6 +7,11 @@ namespace SteamPanno.panno.drawing
 {
 	public abstract class PannoDrawerGapFiller : PannoDrawer
 	{
+		public PannoDrawerGapFiller(PannoImage dest, IPannoImageProcessor processor)
+			: base(dest, processor)
+		{			
+		}
+
 		public override async Task Draw(PannoImage src, Rect2I destArea)
 		{
 			var size = destArea.Size;
