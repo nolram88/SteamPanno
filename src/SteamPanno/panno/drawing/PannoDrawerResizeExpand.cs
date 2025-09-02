@@ -21,7 +21,7 @@ namespace SteamPanno.panno.drawing
 			return await EdgeBlur(
 				expansion1,
 				xFitting ? new Vector2(1, 0) : new Vector2(0, 1),
-				new Vector2(-1, 0));
+				xFitting ? new Vector2(0, -1) : new Vector2(-1, 0));
 		}
 
 		protected override async Task<PannoImage> PrepareExpansion2(
@@ -44,7 +44,7 @@ namespace SteamPanno.panno.drawing
 			return await EdgeBlur(
 				expansion2,
 				xFitting ? new Vector2(1, 0) : new Vector2(0, 1),
-				new Vector2(1, 0));
+				xFitting ? new Vector2(0, 1) : new Vector2(1, 0));
 		}
 	}
 }

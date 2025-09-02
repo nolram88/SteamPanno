@@ -17,12 +17,11 @@ namespace SteamPanno.panno.drawing
 			expansion1 = await EdgeBlur(
 				expansion1,
 				xFitting ? new Vector2(1, 0) : new Vector2(0, 1),
-				new Vector2(-1, 0));
+				xFitting ? new Vector2(0, -1) : new Vector2(-1, 0));
 			expansion1 = await EdgeBlur(
 				expansion1,
 				xFitting ? new Vector2(0, 1) : new Vector2(1, 0),
-				new Vector2(-1, 0));
-			
+				xFitting ? new Vector2(0, -1) : new Vector2(-1, 0));
 
 			return expansion1;
 		}
@@ -39,11 +38,11 @@ namespace SteamPanno.panno.drawing
 			expansion2 = await EdgeBlur(
 				expansion2,
 				xFitting ? new Vector2(1, 0) : new Vector2(0, 1),
-				new Vector2(1, 0));
+				xFitting ? new Vector2(0, 1) : new Vector2(1, 0));
 			expansion2 = await EdgeBlur(
 				expansion2,
 				xFitting ? new Vector2(0, 1) : new Vector2(1, 0),
-				new Vector2(1, 0));
+				xFitting ? new Vector2(0, 1) : new Vector2(1, 0));
 
 			return expansion2;
 		}
