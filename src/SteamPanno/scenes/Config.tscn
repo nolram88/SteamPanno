@@ -41,7 +41,7 @@ vertical_alignment = 1
 [node name="Content" type="VBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
-size_flags_vertical = 2
+size_flags_vertical = 0
 theme_override_constants/separation = 10
 
 [node name="AccountId" type="HBoxContainer" parent="VBoxContainer/Content"]
@@ -224,24 +224,19 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 24
 clip_text = true
 
-[node name="Bottom" type="HBoxContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 150)
+[node name="Buttons" type="HBoxContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(600, 200)
 layout_mode = 2
-size_flags_vertical = 8
+size_flags_horizontal = 4
+size_flags_vertical = 0
 
-[node name="BottomCenter" type="HBoxContainer" parent="VBoxContainer/Bottom"]
-custom_minimum_size = Vector2(600, 0)
-layout_mode = 2
-size_flags_horizontal = 6
-size_flags_vertical = 4
-
-[node name="OkButton" parent="VBoxContainer/Bottom/BottomCenter" instance=ExtResource("2_wfw86")]
+[node name="OkButton" parent="VBoxContainer/Buttons" instance=ExtResource("2_wfw86")]
 layout_mode = 2
 size_flags_horizontal = 2
 size_flags_vertical = 4
 texture = ExtResource("4_u5tr3")
 
-[node name="CancelButton" parent="VBoxContainer/Bottom/BottomCenter" instance=ExtResource("2_wfw86")]
+[node name="CancelButton" parent="VBoxContainer/Buttons" instance=ExtResource("2_wfw86")]
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 4

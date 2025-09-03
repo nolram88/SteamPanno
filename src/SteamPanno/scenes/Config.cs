@@ -166,9 +166,9 @@ namespace SteamPanno.scenes
 			var showHoursOptionIndex = Math.Clamp((int)Settings.Instance.ShowHoursOption, 0, showHoursValue.ItemCount - 1);
 			showHoursValue.Select(showHoursOptionIndex);
 
-			var okBtn = GetNode<ImageButton>("./VBoxContainer/Bottom/BottomCenter/OkButton");
+			var okBtn = GetNode<ImageButton>("./VBoxContainer/Buttons/OkButton");
 			okBtn.OnClick = OnOkPressed;
-			var cancelBtn = GetNode<ImageButton>("./VBoxContainer/Bottom/BottomCenter/CancelButton");
+			var cancelBtn = GetNode<ImageButton>("./VBoxContainer/Buttons/CancelButton");
 			cancelBtn.OnClick = OnCancelPressed;
 		}
 
