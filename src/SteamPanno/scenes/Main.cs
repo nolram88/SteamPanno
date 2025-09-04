@@ -282,7 +282,7 @@ namespace SteamPanno.scenes
 								{
 									Id = game.Id,
 									Name = game.Name,
-									HoursOnRecord = game.HoursOnRecord - gameBefore.HoursOnRecord,
+									HoursOnRecord = Math.Max(0, game.HoursOnRecord - gameBefore.HoursOnRecord),
 								};
 							}
 						}

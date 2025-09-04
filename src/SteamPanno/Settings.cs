@@ -27,10 +27,10 @@ namespace SteamPanno
 			public Dictionary<string, string> SelectedDiffSnapshots { get; set; }
 			public string CustomResolution { get; set; }
 			public bool UseCustomResolution { get; set; }
-			public int MinimalHoursOption { get; set; }
+			public int MinimalHoursOption { get; set; } = 1;
 			public string CustomMinimalHours { get; set; }
 			public int GenerationMethodOption { get; set; }
-			public int OutpaintingMethodOption { get; set; }
+			public int OutpaintingMethodOption { get; set; } = 2;
 			public ShowHoursOptions ShowHoursOption { get; set; }
 
 			// hidden settings

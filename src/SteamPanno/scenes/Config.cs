@@ -148,6 +148,7 @@ namespace SteamPanno.scenes
 			var selectedOutpaintingMethod = Math.Min(Math.Max(Settings.Instance.OutpaintingMethodOption, 0), MetaData.OutpaintingTypes.Count - 1);
 			outpaintingMethodValue.Select(selectedOutpaintingMethod);
 
+			minimalHoursValue.AddItem("0");
 			minimalHoursValue.AddItem("1");
 			minimalHoursValue.AddItem("10");
 			minimalHoursValue.AddItem("100");
