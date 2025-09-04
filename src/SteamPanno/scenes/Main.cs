@@ -26,12 +26,14 @@ namespace SteamPanno.scenes
 		private Label pannoProgressLabel;
 		private ImageButton saveButton;
 		private ImageButton warningButton;
+		private RichTextLabel savedFileLabel;
 
 		private string pannoSteamId;
 		private double pannoProgressValueToSet;
 		private string pannoProgressTextToSet;
 		private bool saveButtonVisible;
 		private bool warningButtonVisible;
+		private string savedFileLabelText;
 		private Channel<string> reportBuffer = Channel.CreateUnbounded<string>();
 
 		[Export]
@@ -102,6 +104,7 @@ namespace SteamPanno.scenes
 			{
 				report.Visible = !report.Visible;
 			};
+			savedFileLabel = GetNode<RichTextLabel>("./GUI/Bottom/SavedFileLabel");
 
 			if (Settings.Instance.ShowConfigOnStart)
 			{
@@ -138,6 +141,8 @@ namespace SteamPanno.scenes
 					warningButton.Blink(true);
 				}
 			}
+			savedFileLabel.Text = savedFileLabelText;
+			
 			while (reportBuffer.Reader.TryRead(out var reportText))
 			{
 				report.Text += reportText;
@@ -231,6 +236,7 @@ namespace SteamPanno.scenes
 				pannoSteamId = null;
 				saveButtonVisible = false;
 				warningButtonVisible = false;
+				savedFileLabelText = null;
 				panno.Clear();
 
 				pannoSteamId = Settings.GetSteamId();
@@ -327,6 +333,8 @@ namespace SteamPanno.scenes
 				}
 
 				panno.Save(savePath);
+				var labelText = $"{Localization.Localize("FileSaved")} {savePath}";
+				savedFileLabelText = $"[bgcolor=#000000ff]{labelText}[/bgcolor]";
 			}
 			catch (Exception e)
 			{

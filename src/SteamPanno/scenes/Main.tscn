@@ -96,6 +96,7 @@ mouse_filter = 1
 editable = false
 
 [node name="Bottom" type="HBoxContainer" parent="GUI"]
+custom_minimum_size = Vector2(0, 64)
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -115,3 +116,15 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 0
 texture = ExtResource("5_nxtc6")
+
+[node name="Label" type="Label" parent="GUI/Bottom"]
+custom_minimum_size = Vector2(32, 64)
+layout_mode = 2
+
+[node name="SavedFileLabel" type="RichTextLabel" parent="GUI/Bottom"]
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+scroll_active = false
+vertical_alignment = 1
