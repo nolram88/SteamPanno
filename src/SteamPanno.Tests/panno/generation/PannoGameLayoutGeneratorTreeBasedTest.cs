@@ -54,8 +54,8 @@ namespace SteamPanno.panno.generation
 		}
 
 		[Theory]
-		[InlineData(101, 100)]
-		[InlineData(100, 101)]
+		[InlineData(121, 100)]
+		[InlineData(100, 121)]
 		public async Task ShouldSplitAreaCorretlyForOddSize(int width, int height)
 		{
 			var game1 = new PannoGame() { HoursOnRecord = 10 };
@@ -67,8 +67,8 @@ namespace SteamPanno.panno.generation
 			var layout = await pannoGenerator.Generate(games, area);
 
 			layout.Count().ShouldBe(games.Length);
-			layout.First().Area.ShouldBe(horizontal ? new Rect2I(0, 0, 51, 100) : new Rect2I(0, 0, 100, 51));
-			layout.Last().Area.ShouldBe(horizontal ? new Rect2I(51, 0, 50, 100) : new Rect2I(0, 51, 100, 50));
+			layout.First().Area.ShouldBe(horizontal ? new Rect2I(0, 0, 61, 100) : new Rect2I(0, 0, 100, 61));
+			layout.Last().Area.ShouldBe(horizontal ? new Rect2I(61, 0, 60, 100) : new Rect2I(0, 61, 100, 60));
 		}
 
 		[Theory]
