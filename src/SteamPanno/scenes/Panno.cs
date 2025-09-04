@@ -161,7 +161,8 @@ namespace SteamPanno.scenes
 		{
 			var label = new RichTextLabel();
 			label.AddThemeFontOverride("normal_font", ThemeDB.FallbackFont);
-			label.AddThemeFontSizeOverride("normal_font_size", Math.Max(area.Size.X / 15, 1));
+			label.AddThemeFontSizeOverride("normal_font_size",
+				Math.Max(1, area.Size.X / Settings.Instance.AreaXSizeToTitleFontSizeRatio));
 			label.AddThemeConstantOverride("line_separation", 0);
 			label.Text = text;
 			label.ClipContents = true;
@@ -178,7 +179,10 @@ namespace SteamPanno.scenes
 		{
 			var label = new RichTextLabel();
 			label.AddThemeFontOverride("normal_font", ThemeDB.FallbackFont);
-			label.AddThemeFontSizeOverride("normal_font_size", Math.Max(area.Size.X / 25, 1));
+			label.AddThemeFontSizeOverride("normal_font_size",
+				Math.Min(
+					Settings.Instance.MaxHoursFontSize,
+					Math.Max(1, area.Size.X / Settings.Instance.AreaXSizeToHoursFontSizeRatio)));
 			label.AddThemeConstantOverride("line_separation", 0);
 			label.AddThemeConstantOverride("text_highlight_h_padding", 4);
 			label.AddThemeConstantOverride("text_highlight_v_padding", 0);

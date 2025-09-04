@@ -34,10 +34,13 @@ namespace SteamPanno
 			public ShowHoursOptions ShowHoursOption { get; set; }
 
 			// hidden settings
-			public int MinimalGameAreaSize { get; set; } = 8;
+			public bool ShowConfigOnStart { get; set; } = false;
+			public int MinGameAreaSize { get; set; } = 8;
+			public int MaxHoursFontSize { get; set; } = 20;
+			public int AreaXSizeToHoursFontSizeRatio { get; set; } = 25;
+			public int AreaXSizeToTitleFontSizeRatio { get; set; } = 15;
 			public int HttpTimeoutSeconds { get; set; } = 20;
 			public int MaxDegreeOfParallelism { get; set; } = 8;
-			public bool ShowConfigOnStart { get; set; } = false;
 		}
 
 		static Settings()
