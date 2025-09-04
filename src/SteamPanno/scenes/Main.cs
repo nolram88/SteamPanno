@@ -46,9 +46,6 @@ namespace SteamPanno.scenes
 			var screenResolution = DisplayServer.ScreenGetSize();
 			var windowResolution = GetTree().Root.Size;
 			
-			GD.Print(screenResolution);
-			GD.Print(windowResolution);
-			
 			GetTree().Root.ContentScaleSize = windowResolution;
 			
 			panno = GetNode<Panno>("./Panno");
@@ -262,6 +259,11 @@ namespace SteamPanno.scenes
 				
 				this.ProgressSet(0, Localization.Localize("ProfileLoading"));
 				var games = await loader.GetProfileGames(pannoSteamId);
+				if (games.All(x => x.HoursOnRecordPrivate))
+				{
+					Report(Localization.Localize("HoursPrivate", pannoSteamId));
+				}
+
 				if (Settings.Instance.SelectedDiffSnapshots != null &&
 					Settings.Instance.SelectedDiffSnapshots.TryGetValue(pannoSteamId, out var snapshot))
 				{
@@ -333,8 +335,7 @@ namespace SteamPanno.scenes
 				}
 
 				panno.Save(savePath);
-				var labelText = $"{Localization.Localize("FileSaved")} {savePath}";
-				savedFileLabelText = $"[bgcolor=#000000ff]{labelText}[/bgcolor]";
+				savedFileLabelText = $"[bgcolor=#000000ff]{Localization.Localize("FileSaved", savePath)}[/bgcolor]";
 			}
 			catch (Exception e)
 			{
@@ -369,9 +370,10 @@ namespace SteamPanno.scenes
 		{
 			return (Settings.Instance.MinimalHoursOption) switch
 			{
-				0 => 1,
-				1 => 10,
-				2 => 100,
+				0 => 0,
+				1 => 1,
+				2 => 10,
+				3 => 100,
 				_ => float.TryParse(Settings.Instance.CustomMinimalHours, out var hours) ? hours : 0,
 			};
 		}

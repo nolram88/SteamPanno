@@ -56,6 +56,7 @@ namespace SteamPanno.panno.loading
 					Id = int.Parse(x.Element("appID").Value),
 					Name = x.Element("name").Value,
 					HoursOnRecord = float.Parse(x.Element("hoursOnRecord")?.Value ?? "0", CultureInfo.InvariantCulture),
+					HoursOnRecordPrivate = x.Element("hoursOnRecord") == null,
 				}).ToArray();
 			}
 		}

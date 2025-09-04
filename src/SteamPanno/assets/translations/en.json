@@ -40,8 +40,9 @@
 			"ResizeUnproportional": "Resize Unproportional"
 		}
 	},
-	"FileSaved": "File saved:",
+	"FileSaved": "File saved: {0}",
 	"Hours": "h",
+	"HoursPrivate": "Playtime data is private for Steam Account Id {0}.",
 	"ProfileLoading": "Profile loading...",
 	"PannoLayoutGeneration": "Panno layout generation...",
 	"CouldNotGetSteamId": "Could not get Steam ID.",

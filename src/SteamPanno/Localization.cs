@@ -60,18 +60,22 @@ namespace SteamPanno
 			}
 		}
 
-		public static string Localize(string phrase)
+		public static string Localize(string phrase, params string[] args)
 		{
 			if (localizations.TryGetValue(Settings.Instance.Language, out var localization) &&
 				localization.TryGetValue(phrase, out var phraseLocalized))
 			{
-				return phraseLocalized;
+				return args.Length == 0
+					? phraseLocalized
+					: string.Format(phraseLocalized, args);
 			}
 
 			if (localizations.TryGetValue(LanguageDefault, out var localizationDefault) &&
 				localizationDefault.TryGetValue(phrase, out var phraseLocalizedDefault))
 			{
-				return phraseLocalizedDefault;
+				return args.Length == 0
+					? phraseLocalizedDefault
+					: string.Format(phraseLocalizedDefault, args);
 			}
 
 			return phrase;
