@@ -202,7 +202,7 @@ namespace SteamPanno.scenes
 				Settings.Dto.ShowHoursOptions.TOP_RIGHT => VerticalAlignment.Top,
 				_ => VerticalAlignment.Bottom,
 			};
-			label.ParseBbcode($"[bgcolor=#000000ff]{Math.Round(hours)} {hoursText}[/bgcolor]");
+			label.ParseBbcode($"[bgcolor=#000000ff]{hours.ToString("F01")} {hoursText}[/bgcolor]");
 			label.Position = area.Position;
 			label.Size = area.Size;
 
