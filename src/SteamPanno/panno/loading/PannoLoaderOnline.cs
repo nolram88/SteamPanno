@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -41,13 +42,15 @@ namespace SteamPanno.panno.loading
 			}
 		}
 
-		public override async Task<PannoGame[]> GetProfileGames(string steamId)
+		public override async Task<PannoGame[]> GetProfileGames(
+			string steamId,
+			CancellationToken cancellationToken)
 		{
 			var url = string.Format(GetProfileBySteamIdUrl, steamId);
-			using (var response = await httpClient.GetAsync(url))
+			using (var response = await httpClient.GetAsync(url, cancellationToken))
 			{
 				response.EnsureSuccessStatusCode();
-				var responseBody = await response.Content.ReadAsStringAsync();
+				var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
 				var xml = XDocument.Parse(responseBody);
 				var games = xml.Root.Element("games").Elements("game");
 
@@ -61,13 +64,22 @@ namespace SteamPanno.panno.loading
 			}
 		}
 
-		public override async Task<PannoImage> GetGameLogoV(int appId) =>
-			await GetGameLogo(appId, LogoType.LIBRARY);
+		public override async Task<PannoImage> GetGameLogoV(
+			int appId,
+			CancellationToken cancellationToken) =>
+			await GetGameLogo(
+				appId, LogoType.LIBRARY, cancellationToken);
 
-		public override async Task<PannoImage> GetGameLogoH(int appId) =>
-			await GetGameLogo(appId, LogoType.CAPSULE) ?? await GetGameLogo(appId, LogoType.HEADER);
+		public override async Task<PannoImage> GetGameLogoH(
+			int appId,
+			CancellationToken cancellationToken) =>
+			await GetGameLogo(appId, LogoType.CAPSULE, cancellationToken)
+				?? await GetGameLogo(appId, LogoType.HEADER, cancellationToken);
 
-		private async Task<PannoImage> GetGameLogo(int appId, LogoType logo)
+		private async Task<PannoImage> GetGameLogo(
+			int appId,
+			LogoType logo,
+			CancellationToken cancellationToken)
 		{
 			var url = logo switch
 			{
@@ -81,11 +93,11 @@ namespace SteamPanno.panno.loading
 			{
 				url = string.Format(url, appId);
 
-				using (var response = await httpClient.GetAsync(url))
+				using (var response = await httpClient.GetAsync(url, cancellationToken))
 				{
 					if (response.IsSuccessStatusCode)
 					{
-						var responseBody = await response.Content.ReadAsByteArrayAsync();
+						var responseBody = await response.Content.ReadAsByteArrayAsync(cancellationToken);
 						return PannoImage.Load(responseBody);
 					}
 				}

@@ -113,10 +113,15 @@ namespace SteamPanno.scenes
 			pannoState = PannoState.Dirty;
 		}
 
-		public async Task LoadAndDraw(PannoGameLayout[] games, PannoLoader loader, PannoDrawer drawer, IPannoObserver observer)
+		public async Task LoadAndDraw(
+			PannoGameLayout[] games,
+			PannoLoader loader,
+			PannoDrawer drawer,
+			IPannoObserver observer,
+			CancellationToken cancellationToken)
 		{
 			pannoGamesInText = new ConcurrentBag<(Rect2I Area, string Title, float? Hours)>();
-			var locker = new SemaphoreSlim(1, 1);
+			var progressLocker = new SemaphoreSlim(1, 1);
 
 			var current = 0;
 			await Parallel.ForEachAsync(
@@ -127,13 +132,14 @@ namespace SteamPanno.scenes
 						games.Length,
 						Math.Min(
 							Settings.Instance.MaxDegreeOfParallelism,
-							Math.Max(OS.GetProcessorCount(), 1)))
+							Math.Max(OS.GetProcessorCount(), 1))),
+					CancellationToken = cancellationToken,
 				},
 				async (game, ct) =>
 				{
 					var image = game.Area.PreferHorizontal()
-						? await loader.GetGameLogoH(game.Game.Id)
-						: await loader.GetGameLogoV(game.Game.Id);
+						? await loader.GetGameLogoH(game.Game.Id, ct)
+						: await loader.GetGameLogoV(game.Game.Id, ct);
 
 					if (image != null)
 					{
@@ -147,10 +153,16 @@ namespace SteamPanno.scenes
 							Settings.Instance.ShowHoursOption != 0 ? game.Game.HoursOnRecord : null));
 					}
 
-					locker.Wait();
-					current++;
-					observer.ProgressSet(((double)current / games.Length) * 100, $"{game.Game.Name} ({current}/{games.Length})");
-					locker.Release();
+					progressLocker.Wait(ct);
+					try
+					{
+						current++;
+						observer.ProgressSet(((double)current / games.Length) * 100, $"{game.Game.Name} ({current}/{games.Length})");
+					}
+					finally
+					{
+						progressLocker.Release();
+					}
 				});
 
 			pannoImage = drawer.Dest;

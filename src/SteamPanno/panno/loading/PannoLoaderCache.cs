@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SteamPanno.panno.loading
@@ -18,33 +19,42 @@ namespace SteamPanno.panno.loading
 			profilesPath = FileExtensions.GetProfilesPath();
 		}
 
-		public override async Task<PannoGame[]> GetProfileGames(string steamId)
+		public override async Task<PannoGame[]> GetProfileGames(
+			string steamId,
+			CancellationToken cancellationToken)
 		{
 			if (!TryGetProfileFromCache(steamId, out var profile))
 			{
-				profile = await innerLoader.GetProfileGames(steamId);
+				profile = await innerLoader.GetProfileGames(
+					steamId, cancellationToken);
 				SaveProfileToCache(steamId, profile);
 			}
 
 			return profile;
 		}
 
-		public override async Task<PannoImage> GetGameLogoV(int appId)
+		public override async Task<PannoImage> GetGameLogoV(
+			int appId,
+			CancellationToken cancellationToken)
 		{
 			if (!TryGetLogoFromCache(appId, "v", out var image))
 			{
-				image = await innerLoader.GetGameLogoV(appId);
+				image = await innerLoader.GetGameLogoV(
+					appId, cancellationToken);
 				SaveLogoToCache(appId, "v", image);
 			}
 
 			return image;
 		}
 
-		public override async Task<PannoImage> GetGameLogoH(int appId)
+		public override async Task<PannoImage> GetGameLogoH(
+			int appId,
+			CancellationToken cancellationToken)
 		{
 			if (!TryGetLogoFromCache(appId, "h", out var image))
 			{
-				image = await innerLoader.GetGameLogoH(appId);
+				image = await innerLoader.GetGameLogoH(
+					appId, cancellationToken);
 				SaveLogoToCache(appId, "h", image);
 			}
 

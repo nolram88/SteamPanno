@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 
@@ -35,6 +36,8 @@ namespace SteamPanno.scenes
 		private bool warningButtonVisible;
 		private string savedFileLabelText;
 		private Channel<string> reportBuffer = Channel.CreateUnbounded<string>();
+		private SemaphoreSlim generationLocker = new SemaphoreSlim(1, 1);
+		private CancellationTokenSource generationStopper;
 
 		[Export]
 		public PackedScene ConfigScene { get; set; }
@@ -112,7 +115,7 @@ namespace SteamPanno.scenes
 			}
 			else
 			{
-				Task.Run(async () => await GeneratePannoBackThread());
+				Task.Run(async () => await GeneratePannoWorkThread());
 			}
 		}
 
@@ -221,15 +224,39 @@ namespace SteamPanno.scenes
 				ShowConfig(false);
 				if (applied)
 				{
-					Task.Run(async () => await GeneratePannoBackThread());
+					Task.Run(async () => await GeneratePannoWorkThread());
 				}
 			};
 			AddChild(config);
 		}
 
-		protected async Task GeneratePannoBackThread()
+		protected async Task GeneratePannoWorkThread()
 		{
+			while (true)
+			{
+				await generationLocker.WaitAsync();
+				try
+				{
+					if (generationStopper != null)
+					{
+						generationStopper.Cancel();
+					}
+					else
+					{
+						break;
+					}
+				}
+				finally
+				{
+					generationLocker.Release();
+				}
+
+				await Task.Delay(100);
+			}
+
 			Stopwatch time = Stopwatch.StartNew();
+			generationStopper = new CancellationTokenSource();
+			CancellationToken cancellationToken = generationStopper.Token;
 
 			try
 			{
@@ -247,7 +274,7 @@ namespace SteamPanno.scenes
 				}
 
 				var pannoSize = GetPannoSize();
-				
+
 				var loader = new PannoLoaderCache(new PannoLoaderOnline());
 				Type generatorType = MetaData.GenerationTypes
 					.Skip(Settings.Instance.GenerationMethodOption)
@@ -259,9 +286,9 @@ namespace SteamPanno.scenes
 					.Select(x => x.Value)
 					.FirstOrDefault() ?? typeof(PannoDrawerResizeExpandBlur);
 				var drawer = CreateDrawer(drawerType, pannoSize);
-				
-				this.ProgressSet(0, Localization.Localize("ProfileLoading"));
-				var games = await loader.GetProfileGames(pannoSteamId);
+
+				ProgressSet(0, Localization.Localize("ProfileLoading"));
+				var games = await loader.GetProfileGames(pannoSteamId, cancellationToken);
 				if (games.All(x => x.HoursOnRecordPrivate))
 				{
 					Report(Localization.Localize("HoursPrivate", pannoSteamId));
@@ -310,10 +337,13 @@ namespace SteamPanno.scenes
 					games.ToArray(),
 					new Rect2I(0, 0, pannoSize.X, pannoSize.Y));
 
-				await panno.LoadAndDraw(pannoStructure, loader, drawer, this);
+				await panno.LoadAndDraw(pannoStructure, loader, drawer, this, cancellationToken);
 
 				saveButtonVisible = true;
 				GD.Print($"Generation time: {TimeSpan.FromMilliseconds(time.ElapsedMilliseconds).ToString()}");
+			}
+			catch (OperationCanceledException)
+			{
 			}
 			catch (Exception e)
 			{
@@ -323,6 +353,17 @@ namespace SteamPanno.scenes
 			{
 				ProgressStop();
 				time.Stop();
+
+				await generationLocker.WaitAsync();
+				try
+				{
+					generationStopper.Dispose();
+					generationStopper = null;
+				}
+				finally
+				{
+					generationLocker.Release();
+				}
 			}
 		}
 

@@ -326,7 +326,7 @@ namespace SteamPanno.scenes
 
 		private void HoursOptionSelected(long index)
 		{
-			customMinimalHours.Visible = index == 3;
+			customMinimalHours.Visible = index == 4;
 		}
 
 		private void OnCancelPressed()
