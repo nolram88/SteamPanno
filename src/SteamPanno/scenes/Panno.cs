@@ -69,13 +69,12 @@ namespace SteamPanno.scenes
 
 				case PannoState.Drawn:
 					textureOut = new TextureRect();
-					textureOut.Position = Vector2.Zero;
-					textureOut.Size = GetTree().Root.Size;
 					var texture = subViewport.GetTexture();
 					var textureSize = texture.GetSize();
+					var windowResolution = GetTree().Root.Size;
 					textureOut.Texture = texture;
 					textureOut.ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize;
-					textureOut.StretchMode = textureSize.X <= textureOut.Size.X && textureSize.Y <= textureOut.Size.Y
+					textureOut.StretchMode = textureSize.X <= windowResolution.X && textureSize.Y <= windowResolution.Y
 						? TextureRect.StretchModeEnum.KeepCentered
 						: TextureRect.StretchModeEnum.KeepAspectCentered;
 					textureOut.SetAnchorsPreset(LayoutPreset.FullRect);

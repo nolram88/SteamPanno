@@ -28,7 +28,7 @@ namespace SteamPanno.scenes
 		private ImageButton saveButton;
 		private ImageButton warningButton;
 		private RichTextLabel savedFileLabel;
-
+		
 		private string pannoSteamId;
 		private double pannoProgressValueToSet;
 		private string pannoProgressTextToSet;
@@ -46,15 +46,7 @@ namespace SteamPanno.scenes
 
 		public override void _Ready()
 		{
-			var screenResolution = DisplayServer.ScreenGetSize();
-			var windowResolution = GetTree().Root.Size;
-			
-			var scaleFactor = screenResolution.Y / 1080;
-			GetTree().Root.ContentScaleSize = windowResolution;
-			GetTree().Root.ContentScaleFactor = scaleFactor;
-
 			panno = GetNode<Panno>("./Panno");
-			panno.Scale = Vector2.One * scaleFactor;
 			gui = GetNode<Control>("./GUI");
 			PrepareConfig();
 			processor = PannoImageProcessorScene.Instantiate<PannoImageProcessor>();
