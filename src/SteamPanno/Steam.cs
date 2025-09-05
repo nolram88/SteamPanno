@@ -38,13 +38,22 @@ namespace SteamPanno
 
 		public static (string id, string name)[] GetFriends()
 		{
-			var friends = new List<(string, string)>();
-			foreach (var friend in SteamFriends.GetFriends())
+			try
 			{
-				friends.Add((friend.Id.ToString(), friend.Name));
-			}
+				var friends = new List<(string, string)>();
+				foreach (var friend in SteamFriends.GetFriends())
+				{
+					friends.Add((friend.Id.ToString(), friend.Name));
+				}
 
-			return friends.ToArray();
+				return friends.ToArray();	
+			}
+			catch (Exception e)
+			{
+				GD.Print(e.Message);
+			}
+			
+			return Array.Empty<(string id, string name)>();
 		}
 		
 		public static void Shutdown()
