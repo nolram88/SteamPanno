@@ -46,9 +46,12 @@ namespace SteamPanno.scenes
 			var screenResolution = DisplayServer.ScreenGetSize();
 			var windowResolution = GetTree().Root.Size;
 			
+			var scaleFactor = screenResolution.Y / 1080;
 			GetTree().Root.ContentScaleSize = windowResolution;
-			
+			GetTree().Root.ContentScaleFactor = scaleFactor;
+
 			panno = GetNode<Panno>("./Panno");
+			panno.Scale = Vector2.One * scaleFactor;
 			gui = GetNode<Control>("./GUI");
 			PrepareConfig();
 			processor = PannoImageProcessorScene.Instantiate<PannoImageProcessor>();
