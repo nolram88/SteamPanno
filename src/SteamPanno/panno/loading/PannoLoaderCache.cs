@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,13 +24,14 @@ namespace SteamPanno.panno.loading
 			string steamId,
 			CancellationToken cancellationToken)
 		{
-			if (!TryGetProfileFromCache(steamId, out var profile))
+			if (!TryGetProfileFromCache(steamId, out var profile) ||
+				profile.All(x => x.HoursOnRecordPrivate))
 			{
 				profile = await innerLoader.GetProfileGames(
 					steamId, cancellationToken);
 				SaveProfileToCache(steamId, profile);
 			}
-
+			
 			return profile;
 		}
 
@@ -110,12 +112,14 @@ namespace SteamPanno.panno.loading
 
 		private void SaveProfileToCache(string steamId, PannoGame[] profile)
 		{
-			var fileName = GetProfileFileName(steamId);
-			if (!File.Exists(fileName))
+			if (profile.Length == 0)
 			{
-				var json = JsonSerializer.Serialize(profile);
-				File.WriteAllText(fileName, json);
+				return;
 			}
+
+			var fileName = GetProfileFileName(steamId);
+			var json = JsonSerializer.Serialize(profile);
+			File.WriteAllText(fileName, json);
 		}
 
 		private string GetProfileFileName(string steamId)

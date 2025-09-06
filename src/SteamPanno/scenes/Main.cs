@@ -283,7 +283,11 @@ namespace SteamPanno.scenes
 				var games = await loader.GetProfileGames(pannoSteamId, cancellationToken);
 				if (games.All(x => x.HoursOnRecordPrivate))
 				{
-					Report(Localization.Localize("HoursPrivate", pannoSteamId));
+					Report(Localization.Localize("PrivateProfile", pannoSteamId));
+					if (Settings.Instance.AccountIdOption == 0)
+					{
+						Report(Localization.Localize("PrivateProfileLocal"));
+					}
 				}
 
 				if (Settings.Instance.SelectedDiffSnapshots != null &&

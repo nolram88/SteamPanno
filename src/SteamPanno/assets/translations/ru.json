@@ -31,18 +31,19 @@
 		},
 		"OutpaintingTypes":
 		{
-			"ResizeCut": "Отсечение",
-			"ResizeExpand": "Расширение",
-			"ResizeExpandBlur": "Расширение и размытие",
-			"ResizeMirror": "Отражение",
-			"ResizeMirrorBlur": "Отражение и размытие",
-			"ResizeProportional": "Пропорционально",
-			"ResizeUnproportional": "Непропорционально"
+			"ResizeCut": "Масштабирование+Отсечение",
+			"ResizeExpand": "Масштабирование+Расширение",
+			"ResizeExpandBlur": "Масштабирование+Расширение+Размытие",
+			"ResizeMirror": "Масштабирование+Отражение",
+			"ResizeMirrorBlur": "Масштабирование+Отражение+Размытие",
+			"ResizeProportional": "Масштабирование пропорционально",
+			"ResizeUnproportional": "Масштабирование непропорционально"
 		}
 	},
 	"FileSaved": "Файл сохранен: {0}",
 	"Hours": "ч",
-	"HoursPrivate": "Информация об игровом времени скрыта для аккаунта Steam {0}.",
+	"PrivateProfile": "Игровая статистика скрыта для аккаунта Steam {0}.",
+	"PrivateProfileLocal": "Сделать вашу игровую статистику публичной можно в Настройках Безопасности профиля Steam. Также может потребоваться подождать несколько минут пока не обновится кэш Steam.",
 	"ProfileLoading": "Загрузка профиля...",
 	"PannoLayoutGeneration": "Генерация макета...",
 	"CouldNotGetSteamId": "Аккаунт Steam не определен.",
