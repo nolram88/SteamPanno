@@ -7,7 +7,7 @@ void fragment()
 {
 	vec2 pixel_size = 1.0 / vec2(textureSize(src, 0));
 	vec4 color = texture(src, UV);
-	
+
 	for (int i = -radius; i <= radius; i++)
 	{
 		for (int j = -radius; j <= radius; j++)
@@ -18,6 +18,6 @@ void fragment()
 			color += texture(src, uvAndOffset);
 		}
 	}
-	
+
 	COLOR = color / pow(float(radius) * 2.0 + 1.0, 2);
 }

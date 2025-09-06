@@ -43,7 +43,7 @@ void fragment()
 	vec2 intensity = UV * intensity_direction + (1.0 - step(vec2(0,0), intensity_direction));
 	int radius = int(round(mix(float(radiusMin), float(radiusMax), length(intensity))));
 	float[16] weights = init_weights(radius);
-	
+
 	vec4 color = texture(src, UV) * weights[0];
 	for(int i = 1; i <= radius; i++)
 	{
@@ -51,6 +51,6 @@ void fragment()
 		color += texture(src, UV + offset) * weights[i];
 		color += texture(src, UV - offset) * weights[i];
 	}
-	
+
 	COLOR = color;
 }
