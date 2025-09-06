@@ -54,7 +54,7 @@ namespace SteamPanno.panno
 		public virtual Vector2I Size
 		{
 			get => Dest.GetSize();
-			set => Dest.Resize(value.X, value.Y, Image.Interpolation.Nearest);
+			set => Dest.Resize(value.X, value.Y, Image.Interpolation.Lanczos);
 		}
 
 		public virtual ImageTexture CreateTexture()
