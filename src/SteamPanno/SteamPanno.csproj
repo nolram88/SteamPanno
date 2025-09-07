@@ -17,6 +17,11 @@
       <HintPath>addons\steam\macos\Facepunch.Steamworks.Posix.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup Condition=" '$(STEAM)' == '' and '$(GodotTargetPlatform)' == 'linuxbsd' ">
+    <Reference Include="Facepunch.Steamworks.Posix">
+      <HintPath>addons\steam\linux\Facepunch.Steamworks.Posix.dll</HintPath>
+    </Reference>
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
   </ItemGroup>
@@ -25,5 +30,8 @@
   </Target>
   <Target Condition=" '$(STEAM)' == '' and '$(GodotTargetPlatform)' == 'macos' " Name="PostBuildMacos" AfterTargets="PostBuildEvent">
     <Exec Command="rsync -av &quot;$(GodotProjectDir)addons\steam\macos\libsteam_api.dylib&quot; &quot;$(GodotProjectDir)&quot;" />
+  </Target>
+  <Target Condition=" '$(STEAM)' == '' and '$(GodotTargetPlatform)' == 'linuxbsd' " Name="PostBuildLinux" AfterTargets="PostBuildEvent">
+    <Exec Command="rsync -av &quot;$(GodotProjectDir)addons\steam\linux\libsteam_api.so&quot; &quot;$(GodotProjectDir)&quot;" />
   </Target>
 </Project>
