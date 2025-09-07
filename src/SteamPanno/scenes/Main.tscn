@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://14571x617fbq"]
+[gd_scene load_steps=12 format=3 uid="uid://14571x617fbq"]
 
 [ext_resource type="Script" uid="uid://dhe4h26dru2cp" path="res://scenes/Main.cs" id="1_4kbnv"]
 [ext_resource type="PackedScene" uid="uid://cipukuj7keyul" path="res://scenes/Panno.tscn" id="2_tmwwy"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://dcyxlgjcoilt5" path="res://assets/images/globe.png" id="5_q8u5g"]
 [ext_resource type="Texture2D" uid="uid://cfs2ykxnrlns8" path="res://assets/images/save.png" id="6_nxtc6"]
 [ext_resource type="PackedScene" uid="uid://cjbg01q6avlwd" path="res://scenes/Config.tscn" id="8_jlsqs"]
+[ext_resource type="Texture2D" uid="uid://rv6pgvvtuclo" path="res://assets/images/screenshot.png" id="10_wp0k4"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_4kbnv")
@@ -105,6 +106,12 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 0
 texture = ExtResource("6_nxtc6")
+
+[node name="ScreenshotButton" parent="GUI/Bottom" instance=ExtResource("3_0bbpv")]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+texture = ExtResource("10_wp0k4")
 
 [node name="WarningButton" parent="GUI/Bottom" instance=ExtResource("3_0bbpv")]
 visible = false

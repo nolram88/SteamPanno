@@ -55,6 +55,11 @@ namespace SteamPanno
 			
 			return Array.Empty<(string id, string name)>();
 		}
+
+		public static void SaveScreenshot(byte[] data, int width, int height)
+		{
+			var screenshot = SteamScreenshots.WriteScreenshot(data, width, height);
+		}
 		
 		public static void Shutdown()
 		{

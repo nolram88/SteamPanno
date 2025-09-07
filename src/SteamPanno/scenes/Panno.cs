@@ -31,13 +31,27 @@ namespace SteamPanno.scenes
 			textureIn = GetNode<TextureRect>("./SubViewport/TextureIn");
 		}
 
-		public void Save(string filename)
+		public void SaveToFile(string filename)
 		{
 			if (pannoImage != null)
 			{
 				textureOut.Texture.GetImage().SavePng(filename);
 			}
 		}
+
+		#if STEAM
+		public void SaveScreenshot()
+		{
+			if (pannoImage != null)
+			{
+				var image = textureOut.Texture.GetImage();
+				var data = image.GetData();
+				var size = image.GetSize();
+
+				Steam.SaveScreenshot(image.GetData(), size.X, size.Y);
+			}
+		}
+		#endif
 
 		public override void _Process(double delta)
 		{
