@@ -23,6 +23,7 @@ namespace SteamPanno.scenes
 		private PannoImageProcessor processor;
 		private TextEdit report;
 		private Control progressContainer;
+		private bool pannoProgressIndeterminate;
 		private ProgressBar pannoProgressBar;
 		private Label pannoProgressLabel;
 		private ImageButton saveButton;
@@ -99,10 +100,10 @@ namespace SteamPanno.scenes
 			var exitButton = GetNode<ImageButton>("./GUI/Top/ExitButton");
 			exitButton.OnClick = Quit;
 			saveButton = GetNode<ImageButton>("./GUI/Bottom/SaveButton");
-			saveButton.OnClick = SavePannoToFile;
+			saveButton.OnClick = () => Task.Run(() => SavePannoToFile());
 			#if STEAM
 			screenshotButton = GetNode<ImageButton>("./GUI/Bottom/ScreenshotButton");
-			screenshotButton.OnClick = SavePannoScreenshot;
+			screenshotButton.OnClick = () => Task.Run(() => SavePannoScreenshot());
 			#endif
 			warningButton = GetNode<ImageButton>("./GUI/Bottom/WarningButton");
 			warningButton.OnClick = () =>
@@ -127,6 +128,11 @@ namespace SteamPanno.scenes
 			Steam.Update();
 			#endif
 
+			if (pannoProgressBar.Indeterminate != pannoProgressIndeterminate)
+			{
+				pannoProgressBar.ShowPercentage = !pannoProgressIndeterminate;
+				pannoProgressBar.Indeterminate = pannoProgressIndeterminate;
+			}
 			pannoProgressBar.Value = pannoProgressValueToSet;
 			pannoProgressLabel.Text = pannoProgressTextToSet;
 			progressContainer.Visible = pannoProgressTextToSet != null;
@@ -191,7 +197,13 @@ namespace SteamPanno.scenes
 			}
 		}
 
-		public void ProgressSet(double value, string text = null)
+		public void ProgressStart(bool indeterminate, string text = null)
+		{
+			pannoProgressIndeterminate = indeterminate;
+			pannoProgressTextToSet = text ?? string.Empty;
+		}
+
+		public void ProgressUpdate(double value, string text = null)
 		{
 			pannoProgressValueToSet = value;
 			if (text != null)
@@ -202,8 +214,8 @@ namespace SteamPanno.scenes
 
 		public void ProgressStop()
 		{
-			pannoProgressTextToSet = null;
 			pannoProgressValueToSet = 0;
+			pannoProgressTextToSet = null;
 		}
 
 		public void Report(Exception e)
@@ -302,7 +314,7 @@ namespace SteamPanno.scenes
 					.FirstOrDefault() ?? typeof(PannoDrawerResizeExpandBlur);
 				var drawer = CreateDrawer(drawerType, pannoSize);
 
-				ProgressSet(0, Localization.Localize("ProfileLoading"));
+				ProgressStart(false, Localization.Localize("ProfileLoading"));
 				var games = await loader.GetProfileGames(pannoSteamId, cancellationToken);
 				if (games.All(x => x.HoursOnRecordPrivate))
 				{
@@ -351,7 +363,7 @@ namespace SteamPanno.scenes
 					return;
 				}
 
-				ProgressSet(0, Localization.Localize("PannoLayoutGeneration"));
+				ProgressUpdate(0, Localization.Localize("PannoLayoutGeneration"));
 				var pannoStructure = await generator.Generate(
 					games.ToArray(),
 					new Rect2I(0, 0, pannoSize.X, pannoSize.Y));
@@ -393,6 +405,9 @@ namespace SteamPanno.scenes
 		{
 			try
 			{
+				saveButtonVisible = false;
+				ProgressStart(true, Localization.Localize("PannoSaving"));
+
 				var dateText = DateTime.Today.ToString("yyyy-MM-dd");
 				var savePath = Path.Combine(FileExtensions.GetGenerationPath(), $"panno_{pannoSteamId}_{dateText}.png");
 				if (File.Exists(savePath))
@@ -409,7 +424,7 @@ namespace SteamPanno.scenes
 			}
 			finally
 			{
-				saveButtonVisible = false;
+				ProgressStop();
 			}
 		}
 
@@ -418,6 +433,9 @@ namespace SteamPanno.scenes
 		{
 			try
 			{
+				screenshotButtonVisible = false;
+				ProgressStart(true, Localization.Localize("PannoSaving"));
+
 				panno.SaveScreenshot();
 			}
 			catch (Exception e)
@@ -426,7 +444,7 @@ namespace SteamPanno.scenes
 			}
 			finally
 			{
-				screenshotButtonVisible = false;
+				ProgressStop();
 			}
 		}
 		#endif

@@ -46,6 +46,7 @@
 	"PrivateProfileLocal": "You can make your game details and playtime public in your Steam profile's Privacy Settings. You may also have to wait several minutes before Steam's cache is refreshed.",
 	"ProfileLoading": "Profile loading...",
 	"PannoLayoutGeneration": "Panno layout generation...",
+	"PannoSaving": "Panno saving...",
 	"CouldNotGetSteamId": "Could not get Steam ID.",
 	"NoGamesMeetTheGivenCriteria": "No games meet the given criteria."
 }

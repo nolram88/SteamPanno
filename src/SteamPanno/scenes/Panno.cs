@@ -170,7 +170,7 @@ namespace SteamPanno.scenes
 					try
 					{
 						current++;
-						observer.ProgressSet(((double)current / games.Length) * 100, $"{game.Game.Name} ({current}/{games.Length})");
+						observer.ProgressUpdate(((double)current / games.Length) * 100, $"{game.Game.Name} ({current}/{games.Length})");
 					}
 					finally
 					{
