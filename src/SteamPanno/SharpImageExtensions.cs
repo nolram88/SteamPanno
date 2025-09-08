@@ -11,14 +11,23 @@ namespace SteamPanno
 			using (var stream = new MemoryStream())
 			{
 				var image = Image.Load(buffer);
-				image.SaveAsBmp(stream, new SixLabors.ImageSharp.Formats.Bmp.BmpEncoder()
-				{
-					SupportTransparency = false,
-				});
+				image.SaveAsBmp(stream);
 				stream.Seek(0, SeekOrigin.Begin);
 
 				var godotImage = new GodotImage();
-				return (godotImage.LoadBmpFromBuffer(stream.GetBuffer()) == Godot.Error.Ok) ? godotImage : null;
+				var result = godotImage.LoadBmpFromBuffer(stream.GetBuffer());
+
+				if (result == Godot.Error.Ok)
+				{
+					if (godotImage.GetFormat() != GodotImage.Format.Rgb8)
+					{
+						godotImage.Convert(GodotImage.Format.Rgb8);
+					}
+
+					return godotImage;
+				}
+
+				return null;
 			}
 		}
 	}

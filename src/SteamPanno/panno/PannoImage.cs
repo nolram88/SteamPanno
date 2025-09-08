@@ -29,20 +29,22 @@ namespace SteamPanno.panno
 		public static PannoImage Load(string file)
 		{
 			var image = new Image();
-			return (image.Load(file) == Error.Ok) ? PannoImage.Create(image) : null;
+			var result = image.Load(file);
+
+			return result == Error.Ok ? PannoImage.Create(image) : null;
 		}
 
 		public static PannoImage Load(byte[] buffer)
 		{
 			var image = new Image();
-			
+
 			if (image.LoadJpgFromBuffer(buffer) != Error.Ok)
 			{
 				// godot jpg decoder has problems with some files
 				// so we use alternative decoder
 				image = buffer.DecodeJpg();
 			}
-
+			
 			return image != null ? PannoImage.Create(image) : null;
 		}
 
