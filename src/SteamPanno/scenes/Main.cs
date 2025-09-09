@@ -284,8 +284,8 @@ namespace SteamPanno.scenes
 					return;
 				}
 
+				ProgressStart(true);
 				var pannoSize = GetPannoSize();
-
 				var loader = new PannoLoaderCache(new PannoLoaderOnline());
 				Type generatorType = MetaData.GenerationTypes
 					.Skip(Settings.Instance.GenerationMethodOption)
@@ -298,7 +298,7 @@ namespace SteamPanno.scenes
 					.FirstOrDefault() ?? typeof(PannoDrawerResizeExpandBlur);
 				var drawer = CreateDrawer(drawerType, pannoSize);
 
-				ProgressStart(false, Localization.Localize("ProfileLoading"));
+				ProgressUpdate(0, Localization.Localize("ProfileLoading"));
 				var games = await loader.GetProfileGames(pannoSteamId, cancellationToken);
 				if (games.All(x => x.HoursOnRecordPrivate))
 				{
@@ -352,6 +352,7 @@ namespace SteamPanno.scenes
 					games.ToArray(),
 					new Rect2I(0, 0, pannoSize.X, pannoSize.Y));
 
+				ProgressStart(false);
 				await panno.LoadAndDraw(pannoStructure, loader, drawer, this, cancellationToken);
 
 				saveButtonVisible = true;
