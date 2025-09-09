@@ -39,7 +39,6 @@ namespace SteamPanno.scenes
 			}
 		}
 
-		#if STEAM
 		public void SaveScreenshot()
 		{
 			if (pannoImage != null)
@@ -51,7 +50,6 @@ namespace SteamPanno.scenes
 				Steam.SaveScreenshot(image.GetData(), size.X, size.Y);
 			}
 		}
-		#endif
 
 		public override void _Process(double delta)
 		{

@@ -66,22 +66,26 @@ namespace SteamPanno
 				Instance = JsonSerializer.Deserialize<Dto>(json);
 			}
 		}
-
+		
 		public static string GetSteamId()
 		{
-			#if STEAM
-			return (Settings.Instance.AccountIdOption) switch
+			var id = Steam.GetSteamId();
+
+			if (id != null)
 			{
-				1 => Settings.Instance.FriendAccountId.TryParseSteamId(out var friendSteamId)
-					? friendSteamId : null,
-				2 => Settings.Instance.CustomAccountId.TryParseSteamId(out var customSteamId)
-					? customSteamId : null,
-				_ => Steam.SteamId,
-			};
-			#else
+				if (Settings.Instance.AccountIdOption == 0)
+				{
+					return id;
+				}
+				else if (Settings.Instance.AccountIdOption == 1)
+				{
+					return Settings.Instance.FriendAccountId.TryParseSteamId(out var friendSteamId)
+						? friendSteamId : null;
+				}
+			}
+
 			return Settings.Instance.CustomAccountId.TryParseSteamId(out var customSteamId)
 				? customSteamId : null;
-			#endif
 		}
 
 		private static JsonSerializerOptions SerializerOptions { get; set; } = new JsonSerializerOptions()

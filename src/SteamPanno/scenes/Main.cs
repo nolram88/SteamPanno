@@ -27,9 +27,7 @@ namespace SteamPanno.scenes
 		private ProgressBar pannoProgressBar;
 		private Label pannoProgressLabel;
 		private ImageButton saveButton;
-		#if STEAM
 		private ImageButton screenshotButton;
-		#endif
 		private ImageButton warningButton;
 		private RichTextLabel savedFileLabel;
 		
@@ -37,9 +35,7 @@ namespace SteamPanno.scenes
 		private double pannoProgressValueToSet;
 		private string pannoProgressTextToSet;
 		private bool saveButtonVisible;
-		#if STEAM
 		private bool screenshotButtonVisible;
-		#endif
 		private bool warningButtonVisible;
 		private string savedFileLabelText;
 		private Channel<string> reportBuffer = Channel.CreateUnbounded<string>();
@@ -101,10 +97,8 @@ namespace SteamPanno.scenes
 			exitButton.OnClick = Quit;
 			saveButton = GetNode<ImageButton>("./GUI/Bottom/SaveButton");
 			saveButton.OnClick = () => Task.Run(() => SavePannoToFile());
-			#if STEAM
 			screenshotButton = GetNode<ImageButton>("./GUI/Bottom/ScreenshotButton");
 			screenshotButton.OnClick = () => Task.Run(() => SavePannoScreenshot());
-			#endif
 			warningButton = GetNode<ImageButton>("./GUI/Bottom/WarningButton");
 			warningButton.OnClick = () =>
 			{
@@ -124,10 +118,6 @@ namespace SteamPanno.scenes
 
 		public override void _Process(double delta)
 		{
-			#if STEAM
-			Steam.Update();
-			#endif
-
 			if (pannoProgressBar.Indeterminate != pannoProgressIndeterminate)
 			{
 				pannoProgressBar.ShowPercentage = !pannoProgressIndeterminate;
@@ -144,7 +134,6 @@ namespace SteamPanno.scenes
 					saveButton.Blink(true);
 				}
 			}
-			#if STEAM
 			if (screenshotButton.Visible != screenshotButtonVisible)
 			{
 				screenshotButton.Visible = screenshotButtonVisible;
@@ -153,7 +142,6 @@ namespace SteamPanno.scenes
 					screenshotButton.Blink(true);
 				}
 			}
-			#endif
 			if (warningButton.Visible != warningButtonVisible)
 			{
 				warningButton.Visible = warningButtonVisible;
@@ -187,9 +175,7 @@ namespace SteamPanno.scenes
 		{
 			if (what == NotificationPredelete)
 			{
-				#if STEAM
 				Steam.Shutdown();
-				#endif
 			}
 			if (what == NotificationWMCloseRequest)
 			{
@@ -286,9 +272,7 @@ namespace SteamPanno.scenes
 			{
 				pannoSteamId = null;
 				saveButtonVisible = false;
-				#if STEAM
 				screenshotButtonVisible = false;
-				#endif
 				warningButtonVisible = false;
 				savedFileLabelText = null;
 				panno.Clear();
@@ -371,9 +355,11 @@ namespace SteamPanno.scenes
 				await panno.LoadAndDraw(pannoStructure, loader, drawer, this, cancellationToken);
 
 				saveButtonVisible = true;
-				#if STEAM
-				screenshotButtonVisible = true;
-				#endif
+				if (Steam.GetSteamId() != null)
+				{
+					screenshotButtonVisible = true;
+				}
+
 				GD.Print($"Generation time: {TimeSpan.FromMilliseconds(time.ElapsedMilliseconds).ToString()}");
 			}
 			catch (OperationCanceledException)
@@ -428,7 +414,6 @@ namespace SteamPanno.scenes
 			}
 		}
 
-		#if STEAM
 		protected void SavePannoScreenshot()
 		{
 			try
@@ -447,8 +432,7 @@ namespace SteamPanno.scenes
 				ProgressStop();
 			}
 		}
-		#endif
-
+		
 		protected Vector2I GetPannoSize()
 		{
 			if (Settings.Instance.UseCustomResolution &&

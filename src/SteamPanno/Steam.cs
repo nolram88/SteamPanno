@@ -1,5 +1,3 @@
-#if STEAM
-
 using System;
 using System.Collections.Generic;
 using Godot;
@@ -15,10 +13,8 @@ namespace SteamPanno
 		{
 			try
 			{
-				SteamClient.RestartAppIfNecessary(appID);
 				SteamClient.Init(appID, true);
-				GD.Print(SteamClient.Name);
-				GD.Print(SteamClient.SteamId);
+				GD.Print($"Steam Name: {SteamClient.Name}, Steam Id: {SteamClient.SteamId}");
 			}
 			catch (Exception e)
 			{
@@ -26,39 +22,48 @@ namespace SteamPanno
 			}
 		}
 
-		public static string SteamId
+		public static string GetSteamId()
 		{
-			get => SteamClient.SteamId.ToString();
-		}
-
-		public static void Update()
-		{
-			SteamClient.RunCallbacks();
+			return SteamClient.IsValid ?
+				SteamClient.SteamId.ToString()
+				: null;
 		}
 
 		public static (string id, string name)[] GetFriends()
 		{
+			var friends = new List<(string, string)>();
+
 			try
 			{
-				var friends = new List<(string, string)>();
-				foreach (var friend in SteamFriends.GetFriends())
+				if (SteamClient.IsValid)
 				{
-					friends.Add((friend.Id.ToString(), friend.Name));
+					foreach (var friend in SteamFriends.GetFriends())
+					{
+						friends.Add((friend.Id.ToString(), friend.Name));
+					}
 				}
-
-				return friends.ToArray();	
 			}
 			catch (Exception e)
 			{
 				GD.Print(e.Message);
 			}
 			
-			return Array.Empty<(string id, string name)>();
+			return friends.ToArray();
 		}
 
 		public static void SaveScreenshot(byte[] data, int width, int height)
 		{
-			var screenshot = SteamScreenshots.WriteScreenshot(data, width, height);
+			try
+			{
+				if (SteamClient.IsValid)
+				{
+					SteamScreenshots.WriteScreenshot(data, width, height);
+				}
+			}
+			catch (Exception e)
+			{
+				GD.Print(e.Message);
+			}
 		}
 		
 		public static void Shutdown()
@@ -77,5 +82,3 @@ namespace SteamPanno
 		}
 	}
 }
-
-#endif

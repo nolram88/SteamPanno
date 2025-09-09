@@ -4,20 +4,17 @@
     <EnableDynamicLoading>true</EnableDynamicLoading>
 	<Platforms>AnyCPU</Platforms>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>$(DefineConstants);STEAM</DefineConstants>
-  </PropertyGroup>
-  <ItemGroup Condition=" '$(STEAM)' == '' and '$(GodotTargetPlatform)' == 'windows' ">
+  <ItemGroup Condition=" '$(GodotTargetPlatform)' == 'windows' ">
     <Reference Include="Facepunch.Steamworks.Win64">
       <HintPath>addons\steam\windows\Facepunch.Steamworks.Win64.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup Condition=" '$(STEAM)' == '' and '$(GodotTargetPlatform)' == 'macos' ">
+  <ItemGroup Condition=" '$(GodotTargetPlatform)' == 'macos' ">
     <Reference Include="Facepunch.Steamworks.Posix">
       <HintPath>addons\steam\macos\Facepunch.Steamworks.Posix.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup Condition=" '$(STEAM)' == '' and '$(GodotTargetPlatform)' == 'linuxbsd' ">
+  <ItemGroup Condition=" '$(GodotTargetPlatform)' == 'linuxbsd' ">
     <Reference Include="Facepunch.Steamworks.Posix">
       <HintPath>addons\steam\linux\Facepunch.Steamworks.Posix.dll</HintPath>
     </Reference>
@@ -25,13 +22,13 @@
   <ItemGroup>
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
   </ItemGroup>
-  <Target Condition=" '$(STEAM)' == '' and '$(GodotTargetPlatform)' == 'windows' " Name="PostBuildWindows" AfterTargets="PostBuildEvent">
+  <Target Condition=" '$(GodotTargetPlatform)' == 'windows' " Name="PostBuildWindows" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy /Y &quot;$(GodotProjectDir)addons\steam\windows\steam_api64.dll&quot; &quot;$(GodotProjectDir)&quot;" />
   </Target>
-  <Target Condition=" '$(STEAM)' == '' and '$(GodotTargetPlatform)' == 'macos' " Name="PostBuildMacos" AfterTargets="PostBuildEvent">
+  <Target Condition=" '$(GodotTargetPlatform)' == 'macos' " Name="PostBuildMacos" AfterTargets="PostBuildEvent">
     <Exec Command="rsync -av &quot;$(GodotProjectDir)addons\steam\macos\libsteam_api.dylib&quot; &quot;$(GodotProjectDir)&quot;" />
   </Target>
-  <Target Condition=" '$(STEAM)' == '' and '$(GodotTargetPlatform)' == 'linuxbsd' " Name="PostBuildLinux" AfterTargets="PostBuildEvent">
+  <Target Condition=" '$(GodotTargetPlatform)' == 'linuxbsd' " Name="PostBuildLinux" AfterTargets="PostBuildEvent">
     <Exec Command="rsync -av &quot;$(GodotProjectDir)addons\steam\linux\libsteam_api.so&quot; &quot;$(GodotProjectDir)&quot;" />
   </Target>
 </Project>
