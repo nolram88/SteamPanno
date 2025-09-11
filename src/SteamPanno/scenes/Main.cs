@@ -309,8 +309,8 @@ namespace SteamPanno.scenes
 					}
 				}
 
-				if (Settings.Instance.SelectedDiffSnapshots != null &&
-					Settings.Instance.SelectedDiffSnapshots.TryGetValue(pannoSteamId, out var snapshot))
+				if (Settings.Instance.SelectedBeginingSnapshots != null &&
+					Settings.Instance.SelectedBeginingSnapshots.TryGetValue(pannoSteamId, out var snapshot))
 				{
 					var snapshotData = FileExtensions.GetProfileSnapshot(snapshot);
 					if (snapshotData != null)

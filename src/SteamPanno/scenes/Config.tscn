@@ -100,17 +100,33 @@ layout_mode = 2
 texture = ExtResource("3_wfw86")
 expand_mode = 1
 
-[node name="DiffSnapshot" type="HBoxContainer" parent="VBoxContainer/Content"]
+[node name="BeginingSnapshot" type="HBoxContainer" parent="VBoxContainer/Content"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 
-[node name="DiffSnapshotLbl" type="Label" parent="VBoxContainer/Content/DiffSnapshot"]
+[node name="BeginingSnapshotLbl" type="Label" parent="VBoxContainer/Content/BeginingSnapshot"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "Comparison Snapshot"
+text = "Begining Snapshot"
 
-[node name="DiffSnapshotValue" type="OptionButton" parent="VBoxContainer/Content/DiffSnapshot"]
+[node name="BeginingSnapshotValue" type="OptionButton" parent="VBoxContainer/Content/BeginingSnapshot"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+clip_text = true
+
+[node name="EndingSnapshot" type="HBoxContainer" parent="VBoxContainer/Content"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="EndingSnapshotLbl" type="Label" parent="VBoxContainer/Content/EndingSnapshot"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Ending Snapshot"
+
+[node name="EndingSnapshotValue" type="OptionButton" parent="VBoxContainer/Content/EndingSnapshot"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
