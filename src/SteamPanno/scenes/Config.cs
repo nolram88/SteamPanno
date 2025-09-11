@@ -24,12 +24,12 @@ namespace SteamPanno.scenes
 		private OptionButton diffSnapshotValue;
 		private OptionButton pannoResolutionValue;
 		private Control customPannoResolution;
-		private TextEdit customPannoResolutionValue;
+		private LineEdit customPannoResolutionValue;
 		private OptionButton generationMethodValue;
 		private OptionButton outpaintingMethodValue;
 		private OptionButton minimalHoursValue;
 		private Control customMinimalHours;
-		private TextEdit customMinimalHoursValue;
+		private LineEdit customMinimalHoursValue;
 		private OptionButton showHoursValue;
 
 		public Action<bool> OnExit { get; set; }
@@ -65,7 +65,7 @@ namespace SteamPanno.scenes
 			pannoResolutionLbl.Text = Localization.Localize($"{nameof(Config)}/{pannoResolutionLbl.Name}");
 			pannoResolutionValue = GetNode<OptionButton>("./VBoxContainer/Content/PannoResolution/PannoResolutionValue");
 			customPannoResolution = GetNode<Control>("./VBoxContainer/Content/CustomPannoResolution");
-			customPannoResolutionValue = GetNode<TextEdit>("./VBoxContainer/Content/CustomPannoResolution/CustomPannoResolutionValue");
+			customPannoResolutionValue = GetNode<LineEdit>("./VBoxContainer/Content/CustomPannoResolution/CustomPannoResolutionValue");
 
 			var generationMethodLbl = GetNode<Label>("./VBoxContainer/Content/GenerationMethod/GenerationMethodLbl");
 			generationMethodLbl.Text = Localization.Localize($"{nameof(Config)}/{generationMethodLbl.Name}");
@@ -79,7 +79,7 @@ namespace SteamPanno.scenes
 			minimalHoursLbl.Text = Localization.Localize($"{nameof(Config)}/{minimalHoursLbl.Name}");
 			minimalHoursValue = GetNode<OptionButton>("./VBoxContainer/Content/MinimalHours/MinimalHoursValue");
 			customMinimalHours = GetNode<Control>("./VBoxContainer/Content/CustomMinimalHours");
-			customMinimalHoursValue = GetNode<TextEdit>("./VBoxContainer/Content/CustomMinimalHours/CustomMinimalHoursValue");
+			customMinimalHoursValue = GetNode<LineEdit>("./VBoxContainer/Content/CustomMinimalHours/CustomMinimalHoursValue");
 
 			var showHoursLbl = GetNode<Label>("./VBoxContainer/Content/ShowHours/ShowHoursLbl");
 			showHoursLbl.Text = Localization.Localize($"{nameof(Config)}/{showHoursLbl.Name}");

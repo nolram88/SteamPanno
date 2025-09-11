@@ -141,7 +141,7 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
-[node name="CustomPannoResolutionValue" type="TextEdit" parent="VBoxContainer/Content/CustomPannoResolution"]
+[node name="CustomPannoResolutionValue" type="LineEdit" parent="VBoxContainer/Content/CustomPannoResolution"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
@@ -203,7 +203,7 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
-[node name="CustomMinimalHoursValue" type="TextEdit" parent="VBoxContainer/Content/CustomMinimalHours"]
+[node name="CustomMinimalHoursValue" type="LineEdit" parent="VBoxContainer/Content/CustomMinimalHours"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
