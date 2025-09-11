@@ -299,20 +299,34 @@ namespace SteamPanno.scenes
 				var drawer = CreateDrawer(drawerType, pannoSize);
 
 				ProgressUpdate(0, Localization.Localize("ProfileLoading"));
-				var games = await loader.GetProfileGames(pannoSteamId, cancellationToken);
-				if (games.All(x => x.HoursOnRecordPrivate))
+				PannoGame[] games = null;
+
+				if (Settings.Instance.SelectedEndingSnapshots != null &&
+					Settings.Instance.SelectedEndingSnapshots.TryGetValue(pannoSteamId, out var endingSnapshot))
 				{
-					Report(Localization.Localize("PrivateProfile", pannoSteamId));
-					if (Settings.Instance.AccountIdOption == 0)
+					var snapshotData = FileExtensions.GetProfileSnapshot(endingSnapshot);
+					if (snapshotData != null)
 					{
-						Report(Localization.Localize("PrivateProfileLocal"));
+						games = JsonSerializer.Deserialize<PannoGame[]>(snapshotData);
+					}
+				}
+				if (games == null)
+				{
+					games = await loader.GetProfileGames(pannoSteamId, cancellationToken);
+					if (games.All(x => x.HoursOnRecordPrivate))
+					{
+						Report(Localization.Localize("PrivateProfile", pannoSteamId));
+						if (Settings.Instance.AccountIdOption == 0)
+						{
+							Report(Localization.Localize("PrivateProfileLocal"));
+						}
 					}
 				}
 
 				if (Settings.Instance.SelectedBeginingSnapshots != null &&
-					Settings.Instance.SelectedBeginingSnapshots.TryGetValue(pannoSteamId, out var snapshot))
+					Settings.Instance.SelectedBeginingSnapshots.TryGetValue(pannoSteamId, out var beginingSnapshot))
 				{
-					var snapshotData = FileExtensions.GetProfileSnapshot(snapshot);
+					var snapshotData = FileExtensions.GetProfileSnapshot(beginingSnapshot);
 					if (snapshotData != null)
 					{
 						var gamesBefore = JsonSerializer.Deserialize<PannoGame[]>(snapshotData);

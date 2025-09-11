@@ -13,6 +13,7 @@ namespace SteamPanno.scenes
 		private string steamId;
 		private string customAccountIdFromClipboard;
 		private Dictionary<string, string> selectedBeginingSnapshots;
+		private Dictionary<string, string> selectedEndingSnapshots;
 
 		private OptionButton accountIdValue;
 		private Control friendAccountId;
@@ -22,6 +23,8 @@ namespace SteamPanno.scenes
 		private ImageButton getProfileIdBtn;
 		private Control beginingSnapshot;
 		private OptionButton beginingSnapshotValue;
+		private Control endingSnapshot;
+		private OptionButton endingSnapshotValue;
 		private OptionButton pannoResolutionValue;
 		private Control customPannoResolution;
 		private LineEdit customPannoResolutionValue;
@@ -38,6 +41,7 @@ namespace SteamPanno.scenes
 		{
 			profileSnapshots = FileExtensions.GetProfileSnapshots();
 			selectedBeginingSnapshots = new Dictionary<string, string>();
+			selectedEndingSnapshots = new Dictionary<string, string>();
 
 			var generationSettingsLbl = GetNode<Label>("./VBoxContainer/Title/GenerationSettingsLbl");
 			generationSettingsLbl.Text = Localization.Localize($"{nameof(Config)}/{generationSettingsLbl.Name}");
@@ -60,6 +64,12 @@ namespace SteamPanno.scenes
 			beginingSnapshot = GetNode<Control>("./VBoxContainer/Content/BeginingSnapshot");
 			beginingSnapshotValue = GetNode<OptionButton>("./VBoxContainer/Content/BeginingSnapshot/BeginingSnapshotValue");
 			beginingSnapshotValue.ItemSelected += BeginingSnapshotSelected;
+
+			var endingSnapshotLbl = GetNode<Label>("./VBoxContainer/Content/EndingSnapshot/EndingSnapshotLbl");
+			endingSnapshotLbl.Text = Localization.Localize($"{nameof(Config)}/{endingSnapshotLbl.Name}");
+			endingSnapshot = GetNode<Control>("./VBoxContainer/Content/EndingSnapshot");
+			endingSnapshotValue = GetNode<OptionButton>("./VBoxContainer/Content/EndingSnapshot/EndingSnapshotValue");
+			endingSnapshotValue.ItemSelected += EndingSnapshotSelected;
 
 			var pannoResolutionLbl = GetNode<Label>("./VBoxContainer/Content/PannoResolution/PannoResolutionLbl");
 			pannoResolutionLbl.Text = Localization.Localize($"{nameof(Config)}/{pannoResolutionLbl.Name}");
@@ -275,6 +285,39 @@ namespace SteamPanno.scenes
 			{
 				beginingSnapshot.Visible = false;
 			}
+
+			UpdateAvailableEndingSnapshots();
+		}
+
+		private void UpdateAvailableEndingSnapshots()
+		{
+			endingSnapshotValue.Clear();
+
+			if (!string.IsNullOrEmpty(steamId) &&
+				profileSnapshots.TryGetValue(steamId, out var snapshots))
+			{
+				string selectedSnapshot = null;
+				if (!selectedEndingSnapshots.TryGetValue(steamId, out selectedSnapshot) &&
+					Settings.Instance.SelectedEndingSnapshots != null)
+				{
+					Settings.Instance.SelectedEndingSnapshots.TryGetValue(steamId, out selectedSnapshot);
+				}
+
+				endingSnapshotValue.AddItem(Localization.Localize($"{nameof(Config)}/SnapshotOptionOff"));
+				foreach (var snapshot in snapshots)
+				{
+					endingSnapshotValue.AddItem(snapshot.Key);
+					if (snapshot.Value == selectedSnapshot)
+					{
+						endingSnapshotValue.Select(endingSnapshotValue.ItemCount - 1);
+					}
+				}
+				endingSnapshot.Visible = true;
+			}
+			else
+			{
+				endingSnapshot.Visible = false;
+			}
 		}
 
 		private async Task GetSteamIdBackThread()
@@ -325,6 +368,23 @@ namespace SteamPanno.scenes
 			}
 		}
 
+		private void EndingSnapshotSelected(long index)
+		{
+			if (index == 0)
+			{
+				selectedEndingSnapshots[steamId] = null;
+			}
+			else
+			{
+				var selectedDate = endingSnapshotValue.GetItemText(endingSnapshotValue.Selected);
+				if (profileSnapshots.TryGetValue(steamId, out var snapshots) &&
+					snapshots.TryGetValue(selectedDate, out var fileName))
+				{
+					selectedEndingSnapshots[steamId] = fileName;
+				}
+			}
+		}
+
 		private void ResolutionOptionSelected(long index)
 		{
 			customPannoResolution.Visible = index == 1;
@@ -365,6 +425,24 @@ namespace SteamPanno.scenes
 					else if (Settings.Instance.SelectedBeginingSnapshots.ContainsKey(selectedBeginingSnapshot.Key))
 					{
 						Settings.Instance.SelectedBeginingSnapshots.Remove(selectedBeginingSnapshot.Key);
+					}
+				}
+			}
+			if (selectedEndingSnapshots.Count > 0)
+			{
+				if (Settings.Instance.SelectedEndingSnapshots == null)
+				{
+					Settings.Instance.SelectedEndingSnapshots = new Dictionary<string, string>();
+				}
+				foreach (var selectedEndingSnapshot in selectedEndingSnapshots)
+				{
+					if (selectedEndingSnapshot.Value != null)
+					{
+						Settings.Instance.SelectedEndingSnapshots[selectedEndingSnapshot.Key] = selectedEndingSnapshot.Value;
+					}
+					else if (Settings.Instance.SelectedEndingSnapshots.ContainsKey(selectedEndingSnapshot.Key))
+					{
+						Settings.Instance.SelectedEndingSnapshots.Remove(selectedEndingSnapshot.Key);
 					}
 				}
 			}
