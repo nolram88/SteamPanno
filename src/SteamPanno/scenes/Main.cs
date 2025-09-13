@@ -32,6 +32,8 @@ namespace SteamPanno.scenes
 		private RichTextLabel savedFileLabel;
 		
 		private string pannoSteamId;
+		private string pannoBeginingSnapshot;
+		private string pannoEndingSnapshot;
 		private double pannoProgressValueToSet;
 		private string pannoProgressTextToSet;
 		private bool saveButtonVisible;
@@ -270,7 +272,8 @@ namespace SteamPanno.scenes
 
 			try
 			{
-				pannoSteamId = null;
+				pannoBeginingSnapshot = null;
+				pannoEndingSnapshot = null;
 				saveButtonVisible = false;
 				screenshotButtonVisible = false;
 				warningButtonVisible = false;
@@ -308,6 +311,7 @@ namespace SteamPanno.scenes
 					if (snapshotData != null)
 					{
 						games = JsonSerializer.Deserialize<PannoGame[]>(snapshotData);
+						pannoEndingSnapshot = endingSnapshot;
 					}
 				}
 				if (games == null)
@@ -347,6 +351,7 @@ namespace SteamPanno.scenes
 								};
 							}
 						}
+						pannoBeginingSnapshot = beginingSnapshot;
 					}
 				}
 
@@ -409,8 +414,18 @@ namespace SteamPanno.scenes
 				saveButtonVisible = false;
 				ProgressStart(true, Localization.Localize("PannoSaving"));
 
-				var dateText = DateTime.Today.ToString("yyyy-MM-dd");
-				var savePath = Path.Combine(FileExtensions.GetGenerationPath(), $"panno_{pannoSteamId}_{dateText}.png");
+				var dateBegining =
+					pannoBeginingSnapshot != null &&
+					pannoBeginingSnapshot.TryParseProfileSnapshotFileName(out _, out var dateBeginingValue)
+						? dateBeginingValue : null;
+				var dateEnding =
+					pannoEndingSnapshot != null &&
+					pannoEndingSnapshot.TryParseProfileSnapshotFileName(out _, out var dateEndingValue)
+						? dateEndingValue : DateTime.Today.ToString("yyyy-MM-dd");
+				var date = dateBegining != null
+					? $"{dateBegining}-{dateEnding}"
+					: dateEnding;
+				var savePath = Path.Combine(FileExtensions.GetGenerationPath(), $"panno_{pannoSteamId}_{date}.png");
 				if (File.Exists(savePath))
 				{
 					File.Delete(savePath);
