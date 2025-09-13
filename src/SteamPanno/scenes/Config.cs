@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using SteamPanno.panno.loading;
 using SteamPanno.scenes.controls;
+using System.Linq;
 
 namespace SteamPanno.scenes
 {
@@ -259,18 +260,17 @@ namespace SteamPanno.scenes
 		private void UpdateAvailableBeginingSnapshots()
 		{
 			beginingSnapshotValue.Clear();
+			beginingSnapshotValue.AddItem(Localization.Localize($"{nameof(Config)}/SnapshotOptionOff"));
 
 			if (!string.IsNullOrEmpty(steamId) &&
 				profileSnapshots.TryGetValue(steamId, out var snapshots))
 			{
-				string selectedSnapshot = null;
-				if (!selectedBeginingSnapshots.TryGetValue(steamId, out selectedSnapshot) &&
+				if (!selectedBeginingSnapshots.TryGetValue(steamId, out var selectedSnapshot) &&
 					Settings.Instance.SelectedBeginingSnapshots != null)
 				{
 					Settings.Instance.SelectedBeginingSnapshots.TryGetValue(steamId, out selectedSnapshot);
 				}
 
-				beginingSnapshotValue.AddItem(Localization.Localize($"{nameof(Config)}/SnapshotOptionOff"));
 				foreach (var snapshot in snapshots)
 				{
 					beginingSnapshotValue.AddItem(snapshot.Key);
@@ -292,19 +292,19 @@ namespace SteamPanno.scenes
 		private void UpdateAvailableEndingSnapshots()
 		{
 			endingSnapshotValue.Clear();
+			endingSnapshotValue.AddItem(Localization.Localize($"{nameof(Config)}/SnapshotOptionOff"));
 
 			if (!string.IsNullOrEmpty(steamId) &&
-				profileSnapshots.TryGetValue(steamId, out var snapshots))
+				profileSnapshots.TryGetValue(steamId, out var snapshots) &&
+				beginingSnapshotValue.Selected > 0)
 			{
-				string selectedSnapshot = null;
-				if (!selectedEndingSnapshots.TryGetValue(steamId, out selectedSnapshot) &&
+				if (!selectedEndingSnapshots.TryGetValue(steamId, out var selectedSnapshot) &&
 					Settings.Instance.SelectedEndingSnapshots != null)
 				{
 					Settings.Instance.SelectedEndingSnapshots.TryGetValue(steamId, out selectedSnapshot);
 				}
 
-				endingSnapshotValue.AddItem(Localization.Localize($"{nameof(Config)}/SnapshotOptionOff"));
-				foreach (var snapshot in snapshots)
+				foreach (var snapshot in snapshots.Skip(beginingSnapshotValue.Selected))
 				{
 					endingSnapshotValue.AddItem(snapshot.Key);
 					if (snapshot.Value == selectedSnapshot)
@@ -312,11 +312,16 @@ namespace SteamPanno.scenes
 						endingSnapshotValue.Select(endingSnapshotValue.ItemCount - 1);
 					}
 				}
-				endingSnapshot.Visible = true;
+				endingSnapshot.Visible = endingSnapshotValue.ItemCount > 1;
 			}
 			else
 			{
 				endingSnapshot.Visible = false;
+			}
+
+			if (endingSnapshotValue.Selected >= 0)
+			{
+				EndingSnapshotSelected(endingSnapshotValue.Selected);
 			}
 		}
 
@@ -366,6 +371,8 @@ namespace SteamPanno.scenes
 					selectedBeginingSnapshots[steamId] = fileName;
 				}
 			}
+
+			UpdateAvailableEndingSnapshots();
 		}
 
 		private void EndingSnapshotSelected(long index)
