@@ -465,10 +465,16 @@ namespace SteamPanno.scenes
 		
 		protected Vector2I GetPannoSize()
 		{
-			if (Settings.Instance.UseCustomResolution &&
-				Settings.Instance.CustomResolution.TryParseResolution(out var resolution))
+			if (!Settings.Instance.UseNativeResolution)
 			{
-				return resolution;
+				if (Settings.Instance.SelectedResolution.TryParseResolution(out var selectedResolution))
+				{
+					return selectedResolution;
+				}
+				else if (Settings.Instance.CustomResolution.TryParseResolution(out var customResolution))
+				{
+					return customResolution;
+				}
 			}
 
 			return DisplayServer.ScreenGetSize();

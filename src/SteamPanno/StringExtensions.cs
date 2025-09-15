@@ -23,6 +23,11 @@ namespace SteamPanno
 			return false;
 		}
 
+		public static string FormatResolution(this Vector2I resolution, string name)
+		{
+			return name + $" ({resolution.X}x{resolution.Y})";
+		}
+
 		public static bool TryParseResolution(this string input, out Vector2I resolution)
 		{
 			if (!string.IsNullOrEmpty(input))

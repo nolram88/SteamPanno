@@ -26,8 +26,9 @@ namespace SteamPanno
 			public string CustomAccountId { get; set; }
 			public Dictionary<string, string> SelectedBeginingSnapshots { get; set; }
 			public Dictionary<string, string> SelectedEndingSnapshots { get; set; }
+			public bool UseNativeResolution { get; set; }
+			public string SelectedResolution { get; set; }
 			public string CustomResolution { get; set; }
-			public bool UseCustomResolution { get; set; }
 			public int MinimalHoursOption { get; set; } = 1;
 			public string CustomMinimalHours { get; set; }
 			public int GenerationMethodOption { get; set; }

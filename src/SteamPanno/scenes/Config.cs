@@ -10,6 +10,13 @@ namespace SteamPanno.scenes
 {
 	public partial class Config : Control
 	{
+		private static readonly (string Name, Vector2I Size)[] resolutions = new (string Name, Vector2I Size)[]
+		{
+			("Full HD", new Vector2I(1920, 1080)),
+			("2K QHD", new Vector2I(2560, 1440)),
+			("4K UHD", new Vector2I(3840, 2160)),
+		};
+
 		private Dictionary<string, Dictionary<string, string>> profileSnapshots;
 		private string steamId;
 		private string customAccountIdFromClipboard;
@@ -130,17 +137,33 @@ namespace SteamPanno.scenes
 			}
 
 			var screenResolution = DisplayServer.ScreenGetSize();
-			for (int i = 0; i <= 1; i++)
+			pannoResolutionValue.AddItem(
+				screenResolution.FormatResolution(
+					Localization.Localize($"{nameof(Config)}/PannoResolutionOptionNative")));
+			var resolutionOptionIndex = 0;
+			Settings.Instance.SelectedResolution.TryParseResolution(out var selectedResolution);
+			foreach (var r in resolutions)
 			{
-				var text = Localization.Localize($"{nameof(Config)}/PannoResolutionOption{i}");
-				if (i == 0)
+				if (r.Size.X == screenResolution.X && r.Size.Y == screenResolution.Y)
 				{
-					text += $" ({screenResolution.X}x{screenResolution.Y})";
+					continue;
 				}
-				pannoResolutionValue.AddItem(text);
+
+				pannoResolutionValue.AddItem(r.Size.FormatResolution(r.Name));
+				if (!Settings.Instance.UseNativeResolution &&
+					r.Size.X == selectedResolution.X &&
+					r.Size.Y == selectedResolution.Y)
+				{
+					resolutionOptionIndex = pannoResolutionValue.ItemCount - 1;
+				}
+			}
+			var customResolutionText = Localization.Localize($"{nameof(Config)}/PannoResolutionOptionCustom");
+			pannoResolutionValue.AddItem(customResolutionText);
+			if (resolutionOptionIndex == 0 && !Settings.Instance.UseNativeResolution)
+			{
+				resolutionOptionIndex = pannoResolutionValue.ItemCount - 1;
 			}
 			pannoResolutionValue.ItemSelected += ResolutionOptionSelected;
-			var resolutionOptionIndex = Settings.Instance.UseCustomResolution ? 1 : 0;
 			pannoResolutionValue.Select(resolutionOptionIndex);
 			ResolutionOptionSelected(resolutionOptionIndex);
 			customPannoResolutionValue.Text = Settings.Instance.CustomResolution;
@@ -394,7 +417,7 @@ namespace SteamPanno.scenes
 
 		private void ResolutionOptionSelected(long index)
 		{
-			customPannoResolution.Visible = index == 1;
+			customPannoResolution.Visible = index == pannoResolutionValue.ItemCount - 1;
 		}
 
 		private void HoursOptionSelected(long index)
@@ -453,7 +476,11 @@ namespace SteamPanno.scenes
 					}
 				}
 			}
-			Settings.Instance.UseCustomResolution = pannoResolutionValue.Selected == 1;
+			Settings.Instance.UseNativeResolution = pannoResolutionValue.Selected == 0;
+			Settings.Instance.SelectedResolution =
+				pannoResolutionValue.Selected == 0 ||
+				pannoResolutionValue.Selected == pannoResolutionValue.ItemCount - 1
+					? null : pannoResolutionValue.Text;
 			Settings.Instance.CustomResolution = customPannoResolutionValue.Text;
 			Settings.Instance.GenerationMethodOption = generationMethodValue.Selected;
 			Settings.Instance.OutpaintingMethodOption = outpaintingMethodValue.Selected;
