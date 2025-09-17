@@ -49,19 +49,25 @@ namespace SteamPanno.panno.loading
 			var url = string.Format(GetProfileBySteamIdUrl, steamId);
 			using (var response = await httpClient.GetAsync(url, cancellationToken))
 			{
-				response.EnsureSuccessStatusCode();
-				var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
-				var xml = XDocument.Parse(responseBody);
-				var games = xml.Root.Element("games").Elements("game");
-
-				return games.Select(x => new PannoGame()
+				if (response.IsSuccessStatusCode)
 				{
-					Id = int.Parse(x.Element("appID").Value),
-					Name = x.Element("name").Value,
-					HoursOnRecord = float.Parse(x.Element("hoursOnRecord")?.Value ?? "0", CultureInfo.InvariantCulture),
-					HoursOnRecordPrivate = x.Element("hoursOnRecord") == null,
-				}).ToArray();
+					var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
+					var xml = XDocument.Parse(responseBody);
+					var games = xml.Root.Element("games")?.Elements("game");
+					if (games != null)
+					{
+						return games.Select(x => new PannoGame()
+						{
+							Id = int.Parse(x.Element("appID").Value),
+							Name = x.Element("name").Value,
+							HoursOnRecord = float.Parse(x.Element("hoursOnRecord")?.Value ?? "0", CultureInfo.InvariantCulture),
+							HoursOnRecordPrivate = x.Element("hoursOnRecord") == null,
+						}).ToArray();
+					}
+				}
 			}
+
+			return null;
 		}
 
 		public override async Task<PannoImage> GetGameLogoV(

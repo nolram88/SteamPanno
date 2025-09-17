@@ -3,10 +3,10 @@
 	"Config":
 	{
 		"GenerationSettingsLbl": "Настройки генерации",
-		"AccountIdLbl": "Аккаунт Steam",
-		"AccountIdOption0": "Мой аккаунт",
-		"AccountIdOption1": "Аккаунт друга",
-		"AccountIdOption2": "Указанный аккаунт",
+		"AccountIdLbl": "Профиль Steam",
+		"AccountIdOption0": "Мой профиль",
+		"AccountIdOption1": "Профиль друга",
+		"AccountIdOption2": "Указанный профиль",
 		"BeginingSnapshotLbl": "Начало периода",
 		"EndingSnapshotLbl": "Конец периода",
 		"SnapshotOptionOff": "Нет",
@@ -41,13 +41,14 @@
 			"ResizeUnproportional": "Масштабирование непропорционально"
 		}
 	},
-	"FileSaved": "Файл сохранен: {0}",
 	"Hours": "ч",
-	"PrivateProfile": "Игровая статистика скрыта для аккаунта Steam {0}.",
-	"PrivateProfileLocal": "Сделать вашу игровую статистику публичной можно в Настройках Безопасности профиля Steam. Также может потребоваться подождать несколько минут пока не обновится кэш Steam.",
+	"ProfileWasNotSet": "Профиль Steam не указан.",
+	"ProfileWasNotLoaded": "Не удалось загрузить данные профиля Steam {0}.",
+	"ProfileIsPrivate": "Игровая статистика скрыта для профиля Steam {0}.",
+	"ProfileIsPrivateAndLocal": "Сделать вашу игровую статистику публичной можно в Настройках Безопасности профиля Steam. Также может потребоваться подождать несколько минут пока не обновится кэш Steam.",
 	"ProfileLoading": "Загрузка профиля...",
 	"PannoLayoutGeneration": "Генерация макета...",
 	"PannoSaving": "Сохранение...",
-	"CouldNotGetSteamId": "Аккаунт Steam не определен.",
+	"PannoSaved": "Файл сохранен: {0}",
 	"NoGamesMeetTheGivenCriteria": "Нет игр удовлетворящих заданным критериям."
 }

@@ -3,10 +3,10 @@
 	"Config":
 	{
 		"GenerationSettingsLbl": "Generation Settings",
-		"AccountIdLbl": "Steam Account Id",
-		"AccountIdOption0": "My Account",
-		"AccountIdOption1": "My Friend's Account",
-		"AccountIdOption2": "Custom Account",
+		"AccountIdLbl": "Steam Profile",
+		"AccountIdOption0": "My Profile",
+		"AccountIdOption1": "My Friend's Profile",
+		"AccountIdOption2": "Custom Profile",
 		"BeginingSnapshotLbl": "Begining Snapshot",
 		"EndingSnapshotLbl": "Ending Snapshot",
 		"SnapshotOptionOff": "Off",
@@ -41,13 +41,14 @@
 			"ResizeUnproportional": "Resize Unproportional"
 		}
 	},
-	"FileSaved": "File saved: {0}",
 	"Hours": "h",
-	"PrivateProfile": "Game details are set to private on Steam account {0}.",
-	"PrivateProfileLocal": "You can make your game details and playtime public in your Steam profile's Privacy Settings. You may also have to wait several minutes before Steam's cache is refreshed.",
+	"ProfileWasNotSet": "Steam profile was not specified.",
+	"ProfileWasNotLoaded": "Could not load Steam profile {0}.",
+	"ProfileIsPrivate": "Game details are set to private on Steam profile {0}.",
+	"ProfileIsPrivateAndLocal": "You can make your game details and playtime public in your Steam profile's Privacy Settings. You may also have to wait several minutes before Steam's cache is refreshed.",
 	"ProfileLoading": "Profile loading...",
 	"PannoLayoutGeneration": "Panno layout generation...",
 	"PannoSaving": "Panno saving...",
-	"CouldNotGetSteamId": "Could not get Steam ID.",
+	"PannoSaved": "Panno saved: {0}",
 	"NoGamesMeetTheGivenCriteria": "No games meet the given criteria."
 }

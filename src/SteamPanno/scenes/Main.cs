@@ -209,7 +209,7 @@ namespace SteamPanno.scenes
 		public void Report(Exception e)
 		{
 			var nl = System.Environment.NewLine;
-			Report($"{e.GetType().Name}{nl}{e.Message}{nl}{e.StackTrace}");
+			Report($"{e.Message}{nl}{e.StackTrace}");
 		}
 
 		public void Report(string text)
@@ -283,7 +283,7 @@ namespace SteamPanno.scenes
 				pannoSteamId = Settings.GetSteamId();
 				if (string.IsNullOrEmpty(pannoSteamId))
 				{
-					Report(Localization.Localize("CouldNotGetSteamId"));
+					Report(Localization.Localize("ProfileWasNotSet"));
 					return;
 				}
 
@@ -314,16 +314,19 @@ namespace SteamPanno.scenes
 						pannoEndingSnapshot = endingSnapshot;
 					}
 				}
+
+				games ??= await loader.GetProfileGames(pannoSteamId, cancellationToken);
 				if (games == null)
 				{
-					games = await loader.GetProfileGames(pannoSteamId, cancellationToken);
-					if (games.All(x => x.HoursOnRecordPrivate))
+					Report(Localization.Localize("ProfileWasNotLoaded", pannoSteamId));
+					return;
+				}
+				else if (games.All(x => x.HoursOnRecordPrivate))
+				{
+					Report(Localization.Localize("ProfileIsPrivate", pannoSteamId));
+					if (Settings.Instance.AccountIdOption == 0)
 					{
-						Report(Localization.Localize("PrivateProfile", pannoSteamId));
-						if (Settings.Instance.AccountIdOption == 0)
-						{
-							Report(Localization.Localize("PrivateProfileLocal"));
-						}
+						Report(Localization.Localize("ProfileIsPrivateAndLocal"));
 					}
 				}
 
@@ -432,7 +435,7 @@ namespace SteamPanno.scenes
 				}
 
 				panno.SaveToFile(savePath);
-				savedFileLabelText = $"[bgcolor=#000000ff]{Localization.Localize("FileSaved", savePath)}[/bgcolor]";
+				savedFileLabelText = $"[bgcolor=#000000ff]{Localization.Localize("PannoSaved", savePath)}[/bgcolor]";
 			}
 			catch (Exception e)
 			{

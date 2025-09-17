@@ -112,7 +112,7 @@ namespace SteamPanno.panno.loading
 
 		private void SaveProfileToCache(string steamId, PannoGame[] profile)
 		{
-			if (profile.Length == 0)
+			if (profile == null || profile.Length == 0)
 			{
 				return;
 			}
