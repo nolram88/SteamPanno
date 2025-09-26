@@ -126,14 +126,16 @@ namespace SteamPanno.scenes
 			var accountOptionIndex = Math.Clamp(Settings.Instance.AccountIdOption, 0, accountIdValue.ItemCount);
 			if (Steam.GetSteamId() != null)
 			{
+				accountIdValue.SetItemDisabled(1, friends.Length == 0);
 				accountIdValue.Select(accountOptionIndex);
 				AccountOptionSelected(accountOptionIndex);
 			}
 			else
 			{
+				accountIdValue.SetItemDisabled(0, true);
+				accountIdValue.SetItemDisabled(1, true);
 				accountIdValue.Select(2);
 				AccountOptionSelected(2);
-				accountIdValue.Disabled = true;
 			}
 
 			var screenResolution = DisplayServer.ScreenGetSize();
