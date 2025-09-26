@@ -19,16 +19,16 @@ namespace SteamPanno.scenes
 
 		private Dictionary<string, Dictionary<string, string>> profileSnapshots;
 		private string steamId;
-		private string customAccountIdFromClipboard;
+		private string customProfileFromClipboard;
 		private Dictionary<string, string> selectedBeginingSnapshots;
 		private Dictionary<string, string> selectedEndingSnapshots;
 
-		private OptionButton accountIdValue;
-		private Control friendAccountId;
-		private OptionButton friendAccountIdValue;
-		private Control customAccountId;
-		private LineEdit customAccountIdValue;
-		private ImageButton getProfileIdBtn;
+		private OptionButton profileValue;
+		private Control friendProfile;
+		private OptionButton friendProfileValue;
+		private Control customProfile;
+		private LineEdit customProfileValue;
+		private ImageButton getProfileBtn;
 		private Control beginingSnapshot;
 		private OptionButton beginingSnapshotValue;
 		private Control endingSnapshot;
@@ -54,18 +54,18 @@ namespace SteamPanno.scenes
 			var generationSettingsLbl = GetNode<Label>("./VBoxContainer/Title/GenerationSettingsLbl");
 			generationSettingsLbl.Text = Localization.Localize($"{nameof(Config)}/{generationSettingsLbl.Name}");
 
-			var accountIdLbl = GetNode<Label>("./VBoxContainer/Content/AccountId/AccountIdLbl");
-			accountIdLbl.Text = Localization.Localize($"{nameof(Config)}/{accountIdLbl.Name}");
-			accountIdValue = GetNode<OptionButton>("./VBoxContainer/Content/AccountId/AccountIdValue");
-			accountIdValue.ItemSelected += AccountOptionSelected;
-			friendAccountId = GetNode<Control>("./VBoxContainer/Content/FriendAccountId");
-			friendAccountIdValue = GetNode<OptionButton>("./VBoxContainer/Content/FriendAccountId/FriendAccountIdValue");
-			friendAccountIdValue.ItemSelected += FriendOptionSelected;
-			customAccountId = GetNode<Control>("./VBoxContainer/Content/CustomAccountId");
-			customAccountIdValue = GetNode<LineEdit>("./VBoxContainer/Content/CustomAccountId/CustomAccountIdRight/CustomAccountIdValue");
-			customAccountIdValue.TextChanged += CustomAccountOptionChanged;
-			getProfileIdBtn = GetNode<ImageButton>("./VBoxContainer/Content/CustomAccountId/CustomAccountIdRight/GetProfileIdBtn");
-			getProfileIdBtn.OnClick = () => Task.Run(async () => await GetSteamIdBackThread());
+			var profileLbl = GetNode<Label>("./VBoxContainer/Content/Profile/ProfileLbl");
+			profileLbl.Text = Localization.Localize($"{nameof(Config)}/ProfileLbl");
+			profileValue = GetNode<OptionButton>("./VBoxContainer/Content/Profile/ProfileValue");
+			profileValue.ItemSelected += AccountOptionSelected;
+			friendProfile = GetNode<Control>("./VBoxContainer/Content/FriendProfile");
+			friendProfileValue = GetNode<OptionButton>("./VBoxContainer/Content/FriendProfile/FriendProfileValue");
+			friendProfileValue.ItemSelected += FriendOptionSelected;
+			customProfile = GetNode<Control>("./VBoxContainer/Content/CustomProfile");
+			customProfileValue = GetNode<LineEdit>("./VBoxContainer/Content/CustomProfile/CustomProfilePanel/CustomProfileValue");
+			customProfileValue.TextChanged += CustomAccountOptionChanged;
+			getProfileBtn = GetNode<ImageButton>("./VBoxContainer/Content/CustomProfile/CustomProfilePanel/GetProfileBtn");
+			getProfileBtn.OnClick = () => Task.Run(async () => await GetSteamIdBackThread());
 
 			var beginingSnapshotLbl = GetNode<Label>("./VBoxContainer/Content/BeginingSnapshot/BeginingSnapshotLbl");
 			beginingSnapshotLbl.Text = Localization.Localize($"{nameof(Config)}/{beginingSnapshotLbl.Name}");
@@ -109,32 +109,32 @@ namespace SteamPanno.scenes
 				foreach (var friend in friends)
 				{
 					var itemName = $"{friend.name} ({friend.id})";
-					friendAccountIdValue.AddItem(itemName);
-					if (friend.id == Settings.Instance.FriendAccountId)
+					friendProfileValue.AddItem(itemName);
+					if (friend.id == Settings.Instance.FriendProfile)
 					{
-						friendAccountIdValue.Select(friendAccountIdValue.ItemCount - 1);
+						friendProfileValue.Select(friendProfileValue.ItemCount - 1);
 					}
 				}
 			}
 			
-			customAccountIdValue.Text = Settings.Instance.CustomAccountId;
+			customProfileValue.Text = Settings.Instance.CustomProfile;
 			for (int i = 0; i <= 2; i++)
 			{
-				var text = Localization.Localize($"{nameof(Config)}/AccountIdOption{i}");
-				accountIdValue.AddItem(text);
+				var text = Localization.Localize($"{nameof(Config)}/ProfileOption{i}");
+				profileValue.AddItem(text);
 			}
-			var accountOptionIndex = Math.Clamp(Settings.Instance.AccountIdOption, 0, accountIdValue.ItemCount);
+			var profileOptionIndex = Math.Clamp(Settings.Instance.ProfileOption, 0, profileValue.ItemCount);
 			if (Steam.GetSteamId() != null)
 			{
-				accountIdValue.SetItemDisabled(1, friends.Length == 0);
-				accountIdValue.Select(accountOptionIndex);
-				AccountOptionSelected(accountOptionIndex);
+				profileValue.SetItemDisabled(1, friends.Length == 0);
+				profileValue.Select(profileOptionIndex);
+				AccountOptionSelected(profileOptionIndex);
 			}
 			else
 			{
-				accountIdValue.SetItemDisabled(0, true);
-				accountIdValue.SetItemDisabled(1, true);
-				accountIdValue.Select(2);
+				profileValue.SetItemDisabled(0, true);
+				profileValue.SetItemDisabled(1, true);
+				profileValue.Select(2);
 				AccountOptionSelected(2);
 			}
 
@@ -213,11 +213,11 @@ namespace SteamPanno.scenes
 
 		public override void _Process(double delta)
 		{
-			if (customAccountIdFromClipboard != null)
+			if (customProfileFromClipboard != null)
 			{
-				customAccountIdValue.Text = customAccountIdFromClipboard;
-				customAccountIdFromClipboard = null;
-				CustomAccountOptionChanged(customAccountIdValue.Text);
+				customProfileValue.Text = customProfileFromClipboard;
+				customProfileFromClipboard = null;
+				CustomAccountOptionChanged(customProfileValue.Text);
 			}
 		}
 
@@ -243,25 +243,25 @@ namespace SteamPanno.scenes
 
 			if (id != null)
 			{
-				if (accountIdValue.Selected == 0)
+				if (profileValue.Selected == 0)
 				{
 					return id;
 				}
-				else if (accountIdValue.Selected == 1)
+				else if (profileValue.Selected == 1)
 				{
-					return friendAccountIdValue.Text.TryParseSteamId(out var friendSteamId)
+					return friendProfileValue.Text.TryParseSteamId(out var friendSteamId)
 						? friendSteamId : null;
 				}
 			}
 			
-			return customAccountIdValue.Text.TryParseSteamId(out var customSteamId)
+			return customProfileValue.Text.TryParseSteamId(out var customSteamId)
 				? customSteamId : null;
 		}
 
 		private void AccountOptionSelected(long index)
 		{
-			friendAccountId.Visible = index == 1;
-			customAccountId.Visible = index == 2;
+			friendProfile.Visible = index == 1;
+			customProfile.Visible = index == 2;
 
 			steamId = GetSteamId();
 			UpdateAvailableBeginingSnapshots();
@@ -269,7 +269,7 @@ namespace SteamPanno.scenes
 
 		private void FriendOptionSelected(long index)
 		{
-			if (friendAccountIdValue.Text.TryParseSteamId(out var friendSteamId))
+			if (friendProfileValue.Text.TryParseSteamId(out var friendSteamId))
 			{
 				steamId = friendSteamId;
 				UpdateAvailableBeginingSnapshots();
@@ -318,7 +318,7 @@ namespace SteamPanno.scenes
 		{
 			endingSnapshotValue.Clear();
 			endingSnapshotValue.AddItem(Localization.Localize($"{nameof(Config)}/SnapshotOptionOff"));
-
+			
 			if (!string.IsNullOrEmpty(steamId) &&
 				profileSnapshots.TryGetValue(steamId, out var snapshots) &&
 				beginingSnapshotValue.Selected > 0)
@@ -343,8 +343,9 @@ namespace SteamPanno.scenes
 			{
 				endingSnapshot.Visible = false;
 			}
-
-			if (endingSnapshotValue.Selected >= 0)
+			
+			if (!string.IsNullOrEmpty(steamId) &&
+				endingSnapshotValue.Selected >= 0)
 			{
 				EndingSnapshotSelected(endingSnapshotValue.Selected);
 			}
@@ -364,7 +365,7 @@ namespace SteamPanno.scenes
 					{
 						if (text.TryParseSteamId(out var steamIdParsed))
 						{
-							customAccountIdFromClipboard = steamIdParsed;
+							customProfileFromClipboard = steamIdParsed;
 						}
 					}
 					else if (text.StartsWith("https://steamcommunity.com/id/"))
@@ -372,7 +373,7 @@ namespace SteamPanno.scenes
 						var name = text.Replace("https://steamcommunity.com/id/", "").TrimEnd('/');
 						var loader = new PannoLoaderOnline();
 						var steamIdLoaded = await loader.GetProfileSteamId(name);
-						customAccountIdFromClipboard = steamIdLoaded ?? string.Empty;
+						customProfileFromClipboard = steamIdLoaded ?? string.Empty;
 					}
 				}
 			}
@@ -436,12 +437,12 @@ namespace SteamPanno.scenes
 		{
 			var maxTextureSize = RenderingServer.GetRenderingDevice().LimitGet(RenderingDevice.Limit.MaxTextureSize2D);
 
-			Settings.Instance.AccountIdOption = accountIdValue.Selected;
-			if (friendAccountIdValue.Text.TryParseSteamId(out var friendSteamId))
+			Settings.Instance.ProfileOption = profileValue.Selected;
+			if (friendProfileValue.Text.TryParseSteamId(out var friendSteamId))
 			{
-				Settings.Instance.FriendAccountId = friendSteamId;
+				Settings.Instance.FriendProfile = friendSteamId;
 			}
-			Settings.Instance.CustomAccountId = customAccountIdValue.Text;
+			Settings.Instance.CustomProfile = customProfileValue.Text;
 			if (selectedBeginingSnapshots.Count > 0)
 			{
 				if (Settings.Instance.SelectedBeginingSnapshots == null)

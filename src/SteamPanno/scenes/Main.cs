@@ -324,7 +324,7 @@ namespace SteamPanno.scenes
 				else if (games.All(x => x.HoursOnRecordPrivate))
 				{
 					Report(Localization.Localize("ProfileIsPrivate", pannoSteamId));
-					if (Settings.Instance.AccountIdOption == 0)
+					if (Settings.Instance.ProfileOption == 0)
 					{
 						Report(Localization.Localize("ProfileIsPrivateAndLocal"));
 					}

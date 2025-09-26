@@ -3,10 +3,10 @@
 	"Config":
 	{
 		"GenerationSettingsLbl": "Настройки генерации",
-		"AccountIdLbl": "Профиль Steam",
-		"AccountIdOption0": "Мой профиль",
-		"AccountIdOption1": "Профиль друга",
-		"AccountIdOption2": "Указанный профиль",
+		"ProfileLbl": "Профиль Steam",
+		"ProfileOption0": "Мой профиль",
+		"ProfileOption1": "Профиль друга",
+		"ProfileOption2": "Указанный профиль",
 		"BeginingSnapshotLbl": "Начало периода",
 		"EndingSnapshotLbl": "Конец периода",
 		"SnapshotOptionOff": "Нет",

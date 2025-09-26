@@ -44,57 +44,57 @@ size_flags_horizontal = 4
 size_flags_vertical = 0
 theme_override_constants/separation = 10
 
-[node name="AccountId" type="HBoxContainer" parent="VBoxContainer/Content"]
+[node name="Profile" type="HBoxContainer" parent="VBoxContainer/Content"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 
-[node name="AccountIdLbl" type="Label" parent="VBoxContainer/Content/AccountId"]
+[node name="ProfileLbl" type="Label" parent="VBoxContainer/Content/Profile"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Steam Account Id"
 
-[node name="AccountIdValue" type="OptionButton" parent="VBoxContainer/Content/AccountId"]
+[node name="ProfileValue" type="OptionButton" parent="VBoxContainer/Content/Profile"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 clip_text = true
 
-[node name="FriendAccountId" type="HBoxContainer" parent="VBoxContainer/Content"]
+[node name="FriendProfile" type="HBoxContainer" parent="VBoxContainer/Content"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 
-[node name="FriendAccountIdLbl" type="Label" parent="VBoxContainer/Content/FriendAccountId"]
+[node name="FriendProfileLbl" type="Label" parent="VBoxContainer/Content/FriendProfile"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
-[node name="FriendAccountIdValue" type="OptionButton" parent="VBoxContainer/Content/FriendAccountId"]
+[node name="FriendProfileValue" type="OptionButton" parent="VBoxContainer/Content/FriendProfile"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 clip_text = true
 
-[node name="CustomAccountId" type="HBoxContainer" parent="VBoxContainer/Content"]
+[node name="CustomProfile" type="HBoxContainer" parent="VBoxContainer/Content"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 
-[node name="CustomAccountIdLbl" type="Label" parent="VBoxContainer/Content/CustomAccountId"]
+[node name="CustomProfileLbl" type="Label" parent="VBoxContainer/Content/CustomProfile"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
-[node name="CustomAccountIdRight" type="HBoxContainer" parent="VBoxContainer/Content/CustomAccountId"]
+[node name="CustomProfilePanel" type="HBoxContainer" parent="VBoxContainer/Content/CustomProfile"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 
-[node name="CustomAccountIdValue" type="LineEdit" parent="VBoxContainer/Content/CustomAccountId/CustomAccountIdRight"]
+[node name="CustomProfileValue" type="LineEdit" parent="VBoxContainer/Content/CustomProfile/CustomProfilePanel"]
 clip_contents = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 24
 
-[node name="GetProfileIdBtn" parent="VBoxContainer/Content/CustomAccountId/CustomAccountIdRight" instance=ExtResource("2_wfw86")]
+[node name="GetProfileBtn" parent="VBoxContainer/Content/CustomProfile/CustomProfilePanel" instance=ExtResource("2_wfw86")]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 texture = ExtResource("3_wfw86")

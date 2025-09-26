@@ -21,9 +21,9 @@ namespace SteamPanno
 
 			public string Language { get; set; }
 
-			public int AccountIdOption { get; set; }
-			public string FriendAccountId { get; set; }
-			public string CustomAccountId { get; set; }
+			public int ProfileOption { get; set; }
+			public string FriendProfile { get; set; }
+			public string CustomProfile { get; set; }
 			public Dictionary<string, string> SelectedBeginingSnapshots { get; set; }
 			public Dictionary<string, string> SelectedEndingSnapshots { get; set; }
 			public bool UseNativeResolution { get; set; }
@@ -75,18 +75,18 @@ namespace SteamPanno
 
 			if (id != null)
 			{
-				if (Settings.Instance.AccountIdOption == 0)
+				if (Settings.Instance.ProfileOption == 0)
 				{
 					return id;
 				}
-				else if (Settings.Instance.AccountIdOption == 1)
+				else if (Settings.Instance.ProfileOption == 1)
 				{
-					return Settings.Instance.FriendAccountId.TryParseSteamId(out var friendSteamId)
+					return Settings.Instance.FriendProfile.TryParseSteamId(out var friendSteamId)
 						? friendSteamId : null;
 				}
 			}
 
-			return Settings.Instance.CustomAccountId.TryParseSteamId(out var customSteamId)
+			return Settings.Instance.CustomProfile.TryParseSteamId(out var customSteamId)
 				? customSteamId : null;
 		}
 

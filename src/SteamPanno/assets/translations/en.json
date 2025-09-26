@@ -3,10 +3,10 @@
 	"Config":
 	{
 		"GenerationSettingsLbl": "Generation Settings",
-		"AccountIdLbl": "Steam Profile",
-		"AccountIdOption0": "My Profile",
-		"AccountIdOption1": "My Friend's Profile",
-		"AccountIdOption2": "Custom Profile",
+		"ProfileLbl": "Steam Profile",
+		"ProfileOption0": "My Profile",
+		"ProfileOption1": "My Friend's Profile",
+		"ProfileOption2": "Custom Profile",
 		"BeginingSnapshotLbl": "Begining Snapshot",
 		"EndingSnapshotLbl": "Ending Snapshot",
 		"SnapshotOptionOff": "Off",
