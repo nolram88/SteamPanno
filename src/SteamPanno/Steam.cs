@@ -7,7 +7,7 @@ namespace SteamPanno
 {
 	public static class Steam
 	{
-		public static uint appID = 480;
+		public static uint appID = 4026140;
 
 		static Steam()
 		{
