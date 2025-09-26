@@ -10,23 +10,44 @@ set EXPORT_PATH=%~dp0..\dist\macos-arm64
 
 echo Exporting...
 
+:: Create app directory
 mkdir "%EXPORT_PATH%" 2> NUL
+if not exist "%EXPORT_PATH%" (
+    echo ERROR: Failed to create directory: %EXPORT_PATH%
+    exit /b 1
+)
+
+:: Run godot export
 %GODOT_PATH% --verbose --headless --path "%PROJECT_PATH%" --export-release "macOS" "%EXPORT_PATH%\SteamPanno.exe"
-if %errorlevel% equ 0 (
-    echo Export successful!
-) else (
-    echo Export failed!
+if %errorlevel% neq 0 (
+    echo ERROR: Failed to export project!
+    exit /b 1
 )
 
 echo Copying files...
 
-mkdir "%EXPORT_PATH%\assets\translations" 2> NUL
-copy "%PROJECT_PATH%\assets\translations\*.*" "%EXPORT_PATH%\assets\translations\"
-if %errorlevel% equ 0 (
-    echo Copy successful!
-) else (
-    echo Copy failed!
+:: Create translations directory
+mkdir "%EXPORT_PATH%\custom-assets\translations" 2> NUL
+if not exist "%EXPORT_PATH%\custom-assets\translations" (
+    echo ERROR: Failed to create directory: %EXPORT_PATH%\custom-assets\translations
+    exit /b 1
 )
 
-echo Export process completed!
+:: Copy translations
+echo Copying translation files...
+copy "%PROJECT_PATH%\assets\translations\*.*" "%EXPORT_PATH%\custom-assets\translations\"
+if %errorlevel% neq 0 (
+    echo ERROR: Failed to copy translation files!
+    exit /b 1
+)
+
+:: Copy steam dependencies
+echo Copying steam dependencies...
+copy "%PROJECT_PATH%\addons\steam\macos\libsteam_api.dylib" "%EXPORT_PATH%\libsteam_api.dylib"
+if %errorlevel% neq 0 (
+    echo ERROR: Failed to copy steam dependencies!
+    exit /b 1
+)
+
+echo Export completed!
 pause

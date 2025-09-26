@@ -11,19 +11,22 @@ namespace SteamPanno
 		private const string LanguageProperty = "Language";
 		private const string LanguageDefault = "English";
 		private const string TranslationsPath = "res://assets/translations";
-		private const string TranslationsPathAlt = "./assets/translations";
+		private const string TranslationsPathAlt = "./custom-assets/translations";
 
 		private readonly static Dictionary<string, Dictionary<string, string>> localizations;
 		
 		static Localization()
 		{
 			localizations = new Dictionary<string, Dictionary<string, string>>();
-			var files = DirAccess.DirExistsAbsolute(TranslationsPath)
-				? DirAccess.GetFilesAt(TranslationsPath)
-				: DirAccess.GetFilesAt(TranslationsPathAlt);
-			foreach (var file in files)
+			var filesFromRes = DirAccess.GetFilesAt(TranslationsPath);
+			var filesFromDir = DirAccess.GetFilesAt(TranslationsPathAlt);
+			var filesAll = filesFromRes.Concat(filesFromDir).Distinct().ToArray();
+			
+			foreach (var file in filesAll)
 			{
-				var filePath = $"{TranslationsPath}/{file}";
+				var filePath = filesFromDir.Contains(file)
+					? $"{TranslationsPathAlt}/{file}"
+					: $"{TranslationsPath}/{file}";
 				var fileLocalization = LoadLocalization(filePath);
 				if (fileLocalization.Count > 0 && fileLocalization.TryGetValue(LanguageProperty, out var fileLanguage))
 				{
@@ -88,7 +91,7 @@ namespace SteamPanno
 		{
 			Dictionary<string, string> localization = new Dictionary<string, string>();
 
-			using FileAccess file = FileAccess.Open(filePath,FileAccess.ModeFlags.Read);
+			using FileAccess file = FileAccess.Open(filePath, FileAccess.ModeFlags.Read);
 			{
 				if (file != null)
 				{
