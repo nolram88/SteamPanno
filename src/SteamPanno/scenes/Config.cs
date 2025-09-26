@@ -28,7 +28,7 @@ namespace SteamPanno.scenes
 		private OptionButton friendProfileValue;
 		private Control customProfile;
 		private LineEdit customProfileValue;
-		private ImageButton getProfileBtn;
+		private ImageButtonController getProfileBtn;
 		private Control beginingSnapshot;
 		private OptionButton beginingSnapshotValue;
 		private Control endingSnapshot;
@@ -64,7 +64,7 @@ namespace SteamPanno.scenes
 			customProfile = GetNode<Control>("./VBoxContainer/Content/CustomProfile");
 			customProfileValue = GetNode<LineEdit>("./VBoxContainer/Content/CustomProfile/CustomProfilePanel/CustomProfileValue");
 			customProfileValue.TextChanged += CustomAccountOptionChanged;
-			getProfileBtn = GetNode<ImageButton>("./VBoxContainer/Content/CustomProfile/CustomProfilePanel/GetProfileBtn");
+			getProfileBtn = new ImageButtonController(GetNode<ImageButton>("./VBoxContainer/Content/CustomProfile/CustomProfilePanel/GetProfileBtn"));
 			getProfileBtn.OnClick = () => Task.Run(async () => await GetSteamIdBackThread());
 
 			var beginingSnapshotLbl = GetNode<Label>("./VBoxContainer/Content/BeginingSnapshot/BeginingSnapshotLbl");
@@ -205,9 +205,9 @@ namespace SteamPanno.scenes
 			var showHoursOptionIndex = Math.Clamp((int)Settings.Instance.ShowHoursOption, 0, showHoursValue.ItemCount - 1);
 			showHoursValue.Select(showHoursOptionIndex);
 
-			var okBtn = GetNode<ImageButton>("./VBoxContainer/Buttons/OkButton");
+			var okBtn = new ImageButtonController(GetNode<ImageButton>("./VBoxContainer/Buttons/OkButton"));
 			okBtn.OnClick = OnOkPressed;
-			var cancelBtn = GetNode<ImageButton>("./VBoxContainer/Buttons/CancelButton");
+			var cancelBtn = new ImageButtonController(GetNode<ImageButton>("./VBoxContainer/Buttons/CancelButton"));
 			cancelBtn.OnClick = OnCancelPressed;
 		}
 

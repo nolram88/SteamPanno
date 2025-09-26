@@ -26,9 +26,9 @@ namespace SteamPanno.scenes
 		private bool pannoProgressIndeterminate;
 		private ProgressBar pannoProgressBar;
 		private Label pannoProgressLabel;
-		private ImageButton saveButton;
-		private ImageButton screenshotButton;
-		private ImageButton warningButton;
+		private ImageButtonController saveButton;
+		private ImageButtonController screenshotButton;
+		private ImageButtonController warningButton;
 		private RichTextLabel savedFileLabel;
 		
 		private string pannoSteamId;
@@ -63,7 +63,7 @@ namespace SteamPanno.scenes
 			pannoProgressBar = GetNode<ProgressBar>("./GUI/Center/Progress/Bar");
 			pannoProgressLabel = GetNode<Label>("./GUI/Center/Progress/Text");
 
-			var configButton = GetNode<ImageButton>("./GUI/Top/ConfigButton");
+			var configButton = new ImageButtonController(GetNode<ImageButton>("./GUI/Top/ConfigButton"));
 			configButton.OnClick = () => ShowConfig(true);
 			var languageMenu = GetNode<PopupMenu>("./GUI/LanguageMenu");
 			var localizations = Localization.GetLocalizations();
@@ -90,18 +90,18 @@ namespace SteamPanno.scenes
 					PrepareConfig();
 				}
 			};
-			var languageButton = GetNode<ImageButton>("./GUI/Top/LanguageButton");
+			var languageButton = new ImageButtonController(GetNode<ImageButton>("./GUI/Top/LanguageButton"));
 			languageButton.OnClick = () => languageMenu.Popup(new Rect2I()
 			{
 				Position = new Vector2I((int)languageButton.Position.X, (int)languageButton.Position.Y + (int)languageButton.Size.Y),
 			});
-			var exitButton = GetNode<ImageButton>("./GUI/Top/ExitButton");
+			var exitButton = new ImageButtonController(GetNode<ImageButton>("./GUI/Top/ExitButton"));
 			exitButton.OnClick = Quit;
-			saveButton = GetNode<ImageButton>("./GUI/Bottom/SaveButton");
+			saveButton = new ImageButtonController(GetNode<ImageButton>("./GUI/Bottom/SaveButton"));
 			saveButton.OnClick = () => Task.Run(() => SavePannoToFile());
-			screenshotButton = GetNode<ImageButton>("./GUI/Bottom/ScreenshotButton");
+			screenshotButton = new ImageButtonController(GetNode<ImageButton>("./GUI/Bottom/ScreenshotButton"));
 			screenshotButton.OnClick = () => Task.Run(() => SavePannoScreenshot());
-			warningButton = GetNode<ImageButton>("./GUI/Bottom/WarningButton");
+			warningButton = new ImageButtonController(GetNode<ImageButton>("./GUI/Bottom/WarningButton"));
 			warningButton.OnClick = () =>
 			{
 				report.Visible = !report.Visible;
