@@ -8,6 +8,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Channels;
@@ -107,7 +108,11 @@ namespace SteamPanno.scenes
 				report.Visible = !report.Visible;
 			};
 			savedFileLabel = GetNode<RichTextLabel>("./GUI/Bottom/SavedFileLabel");
-
+			var versionLabel = GetNode<Label>("./GUI/Bottom/VersionLabel");
+			versionLabel.Text = typeof(Main).Assembly
+				.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+				.InformationalVersion;
+			
 			if (Settings.Instance.ShowConfigOnStart)
 			{
 				ShowConfig(true);

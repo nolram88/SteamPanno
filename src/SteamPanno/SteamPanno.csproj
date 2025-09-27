@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	<Platforms>AnyCPU</Platforms>
 	<IsWindows>$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))</IsWindows>
 	<IsLinux>$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))</IsLinux>
@@ -23,6 +24,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="GitInfo" Version="2.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
   </ItemGroup>
   <Target Condition=" '$(GodotTargetPlatform)' == 'windows' " Name="PostBuildWindows" AfterTargets="PostBuildEvent">
