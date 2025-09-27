@@ -1,4 +1,5 @@
-﻿using Godot;
+using Godot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -19,7 +20,9 @@ namespace SteamPanno
 		{
 			localizations = new Dictionary<string, Dictionary<string, string>>();
 			var filesFromRes = DirAccess.GetFilesAt(TranslationsPath);
-			var filesFromDir = DirAccess.GetFilesAt(TranslationsPathAlt);
+			var filesFromDir = System.IO.Directory.Exists(TranslationsPathAlt)
+				? DirAccess.GetFilesAt(TranslationsPathAlt)
+				: Array.Empty<string>();
 			var filesAll = filesFromRes.Concat(filesFromDir).Distinct().ToArray();
 			
 			foreach (var file in filesAll)
