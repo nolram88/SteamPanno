@@ -19,10 +19,12 @@ namespace SteamPanno.panno.drawing
 			var expansion1 = await base.PrepareExpansion1(
 				src, xFitting, isize, gapSize);
 
-			return await EdgeBlur(
-				expansion1,
-				xFitting ? new Vector2(1, 0) : new Vector2(0, 1),
-				xFitting ? new Vector2(0, -1) : new Vector2(-1, 0));
+			return (gapSize.X > 1 && gapSize.Y > 1)
+				? await EdgeBlur(
+					expansion1,
+					xFitting ? new Vector2(1, 0) : new Vector2(0, 1),
+					xFitting ? new Vector2(0, -1) : new Vector2(-1, 0))
+				: expansion1;
 		}
 
 		protected override async Task<PannoImage> PrepareExpansion2(
@@ -34,10 +36,12 @@ namespace SteamPanno.panno.drawing
 			var expansion2 = await base.PrepareExpansion2(
 				src, xFitting, isize, gapSize);
 
-			return await EdgeBlur(
-				expansion2,
-				xFitting ? new Vector2(1, 0) : new Vector2(0, 1),
-				xFitting ? new Vector2(0, 1) : new Vector2(1, 0));
+			return (gapSize.X > 1 && gapSize.Y > 1)
+				? await EdgeBlur(
+					expansion2,
+					xFitting ? new Vector2(1, 0) : new Vector2(0, 1),
+					xFitting ? new Vector2(0, 1) : new Vector2(1, 0))
+				: expansion2;
 		}
 	}
 }
