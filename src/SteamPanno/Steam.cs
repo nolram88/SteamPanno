@@ -14,7 +14,7 @@ namespace SteamPanno
 			try
 			{
 				SteamClient.Init(appID, true);
-				GD.Print($"Steam Name: {SteamClient.Name}, Steam Id: {SteamClient.SteamId}");
+				GD.Print($"Steam Name: {SteamClient.Name}, Id: {SteamClient.SteamId}, Lang: {SteamApps.GameLanguage}");
 			}
 			catch (Exception e)
 			{
@@ -27,6 +27,11 @@ namespace SteamPanno
 			return SteamClient.IsValid ?
 				SteamClient.SteamId.ToString()
 				: null;
+		}
+
+		public static string Language
+		{
+			get => SteamClient.IsValid ? SteamApps.GameLanguage : null;
 		}
 
 		public static (string id, string name)[] GetFriends()

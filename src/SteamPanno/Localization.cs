@@ -10,12 +10,13 @@ namespace SteamPanno
 	public static class Localization
 	{
 		private const string LanguageProperty = "Language";
-		private const string LanguageDefault = "English";
+		private const string LanguageDefault = "english";
 		private const string TranslationsPath = "res://assets/translations";
 		private const string TranslationsPathAlt = "./custom-assets/translations";
 
 		private readonly static Dictionary<string, Dictionary<string, string>> localizations;
-		
+		private static string localizationActive;
+
 		static Localization()
 		{
 			localizations = new Dictionary<string, Dictionary<string, string>>();
@@ -33,45 +34,60 @@ namespace SteamPanno
 				var fileLocalization = LoadLocalization(filePath);
 				if (fileLocalization.Count > 0 && fileLocalization.TryGetValue(LanguageProperty, out var fileLanguage))
 				{
-					localizations[fileLanguage] = fileLocalization;
+					localizations[System.IO.Path.GetFileNameWithoutExtension(file)] = fileLocalization;
 				}
 			}
 
-			if (string.IsNullOrEmpty(Settings.Instance.Language) ||
-				!localizations.ContainsKey(Settings.Instance.Language))
+			if (!string.IsNullOrEmpty(Settings.Instance.Language) &&
+				localizations.ContainsKey(Settings.Instance.Language))
+			{
+				SetLocalization(Settings.Instance.Language);
+			}
+			else if (!string.IsNullOrEmpty(Steam.Language) &&
+				localizations.ContainsKey(Steam.Language))
+			{
+				SetLocalization(Steam.Language);
+			}
+			else
 			{
 				SetLocalization(LanguageDefault);
 			}
 		}
 
-		public static string[] GetLocalizations()
+		public static (string Invariant, string Native)[] GetLocalizations()
 		{
-			return localizations.Select(x => x.Value[LanguageProperty]).ToArray();
+			return localizations.Select(x => (x.Key, x.Value[LanguageProperty])).ToArray();
 		}
 
 		public static string GetLocalization()
 		{
-			return Settings.Instance.Language;
+			return localizationActive;
 		}
 
 		public static void SetLocalization(string lang)
 		{
-			Settings.Instance.Language = lang;
-			Settings.Save();
+			localizationActive = lang;
+
+			if (Settings.Instance.Language != localizationActive &&
+				Steam.Language != localizationActive)
+			{
+				Settings.Instance.Language = localizationActive;
+				Settings.Save();
+			}
 		}
 
 		public static void SetLocalization(int index)
 		{
-			var localization = localizations.Keys.Skip(index).FirstOrDefault();
-			if (localization != null)
+			var lang = localizations.Keys.Skip(index).FirstOrDefault();
+			if (lang != null)
 			{
-				SetLocalization(localizations[localization][LanguageProperty]);
+				SetLocalization(lang);
 			}
 		}
 
 		public static string Localize(string phrase, params string[] args)
 		{
-			if (localizations.TryGetValue(Settings.Instance.Language, out var localization) &&
+			if (localizations.TryGetValue(localizationActive, out var localization) &&
 				localization.TryGetValue(phrase, out var phraseLocalized))
 			{
 				return args.Length == 0

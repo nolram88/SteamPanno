@@ -71,8 +71,8 @@ namespace SteamPanno.scenes
 			var localization = Localization.GetLocalization();
 			for (int i = 0; i < localizations.Length; i++)
 			{
-				languageMenu.AddCheckItem(localizations[i]);
-				languageMenu.SetItemChecked(i, localizations[i] == localization);
+				languageMenu.AddCheckItem(localizations[i].Native);
+				languageMenu.SetItemChecked(i, localizations[i].Invariant == localization);
 			}
 			languageMenu.IndexPressed += (index) =>
 			{
