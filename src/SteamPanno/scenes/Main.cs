@@ -496,7 +496,7 @@ namespace SteamPanno.scenes
 				processor);
 		}
 
-		protected float GetMinimalHours()
+		protected decimal GetMinimalHours()
 		{
 			return (Settings.Instance.MinimalHoursOption) switch
 			{
@@ -504,7 +504,7 @@ namespace SteamPanno.scenes
 				1 => 1,
 				2 => 10,
 				3 => 100,
-				_ => float.TryParse(Settings.Instance.CustomMinimalHours, out var hours) ? hours : 0,
+				_ => decimal.TryParse(Settings.Instance.CustomMinimalHours, out var hours) ? hours : 0,
 			};
 		}
 

@@ -1,10 +1,10 @@
 ﻿namespace SteamPanno.panno
 {
-	public class PannoGame
+	public record PannoGame
 	{
 		public int Id { get; init; }
 		public string Name { get; init; }
-		public float HoursOnRecord { get; init; }
+		public decimal HoursOnRecord { get; init; }
 		public bool HoursOnRecordPrivate { get; init; }
 	}
 }

@@ -8,11 +8,11 @@ namespace SteamPanno.panno.generation
 {
 	public class PannoGameLayoutGeneratorGradualDescent : PannoGameLayoutGeneratorTreeBased
 	{
-		private float totalHours;
+		private decimal totalHours;
 		private int totalArea;
-		private float fixedHours;
+		private decimal fixedHours;
 		private int fixedArea;
-		private float deltaHours;
+		private decimal deltaHours;
 		private int depthMax;
 
 		public override ValueTask<PannoGameLayout[]> Generate(PannoGame[] games, Rect2I area)
@@ -43,7 +43,7 @@ namespace SteamPanno.panno.generation
 				var game = games.Peek();
 				var areaArea = area.Size.X * area.Size.Y;
 				var areaAreaNext = areaArea / 2;
-				var areaHours = (float)areaArea / totalArea * totalHours;
+				var areaHours = (decimal)areaArea / totalArea * totalHours;
 
 				var lastGame = games.Count == 1;
 				var areaIsNotBiggerThanItSupposedToBe = areaHours <= game.HoursOnRecord + deltaHours && areaHours < totalHours - fixedHours;

@@ -23,7 +23,7 @@ namespace SteamPanno.scenes
 		private TextureRect textureOut;
 		private PannoImage pannoImage;
 		private PannoState pannoState;
-		private ConcurrentBag<(Rect2I Area, string Title, float? Hours)> pannoGamesInText;
+		private ConcurrentBag<(Rect2I Area, string Title, decimal? Hours)> pannoGamesInText;
 
 		public override void _Ready()
 		{
@@ -131,7 +131,7 @@ namespace SteamPanno.scenes
 			IPannoObserver observer,
 			CancellationToken cancellationToken)
 		{
-			pannoGamesInText = new ConcurrentBag<(Rect2I Area, string Title, float? Hours)>();
+			pannoGamesInText = new ConcurrentBag<(Rect2I Area, string Title, decimal? Hours)>();
 			var progressLocker = new SemaphoreSlim(1, 1);
 
 			var current = 0;
@@ -198,7 +198,7 @@ namespace SteamPanno.scenes
 			return label;
 		}
 
-		private RichTextLabel CreateHoursLabel(Rect2I area, float hours, string hoursText)
+		private RichTextLabel CreateHoursLabel(Rect2I area, decimal hours, string hoursText)
 		{
 			var label = new RichTextLabel();
 			label.AddThemeFontOverride("normal_font", ThemeDB.FallbackFont);
