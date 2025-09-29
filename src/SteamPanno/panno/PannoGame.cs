@@ -4,7 +4,7 @@
 	{
 		public int Id { get; init; }
 		public string Name { get; init; }
-		public decimal HoursOnRecord { get; init; }
+		public decimal HoursOnRecord { get; set; }
 		public bool HoursOnRecordPrivate { get; init; }
 	}
 }
