@@ -24,8 +24,8 @@ namespace SteamPanno
 			public int ProfileOption { get; set; }
 			public string FriendProfile { get; set; }
 			public string CustomProfile { get; set; }
-			public Dictionary<string, string> SelectedBeginingSnapshots { get; set; }
-			public Dictionary<string, string> SelectedEndingSnapshots { get; set; }
+			public Dictionary<string, long> SelectedBeginingSnapshots { get; set; }
+			public Dictionary<string, long> SelectedEndingSnapshots { get; set; }
 			public bool UseNativeResolution { get; set; }
 			public string SelectedResolution { get; set; }
 			public string CustomResolution { get; set; }

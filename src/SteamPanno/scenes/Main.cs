@@ -32,8 +32,8 @@ namespace SteamPanno.scenes
 		private RichTextLabel savedFileLabel;
 		
 		private string pannoSteamId;
-		private string pannoBeginingSnapshot;
-		private string pannoEndingSnapshot;
+		private long pannoBeginingTimestamp;
+		private long pannoEndingTimestamp;
 		private double pannoProgressValueToSet;
 		private string pannoProgressTextToSet;
 		private bool saveButtonVisible;
@@ -274,8 +274,8 @@ namespace SteamPanno.scenes
 
 			try
 			{
-				pannoBeginingSnapshot = null;
-				pannoEndingSnapshot = null;
+				pannoBeginingTimestamp = 0;
+				pannoEndingTimestamp = 0;
 				saveButtonVisible = false;
 				screenshotButtonVisible = false;
 				warningButtonVisible = false;
@@ -309,11 +309,15 @@ namespace SteamPanno.scenes
 				if (Settings.Instance.SelectedEndingSnapshots != null &&
 					Settings.Instance.SelectedEndingSnapshots.TryGetValue(pannoSteamId, out var endingSnapshot))
 				{
-					var snapshotData = FileExtensions.GetProfileSnapshot(endingSnapshot);
-					if (snapshotData != null)
+					var profile = ProfileSnapshotManager.Instance.GetProfile(pannoSteamId);
+					if (profile != null)
 					{
-						games = JsonSerializer.Deserialize<PannoGame[]>(snapshotData);
-						pannoEndingSnapshot = endingSnapshot;
+						var snapshot = profile.GetFullSnapshot(endingSnapshot);
+						if (snapshot != null)
+						{
+							games = snapshot.Games;
+							pannoEndingTimestamp = endingSnapshot;
+						}
 					}
 				}
 
@@ -335,28 +339,32 @@ namespace SteamPanno.scenes
 				if (Settings.Instance.SelectedBeginingSnapshots != null &&
 					Settings.Instance.SelectedBeginingSnapshots.TryGetValue(pannoSteamId, out var beginingSnapshot))
 				{
-					var snapshotData = FileExtensions.GetProfileSnapshot(beginingSnapshot);
-					if (snapshotData != null)
+					var profile = ProfileSnapshotManager.Instance.GetProfile(pannoSteamId);
+					if (profile != null)
 					{
-						var gamesBefore = JsonSerializer.Deserialize<PannoGame[]>(snapshotData);
-						for (int i = 0; i < games.Length; i++)
+						var snapshot = profile.GetFullSnapshot(beginingSnapshot);
+						if (snapshot != null)
 						{
-							var game = games[i];
-							var gameBefore = gamesBefore
-								.Where(x => x.Id == game.Id)
-								.SingleOrDefault();
-
-							if (gameBefore != null)
+							var gamesBefore = snapshot.Games;
+							for (int i = 0; i < games.Length; i++)
 							{
-								games[i] = new PannoGame()
+								var game = games[i];
+								var gameBefore = gamesBefore
+									.Where(x => x.Id == game.Id)
+									.SingleOrDefault();
+
+								if (gameBefore != null)
 								{
-									Id = game.Id,
-									Name = game.Name,
-									HoursOnRecord = Math.Max(0, game.HoursOnRecord - gameBefore.HoursOnRecord),
-								};
+									games[i] = new PannoGame()
+									{
+										Id = game.Id,
+										Name = game.Name,
+										HoursOnRecord = Math.Max(0, game.HoursOnRecord - gameBefore.HoursOnRecord),
+									};
+								}
 							}
+							pannoBeginingTimestamp = beginingSnapshot;
 						}
-						pannoBeginingSnapshot = beginingSnapshot;
 					}
 				}
 
@@ -419,14 +427,12 @@ namespace SteamPanno.scenes
 				saveButtonVisible = false;
 				ProgressStart(true, Localization.Localize("PannoSaving"));
 
-				var dateBegining =
-					pannoBeginingSnapshot != null &&
-					pannoBeginingSnapshot.TryParseProfileSnapshotFileName(out _, out var dateBeginingValue)
-						? dateBeginingValue : null;
-				var dateEnding =
-					pannoEndingSnapshot != null &&
-					pannoEndingSnapshot.TryParseProfileSnapshotFileName(out _, out var dateEndingValue)
-						? dateEndingValue : DateTime.Today.ToString("yyyy-MM-dd");
+				var dateBegining = pannoBeginingTimestamp != default
+					? DateExtensions.TimestampToLocalDateTime(pannoBeginingTimestamp).ToString("yyyy-MM-dd")
+					: null;
+				var dateEnding = pannoEndingTimestamp != default
+					? DateExtensions.TimestampToLocalDateTime(pannoEndingTimestamp).ToString("yyyy-MM-dd")
+					: DateTime.Today.ToString("yyyy-MM-dd");
 				var date = dateBegining != null
 					? $"{dateBegining}-{dateEnding}"
 					: dateEnding;
