@@ -314,8 +314,7 @@ namespace SteamPanno.scenes
 					var snapshotName = DateExtensions
 						.TimestampToLocalDateTime(snapshot)
 						.ToString();
-					var snapshotIndex = (int)(snapshot - snapshotMin);
-					beginingSnapshotValue.AddItem(snapshotName, snapshotIndex);
+					beginingSnapshotValue.AddItem(snapshotName);
 					if (snapshot == selectedSnapshot)
 					{
 						beginingSnapshotValue.Select(beginingSnapshotValue.ItemCount - 1);
@@ -352,7 +351,7 @@ namespace SteamPanno.scenes
 					var snapshotName = DateExtensions
 						.TimestampToLocalDateTime(snapshot)
 						.ToString();
-					var snapshotIndex = (int)(snapshot - snapshotMin);
+					var snapshotIndex = beginingSnapshotValue.Selected + endingSnapshotValue.ItemCount;
 					endingSnapshotValue.AddItem(snapshotName, snapshotIndex);
 					if (snapshot == selectedSnapshot)
 					{
@@ -414,8 +413,7 @@ namespace SteamPanno.scenes
 			{
 				if (TryGetProfileSnapshots(steamId, out var snapshots))
 				{
-					var snapshot = index + snapshots.Min();
-					selectedBeginingSnapshots[steamId] = snapshot;
+					selectedBeginingSnapshots[steamId] = snapshots[index-1];
 				}
 			}
 
@@ -432,8 +430,7 @@ namespace SteamPanno.scenes
 			{
 				if (TryGetProfileSnapshots(steamId, out var snapshots))
 				{
-					var snapshot = index + snapshots.Min();
-					selectedEndingSnapshots[steamId] = snapshot;
+					selectedEndingSnapshots[steamId] = snapshots[index-1];
 				}
 			}
 		}
@@ -471,7 +468,7 @@ namespace SteamPanno.scenes
 				}
 				foreach (var selectedBeginingSnapshot in selectedBeginingSnapshots)
 				{
-					if (selectedBeginingSnapshot.Value != null)
+					if (selectedBeginingSnapshot.Value != default)
 					{
 						Settings.Instance.SelectedBeginingSnapshots[selectedBeginingSnapshot.Key] = selectedBeginingSnapshot.Value;
 					}
@@ -489,7 +486,7 @@ namespace SteamPanno.scenes
 				}
 				foreach (var selectedEndingSnapshot in selectedEndingSnapshots)
 				{
-					if (selectedEndingSnapshot.Value != null)
+					if (selectedEndingSnapshot.Value != default)
 					{
 						Settings.Instance.SelectedEndingSnapshots[selectedEndingSnapshot.Key] = selectedEndingSnapshot.Value;
 					}
