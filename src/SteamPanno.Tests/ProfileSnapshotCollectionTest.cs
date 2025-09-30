@@ -127,31 +127,7 @@ namespace SteamPanno
 		}
 
 		[Fact]
-		public void ShouldSaveSingleLastEmptyIncrementalSnapshot()
-		{
-			var snapshots = new decimal[] { 99, 99 }.Select((hours, index) => new ProfileSnapshot()
-			{
-				Timestamp = 100 + index,
-				Games = new PannoGame[]
-				{
-					NewPannoGame(1, "game1", hours),
-				},
-			}).ToArray();
-			foreach (var snapshot in snapshots)
-			{
-				collection.AddFullSnapshot(snapshot);
-			}
-
-			var incrementalSnapshots = collection.GetIncrementalSnapshots().ToArray();
-			incrementalSnapshots.Length.ShouldBe(2);
-			incrementalSnapshots.First().ShouldBe(snapshots.First());
-			incrementalSnapshots.Skip(1).First().ShouldSatisfyAllConditions(
-				s => s.Timestamp.ShouldBe(101),
-				s => s.Games.Length.ShouldBe(0));
-		}
-
-		[Fact]
-		public void ShouldKeepSingleLastEmptyIncrementalSnapshot()
+		public void ShouldNotSaveEmptyIncrementalSnapshots()
 		{
 			var snapshots = new decimal[] { 99, 99, 99 }.Select((hours, index) => new ProfileSnapshot()
 			{
@@ -167,15 +143,12 @@ namespace SteamPanno
 			}
 
 			var incrementalSnapshots = collection.GetIncrementalSnapshots().ToArray();
-			incrementalSnapshots.Length.ShouldBe(2);
+			incrementalSnapshots.Length.ShouldBe(1);
 			incrementalSnapshots.First().ShouldBe(snapshots.First());
-			incrementalSnapshots.Skip(1).First().ShouldSatisfyAllConditions(
-				s => s.Timestamp.ShouldBe(102),
-				s => s.Games.Length.ShouldBe(0));
 		}
 
 		[Fact]
-		public void ShouldOverrideLastEmptyIncrementalSnapshot()
+		public void ShouldSaveNotEmptyIncrementalSnapshots()
 		{
 			var snapshots = new decimal[] { 99, 99, 100 }.Select((hours, index) => new ProfileSnapshot()
 			{

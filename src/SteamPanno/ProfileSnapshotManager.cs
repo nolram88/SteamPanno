@@ -1,65 +1,54 @@
 ﻿using System;
 using System.Linq;
-using System.IO;
-using System.Text.Json;
+using System.Collections.Generic;
 
 namespace SteamPanno
 {
 	public class ProfileSnapshotManager
 	{
-		public static readonly ProfileSnapshotManager Instance = new ProfileSnapshotManager();
+		public static readonly ProfileSnapshotManager Instance = new ProfileSnapshotManager(new ProfileStorage());
 
-		public ProfileSnapshotManager()
+		private ProfileStorage storage;
+		private Dictionary<string, ProfileSnapshotCollection> profiles = new Dictionary<string, ProfileSnapshotCollection>();
+
+		public ProfileSnapshotManager(ProfileStorage storage)
 		{
-			ProfileListResolver = () =>
-			{
-				var profiles = Directory
-					.GetFiles(FileExtensions.GetProfilesPath(), "*.json")
-					.Select(x => Path.GetFileNameWithoutExtension(x))
-					.ToArray();
-
-				return profiles;
-			};
-
-			ProfileDataResolver = (profileId) =>
-			{
-				var snapshotPath = Path.Combine(FileExtensions.GetProfilesPath(), profileId + ".json");
-
-				if (File.Exists(snapshotPath))
-				{
-					var snapshotData = File.ReadAllText(snapshotPath);
-					var snapshots = JsonSerializer.Deserialize<ProfileSnapshot[]>(snapshotData);
-					return snapshots;
-				}
-
-				return null;
-			};
-
-			SaveProfile = (profileId, snapshots) =>
-			{
-				if (snapshots == null || snapshots.Length == 0)
-				{
-					return;
-				}
-
-				var fileName = Path.Combine(FileExtensions.GetProfilesPath(), $"{profileId}.json");
-				var json = JsonSerializer.Serialize(snapshots);
-				File.WriteAllText(fileName, json);
-			};
+			this.storage = storage;
 		}
 
-		public Func<string[]> ProfileListResolver { get; set; }
-		public Func<string, ProfileSnapshot[]> ProfileDataResolver { get; set; }
-		public Action<string, ProfileSnapshot[]> SaveProfile { get; set; }
-
-		public string[] GetProfiles()
+		public string[] GetProfileList()
 		{
-			return ProfileListResolver();
+			return storage.GetProfileList();
 		}
 
 		public ProfileSnapshotCollection GetProfile(string profileId)
 		{
-			
+			if (!profiles.TryGetValue(profileId, out var profile))
+			{
+				var data = storage.GetProfileData(profileId);
+				if (data != null)
+				{
+					profile = new ProfileSnapshotCollection(data);
+					profiles.Add(profileId, profile);
+				}
+			}
+
+			return profile;
+		}
+
+		public void UpdateProfile(string profileId, ProfileSnapshot snapshot)
+		{
+			var profile = GetProfile(profileId);
+			if (profile == null)
+			{
+				profile = new ProfileSnapshotCollection();
+				profiles.Add(profileId, profile);
+			}
+
+			if (profile.AddFullSnapshot(snapshot))
+			{
+				storage.SaveProfile(profileId, profile.GetIncrementalSnapshots().ToArray());
+			}
 		}
 	}
 }

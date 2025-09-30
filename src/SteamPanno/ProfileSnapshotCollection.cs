@@ -29,6 +29,13 @@ namespace SteamPanno
 				: null;
 		}
 
+		public ProfileSnapshot GetLastSnapshot()
+		{
+			return incrementalSnapshots.Count > 0
+				? incrementalSnapshots.Last()
+				: null;
+		}
+
 		public IEnumerable<ProfileSnapshot> GetIncrementalSnapshots()
 		{
 			return incrementalSnapshots;
@@ -66,13 +73,13 @@ namespace SteamPanno
 			return fullSnapshot;
 		}
 
-		public void AddFullSnapshot(ProfileSnapshot fullSnapshot)
+		public bool AddFullSnapshot(ProfileSnapshot fullSnapshot)
 		{
 			if (incrementalSnapshots.Count == 0)
 			{
 				incrementalSnapshots.Add(fullSnapshot);
 				fullSnapshots.Add(fullSnapshot.Timestamp, fullSnapshot);
-				return;
+				return true;
 			}
 
 			var lastIncrementalSnapshot = incrementalSnapshots.Last();
@@ -80,13 +87,14 @@ namespace SteamPanno
 			var lastFullSnapshot = GetFullSnapshot(lastIncrementalSnapshotTimestamp);
 			var newIncrementalSnapshot = CreateIncrementalSnapshot(lastFullSnapshot, fullSnapshot);
 
-			if (lastIncrementalSnapshot.Games.Length == 0)
+			if (newIncrementalSnapshot.Games.Length > 0)
 			{
-				incrementalSnapshots.Remove(lastIncrementalSnapshot);
+				fullSnapshots.Add(fullSnapshot.Timestamp, fullSnapshot);
+				incrementalSnapshots.Add(newIncrementalSnapshot);
+				return true;
 			}
-			
-			fullSnapshots.Add(fullSnapshot.Timestamp, fullSnapshot);
-			incrementalSnapshots.Add(newIncrementalSnapshot);
+
+			return false;
 		}
 
 		private void IncrementGames(List<PannoGame> full, PannoGame[] incremental)

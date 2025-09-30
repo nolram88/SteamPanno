@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,13 +10,11 @@ namespace SteamPanno.panno.loading
 	{
 		private readonly PannoLoader innerLoader;
 		private readonly string logoPath;
-		private readonly string profilesPath;
 
 		public PannoLoaderCache(PannoLoader innerLoader)
 		{
 			this.innerLoader = innerLoader;
 			logoPath = FileExtensions.GetCachePath();
-			profilesPath = FileExtensions.GetProfilesPath();
 		}
 
 		public override async Task<PannoGame[]> GetProfileGames(
@@ -96,18 +93,24 @@ namespace SteamPanno.panno.loading
 			return Path.Combine(logoPath, $"{appId}{name}.jpg");
 		}
 
-		private bool TryGetProfileFromCache(string steamId, out PannoGame[] profile)
+		private bool TryGetProfileFromCache(string steamId, out PannoGame[] profileGames)
 		{
-			var fileName = GetProfileFileName(steamId);
-			if (File.Exists(fileName))
+			profileGames = null;
+			var profile = ProfileSnapshotManager.Instance.GetProfile(steamId);
+			if (profile != null)
 			{
-				var json = File.ReadAllText(fileName);
-				profile = JsonSerializer.Deserialize<PannoGame[]>(json);
-				return true;
+				var lastSnapshot = profile.GetLastSnapshot();
+				if (lastSnapshot != null)
+				{
+					var profileDate = DateExtensions.TimestampToLocalDateTime(lastSnapshot.Timestamp);
+					if ((DateTime.Now - profileDate).TotalHours < 1)
+					{
+						profileGames = lastSnapshot.Games;
+					}
+				}
 			}
 
-			profile = null;
-			return false;
+			return profileGames != null;
 		}
 
 		private void SaveProfileToCache(string steamId, PannoGame[] profile)
@@ -117,15 +120,13 @@ namespace SteamPanno.panno.loading
 				return;
 			}
 
-			var fileName = GetProfileFileName(steamId);
-			var json = JsonSerializer.Serialize(profile);
-			File.WriteAllText(fileName, json);
-		}
-
-		private string GetProfileFileName(string steamId)
-		{
-			var dateText = DateTime.Today.ToString("yyyy-MM-dd");
-			return Path.Combine(profilesPath, $"{steamId}_{dateText}.json");
+			ProfileSnapshotManager.Instance.UpdateProfile(
+				steamId,
+				new ProfileSnapshot()
+				{
+					Timestamp = DateExtensions.NewTimestamp(),
+					Games = profile,
+				});
 		}
 	}
 }
