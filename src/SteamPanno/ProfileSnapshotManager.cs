@@ -34,6 +34,18 @@ namespace SteamPanno
 
 				return null;
 			};
+
+			SaveProfile = (profileId, snapshots) =>
+			{
+				if (snapshots == null || snapshots.Length == 0)
+				{
+					return;
+				}
+
+				var fileName = Path.Combine(FileExtensions.GetProfilesPath(), $"{profileId}.json");
+				var json = JsonSerializer.Serialize(snapshots);
+				File.WriteAllText(fileName, json);
+			};
 		}
 
 		public Func<string[]> ProfileListResolver { get; set; }
@@ -45,6 +57,9 @@ namespace SteamPanno
 			return ProfileListResolver();
 		}
 
-		
+		public ProfileSnapshotCollection GetProfile(string profileId)
+		{
+			
+		}
 	}
 }

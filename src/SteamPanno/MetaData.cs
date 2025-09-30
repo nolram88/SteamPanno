@@ -9,6 +9,7 @@ namespace SteamPanno
 	{
 		public static IReadOnlyDictionary<string, Type> GenerationTypes { get; private set; }
 		public static IReadOnlyDictionary<string, Type> OutpaintingTypes { get; private set; }
+		public static string Version { get; private set; }
 
 		static MetaData()
 		{
@@ -32,6 +33,10 @@ namespace SteamPanno
 
 			GenerationTypes = generationTypes;
 			OutpaintingTypes = outpaintingTypes;
+
+			Version = typeof(MetaData).Assembly
+				.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+				.InformationalVersion;
 		}
 	}
 }

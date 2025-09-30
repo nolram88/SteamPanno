@@ -22,6 +22,13 @@ namespace SteamPanno
 			}
 		}
 
+		public long? GetLastSnapshotDate()
+		{
+			return incrementalSnapshots.Count > 0
+				? incrementalSnapshots.Last().Timestamp
+				: null;
+		}
+
 		public IEnumerable<ProfileSnapshot> GetIncrementalSnapshots()
 		{
 			return incrementalSnapshots;
