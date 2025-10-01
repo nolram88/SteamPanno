@@ -327,7 +327,7 @@ namespace SteamPanno.scenes
 					Report(Localization.Localize("ProfileWasNotLoaded", pannoSteamId));
 					return;
 				}
-				else if (games.All(x => x.HoursOnRecordPrivate))
+				else if (games.Length > 0 && games.All(x => x.HoursOnRecord == 0))
 				{
 					Report(Localization.Localize("ProfileIsPrivate", pannoSteamId));
 					if (Settings.Instance.ProfileOption == 0)

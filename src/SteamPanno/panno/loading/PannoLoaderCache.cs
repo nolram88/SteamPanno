@@ -22,7 +22,7 @@ namespace SteamPanno.panno.loading
 			CancellationToken cancellationToken)
 		{
 			if (!TryGetProfileFromCache(steamId, out var profile) ||
-				profile.All(x => x.HoursOnRecordPrivate))
+				profile.All(x => x.HoursOnRecord == 0))
 			{
 				profile = await innerLoader.GetProfileGames(
 					steamId, cancellationToken);

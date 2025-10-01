@@ -118,7 +118,6 @@ namespace SteamPanno
 						Id = incGame.Id,
 						Name = incGame.Name,
 						HoursOnRecord = incGame.HoursOnRecord,
-						HoursOnRecordPrivate = incGame.HoursOnRecordPrivate,
 					});
 				}
 			}
@@ -138,7 +137,6 @@ namespace SteamPanno
 							Id = nextGame.Id,
 							Name = nextGame.Name,
 							HoursOnRecord = nextGame.HoursOnRecord,
-							HoursOnRecordPrivate = nextGame.HoursOnRecordPrivate,
 						};
 					}
 

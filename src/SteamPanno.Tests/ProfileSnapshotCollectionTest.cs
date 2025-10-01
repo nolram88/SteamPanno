@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SteamPanno.panno;
 using Xunit;
 using Shouldly;
@@ -171,6 +168,44 @@ namespace SteamPanno
 				s => s.Games.Length.ShouldBe(1),
 				s => s.Games.First().Id.ShouldBe(1),
 				s => s.Games.First().HoursOnRecord.ShouldBe(100));
+		}
+
+		[Fact]
+		public void ShouldSaveIncrementalSnapshotsWhenHoursAreZeroOrUnchanged()
+		{
+			var snapshots = new ProfileSnapshot[]
+			{
+				new ProfileSnapshot()
+				{
+					Timestamp = 100,
+					Games = new PannoGame[]
+					{
+						NewPannoGame(1, "game1", 100)
+					}
+				},
+				new ProfileSnapshot()
+				{
+					Timestamp = 101,
+					Games = new PannoGame[]
+					{
+						NewPannoGame(1, "game1", 100),
+						NewPannoGame(2, "game2", 0)
+					}
+				},
+			};
+			foreach (var snapshot in snapshots)
+			{
+				collection.AddFullSnapshot(snapshot);
+			}
+
+			var incrementalSnapshots = collection.GetIncrementalSnapshots().ToArray();
+			incrementalSnapshots.Length.ShouldBe(2);
+			incrementalSnapshots.First().ShouldBe(snapshots.First());
+			incrementalSnapshots.Skip(1).First().ShouldSatisfyAllConditions(
+				s => s.Timestamp.ShouldBe(101),
+				s => s.Games.Length.ShouldBe(1),
+				s => s.Games.First().Id.ShouldBe(2),
+				s => s.Games.First().HoursOnRecord.ShouldBe(0));
 		}
 
 		private PannoGame NewPannoGame(int id, string name, decimal hours)
