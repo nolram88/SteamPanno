@@ -308,7 +308,6 @@ namespace SteamPanno.scenes
 					Settings.Instance.SelectedBeginingSnapshots.TryGetValue(steamId, out selectedSnapshot);
 				}
 
-				var snapshotMin = snapshots.Min();
 				foreach (var snapshot in snapshots)
 				{
 					var snapshotName = DateExtensions
@@ -345,14 +344,12 @@ namespace SteamPanno.scenes
 					Settings.Instance.SelectedEndingSnapshots.TryGetValue(steamId, out selectedSnapshot);
 				}
 
-				var snapshotMin = snapshots.Min();
 				foreach (var snapshot in snapshots.Skip(beginingSnapshotValue.Selected))
 				{
 					var snapshotName = DateExtensions
 						.TimestampToLocalDateTime(snapshot)
 						.ToString();
-					var snapshotIndex = beginingSnapshotValue.Selected + endingSnapshotValue.ItemCount;
-					endingSnapshotValue.AddItem(snapshotName, snapshotIndex);
+					endingSnapshotValue.AddItem(snapshotName);
 					if (snapshot == selectedSnapshot)
 					{
 						endingSnapshotValue.Select(endingSnapshotValue.ItemCount - 1);
@@ -413,7 +410,7 @@ namespace SteamPanno.scenes
 			{
 				if (TryGetProfileSnapshots(steamId, out var snapshots))
 				{
-					selectedBeginingSnapshots[steamId] = snapshots[index-1];
+					selectedBeginingSnapshots[steamId] = snapshots[index - 1];
 				}
 			}
 
@@ -430,7 +427,7 @@ namespace SteamPanno.scenes
 			{
 				if (TryGetProfileSnapshots(steamId, out var snapshots))
 				{
-					selectedEndingSnapshots[steamId] = snapshots[index-1];
+					selectedEndingSnapshots[steamId] = snapshots[index - 1 + beginingSnapshotValue.Selected];
 				}
 			}
 		}
