@@ -53,21 +53,22 @@ namespace SteamPanno
 				return fullSnapshot;
 			}
 
-			var fullSnapshotGames = new List<PannoGame>();
+			var fullSnapshotGames = new Dictionary<int, PannoGame>();
 			foreach (var incrementalSnapshot in incrementalSnapshots)
 			{
-				if (incrementalSnapshot.Timestamp > timestamp)
+				if (incrementalSnapshot.Timestamp <= timestamp)
 				{
-					break;
+					foreach (var incGame in incrementalSnapshot.Games)
+					{
+						fullSnapshotGames[incGame.Id] = incGame;
+					}
 				}
-
-				IncrementGames(fullSnapshotGames, incrementalSnapshot.Games);
 			}
 
 			fullSnapshot = new ProfileSnapshot()
 			{
 				Timestamp = timestamp,
-				Games = fullSnapshotGames,
+				Games = fullSnapshotGames.Values.ToList(),
 			};
 			fullSnapshots.Add(timestamp, fullSnapshot);
 
@@ -96,32 +97,6 @@ namespace SteamPanno
 			}
 
 			return false;
-		}
-
-		private void IncrementGames(List<PannoGame> full, IReadOnlyList<PannoGame> incremental)
-		{
-			if (incremental.Count == 0)
-			{
-				return;
-			}
-
-			foreach (var incGame in incremental)
-			{
-				var fullGame = full.FirstOrDefault(x => x.Id == incGame.Id);
-				if (fullGame != null)
-				{
-					fullGame.HoursOnRecord = incGame.HoursOnRecord;
-				}
-				else
-				{
-					full.Add(new PannoGame()
-					{
-						Id = incGame.Id,
-						Name = incGame.Name,
-						HoursOnRecord = incGame.HoursOnRecord,
-					});
-				}
-			}
 		}
 
 		private ProfileSnapshot CreateIncrementalSnapshot(ProfileSnapshot prev, ProfileSnapshot next)
