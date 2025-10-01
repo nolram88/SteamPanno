@@ -315,7 +315,7 @@ namespace SteamPanno.scenes
 						var snapshot = profile.GetFullSnapshot(endingSnapshot);
 						if (snapshot != null)
 						{
-							games = snapshot.Games;
+							games = snapshot.Games.ToArray();
 							pannoEndingTimestamp = endingSnapshot;
 						}
 					}

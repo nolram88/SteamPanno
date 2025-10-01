@@ -113,12 +113,12 @@ namespace SteamPanno
 			incrementalSnapshots.First().ShouldBe(snapshots.First());
 			incrementalSnapshots.Skip(1).First().ShouldSatisfyAllConditions(
 				s => s.Timestamp.ShouldBe(101),
-				s => s.Games.Length.ShouldBe(1),
+				s => s.Games.Count().ShouldBe(1),
 				s => s.Games.First().Id.ShouldBe(2),
 				s => s.Games.First().HoursOnRecord.ShouldBe(30));
 			incrementalSnapshots.Skip(2).First().ShouldSatisfyAllConditions(
 				s => s.Timestamp.ShouldBe(102),
-				s => s.Games.Length.ShouldBe(1),
+				s => s.Games.Count().ShouldBe(1),
 				s => s.Games.First().Id.ShouldBe(1),
 				s => s.Games.First().HoursOnRecord.ShouldBe(20));
 		}
@@ -165,7 +165,7 @@ namespace SteamPanno
 			incrementalSnapshots.First().ShouldBe(snapshots.First());
 			incrementalSnapshots.Skip(1).First().ShouldSatisfyAllConditions(
 				s => s.Timestamp.ShouldBe(102),
-				s => s.Games.Length.ShouldBe(1),
+				s => s.Games.Count().ShouldBe(1),
 				s => s.Games.First().Id.ShouldBe(1),
 				s => s.Games.First().HoursOnRecord.ShouldBe(100));
 		}
@@ -203,7 +203,7 @@ namespace SteamPanno
 			incrementalSnapshots.First().ShouldBe(snapshots.First());
 			incrementalSnapshots.Skip(1).First().ShouldSatisfyAllConditions(
 				s => s.Timestamp.ShouldBe(101),
-				s => s.Games.Length.ShouldBe(1),
+				s => s.Games.Count().ShouldBe(1),
 				s => s.Games.First().Id.ShouldBe(2),
 				s => s.Games.First().HoursOnRecord.ShouldBe(0));
 		}

@@ -11,7 +11,7 @@ namespace SteamPanno
 
 		public static DateTime TimestampToLocalDateTime(long timestamp)
 		{
-			return DateTimeOffset.FromUnixTimeSeconds(timestamp).DateTime;
+			return DateTimeOffset.FromUnixTimeSeconds(timestamp).DateTime.ToLocalTime();
 		}
 	}
 }

@@ -1,4 +1,5 @@
-﻿using SteamPanno.panno;
+﻿using Godot;
+using SteamPanno.panno;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,7 +67,7 @@ namespace SteamPanno
 			fullSnapshot = new ProfileSnapshot()
 			{
 				Timestamp = timestamp,
-				Games = fullSnapshotGames.ToArray(),
+				Games = fullSnapshotGames,
 			};
 			fullSnapshots.Add(timestamp, fullSnapshot);
 
@@ -87,7 +88,7 @@ namespace SteamPanno
 			var lastFullSnapshot = GetFullSnapshot(lastIncrementalSnapshotTimestamp);
 			var newIncrementalSnapshot = CreateIncrementalSnapshot(lastFullSnapshot, fullSnapshot);
 
-			if (newIncrementalSnapshot.Games.Length > 0)
+			if (newIncrementalSnapshot.Games.Count > 0)
 			{
 				fullSnapshots.Add(fullSnapshot.Timestamp, fullSnapshot);
 				incrementalSnapshots.Add(newIncrementalSnapshot);
@@ -97,9 +98,9 @@ namespace SteamPanno
 			return false;
 		}
 
-		private void IncrementGames(List<PannoGame> full, PannoGame[] incremental)
+		private void IncrementGames(List<PannoGame> full, IReadOnlyList<PannoGame> incremental)
 		{
-			if (incremental.Length == 0)
+			if (incremental.Count == 0)
 			{
 				return;
 			}

@@ -105,7 +105,8 @@ namespace SteamPanno.panno.loading
 					var profileDate = DateExtensions.TimestampToLocalDateTime(lastSnapshot.Timestamp);
 					if ((DateTime.Now - profileDate).TotalHours < 1)
 					{
-						profileGames = lastSnapshot.Games;
+						var lastFullSnapshot = profile.GetFullSnapshot(lastSnapshot.Timestamp);
+						profileGames = lastFullSnapshot.Games.ToArray();
 					}
 				}
 			}
