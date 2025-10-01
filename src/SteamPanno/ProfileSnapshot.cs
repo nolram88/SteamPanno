@@ -5,7 +5,7 @@ namespace SteamPanno
 {
 	public class ProfileSnapshot
 	{
-		public long Timestamp { get; set; }
-		public IReadOnlyList<PannoGame> Games { get; set; }
+		public long Timestamp { get; init; }
+		public IReadOnlyList<PannoGame> Games { get; init; }
 	}
 }
