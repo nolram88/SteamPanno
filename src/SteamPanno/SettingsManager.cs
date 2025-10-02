@@ -28,7 +28,7 @@ namespace SteamPanno
 			public string CustomProfile { get; set; }
 			public Dictionary<string, long> SelectedBeginingSnapshots { get; set; }
 			public Dictionary<string, long> SelectedEndingSnapshots { get; set; }
-			public bool UseNativeResolution { get; set; }
+			public bool UseNativeResolution { get; set; } = true;
 			public string SelectedResolution { get; set; }
 			public string CustomResolution { get; set; }
 			public int MinimalHoursOption { get; set; } = 1;
@@ -54,10 +54,7 @@ namespace SteamPanno
 		public SettingsManager()
 		{
 			profile = string.Empty;
-			settingsByProfile = new Dictionary<string, SettingsDto>()
-			{
-				{ profile, new SettingsDto() }
-			};
+			settingsByProfile = new Dictionary<string, SettingsDto>();
 			serializationOptions = new JsonSerializerOptions()
 			{
 				WriteIndented = true,
@@ -87,13 +84,14 @@ namespace SteamPanno
 
 		public void Load()
 		{
+			profile = Steam.GetSteamId() ?? string.Empty;
+
 			var settingsPath = FileExtensions.GetSettingsPath();
 			if (File.Exists(settingsPath))
 			{
 				try
 				{
 					var json = File.ReadAllText(settingsPath);
-					profile = Steam.GetSteamId() ?? string.Empty;
 					settingsByProfile = JsonSerializer.Deserialize<Dictionary<string, SettingsDto>>(json);
 				}
 				catch
