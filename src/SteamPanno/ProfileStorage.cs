@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Text.Json;
@@ -8,6 +7,8 @@ namespace SteamPanno
 {
 	public class ProfileStorage
 	{
+		private HashSet<string> broken = new HashSet<string>();
+
 		public virtual string[] GetProfileList()
 		{
 			return Directory
@@ -18,13 +19,33 @@ namespace SteamPanno
 
 		public virtual List<ProfileSnapshot> GetProfileData(string profileId)
 		{
-			var snapshotPath = Path.Combine(FileExtensions.GetProfilesPath(), profileId + ".json");
-
-			if (File.Exists(snapshotPath))
+			var profileFileName = ProfileFileName(profileId);
+			if (File.Exists(profileFileName))
 			{
-				var snapshotData = File.ReadAllText(snapshotPath);
-				var snapshots = JsonSerializer.Deserialize<List<ProfileSnapshot>>(snapshotData);
-				return snapshots;
+				try
+				{
+					var snapshotData = File.ReadAllText(profileFileName);
+					var snapshots = JsonSerializer.Deserialize<List<ProfileSnapshot>>(snapshotData);
+					return snapshots;
+				}
+				catch
+				{
+					broken.Add(profileFileName);
+				}
+			}
+
+			var profileBackupFileName = ProfileBackupFileName(profileId);
+			if (File.Exists(profileBackupFileName))
+			{
+				try
+				{
+					var snapshotData = File.ReadAllText(profileBackupFileName);
+					var snapshots = JsonSerializer.Deserialize<List<ProfileSnapshot>>(snapshotData);
+					return snapshots;
+				}
+				catch
+				{
+				}
 			}
 
 			return null;
@@ -37,9 +58,25 @@ namespace SteamPanno
 				return;
 			}
 
-			var fileName = Path.Combine(FileExtensions.GetProfilesPath(), $"{profileId}.json");
+			var profileFileName = ProfileFileName(profileId);
+			if (File.Exists(profileFileName) && !broken.Contains(profileFileName))
+			{
+				var profileBackupFileName = ProfileBackupFileName(profileId);
+				File.Copy(profileFileName, profileBackupFileName, true);
+			}
+
 			var json = JsonSerializer.Serialize(snapshots);
-			File.WriteAllText(fileName, json);
+			File.WriteAllText(profileFileName, json);
+		}
+
+		private string ProfileFileName(string profileId)
+		{
+			return Path.Combine(FileExtensions.GetProfilesPath(), $"{profileId}.json");
+		}
+
+		private string ProfileBackupFileName(string profileId)
+		{
+			return ProfileFileName(profileId) + ".bak";
 		}
 	}
 }
