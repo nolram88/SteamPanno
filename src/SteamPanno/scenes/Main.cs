@@ -111,7 +111,8 @@ namespace SteamPanno.scenes
 			var versionLabel = GetNode<Label>("./GUI/Bottom/VersionLabel");
 			versionLabel.Text = MetaData.Version;
 			
-			if (SettingsManager.Instance.Settings.ShowConfigOnStart)
+			if (SettingsManager.Instance.Settings.ShowConfigOnStart ||
+				GetSteamIdForGeneration() == null)
 			{
 				ShowConfig(true);
 			}
