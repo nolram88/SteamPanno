@@ -142,7 +142,7 @@ namespace SteamPanno.scenes
 					MaxDegreeOfParallelism = Math.Min(
 						games.Length,
 						Math.Min(
-							Settings.Instance.MaxDegreeOfParallelism,
+							SettingsManager.Instance.Settings.MaxDegreeOfParallelism,
 							Math.Max(OS.GetProcessorCount(), 1))),
 					CancellationToken = cancellationToken,
 				},
@@ -156,12 +156,12 @@ namespace SteamPanno.scenes
 					{
 						await drawer.Draw(image, game.Area);
 					}
-					if (image == null || Settings.Instance.ShowHoursOption != 0)
+					if (image == null || SettingsManager.Instance.Settings.ShowHoursOption != 0)
 					{
 						pannoGamesInText.Add((
 							game.Area,
 							image == null ? game.Game.Name : null,
-							Settings.Instance.ShowHoursOption != 0 ? game.Game.HoursOnRecord : null));
+							SettingsManager.Instance.Settings.ShowHoursOption != 0 ? game.Game.HoursOnRecord : null));
 					}
 
 					progressLocker.Wait(ct);
@@ -185,7 +185,7 @@ namespace SteamPanno.scenes
 			var label = new RichTextLabel();
 			label.AddThemeFontOverride("normal_font", ThemeDB.FallbackFont);
 			label.AddThemeFontSizeOverride("normal_font_size",
-				Math.Max(1, area.Size.X / Settings.Instance.AreaXSizeToTitleFontSizeRatio));
+				Math.Max(1, area.Size.X / SettingsManager.Instance.Settings.AreaXSizeToTitleFontSizeRatio));
 			label.AddThemeConstantOverride("line_separation", 0);
 			label.Text = text;
 			label.ClipContents = true;
@@ -204,25 +204,25 @@ namespace SteamPanno.scenes
 			label.AddThemeFontOverride("normal_font", ThemeDB.FallbackFont);
 			label.AddThemeFontSizeOverride("normal_font_size",
 				Math.Min(
-					Settings.Instance.MaxHoursFontSize,
-					Math.Max(1, area.Size.X / Settings.Instance.AreaXSizeToHoursFontSizeRatio)));
+					SettingsManager.Instance.Settings.MaxHoursFontSize,
+					Math.Max(1, area.Size.X / SettingsManager.Instance.Settings.AreaXSizeToHoursFontSizeRatio)));
 			label.AddThemeConstantOverride("line_separation", 0);
 			label.AddThemeConstantOverride("text_highlight_h_padding", 4);
 			label.AddThemeConstantOverride("text_highlight_v_padding", 0);
 			label.AutowrapMode = TextServer.AutowrapMode.Word;
-			label.HorizontalAlignment = Settings.Instance.ShowHoursOption switch
+			label.HorizontalAlignment = SettingsManager.Instance.Settings.ShowHoursOption switch
 			{
-				Settings.Dto.ShowHoursOptions.BOTTOM_LEFT => HorizontalAlignment.Left,
-				Settings.Dto.ShowHoursOptions.BOTTOM_RIGHT => HorizontalAlignment.Right,
-				Settings.Dto.ShowHoursOptions.TOP_LEFT => HorizontalAlignment.Left,
-				Settings.Dto.ShowHoursOptions.TOP_RIGHT => HorizontalAlignment.Right,
+				SettingsManager.SettingsDto.ShowHoursOptions.BOTTOM_LEFT => HorizontalAlignment.Left,
+				SettingsManager.SettingsDto.ShowHoursOptions.BOTTOM_RIGHT => HorizontalAlignment.Right,
+				SettingsManager.SettingsDto.ShowHoursOptions.TOP_LEFT => HorizontalAlignment.Left,
+				SettingsManager.SettingsDto.ShowHoursOptions.TOP_RIGHT => HorizontalAlignment.Right,
 				_ => HorizontalAlignment.Center,
 			};
-			label.VerticalAlignment = Settings.Instance.ShowHoursOption switch
+			label.VerticalAlignment = SettingsManager.Instance.Settings.ShowHoursOption switch
 			{
-				Settings.Dto.ShowHoursOptions.TOP => VerticalAlignment.Top,
-				Settings.Dto.ShowHoursOptions.TOP_LEFT => VerticalAlignment.Top,
-				Settings.Dto.ShowHoursOptions.TOP_RIGHT => VerticalAlignment.Top,
+				SettingsManager.SettingsDto.ShowHoursOptions.TOP => VerticalAlignment.Top,
+				SettingsManager.SettingsDto.ShowHoursOptions.TOP_LEFT => VerticalAlignment.Top,
+				SettingsManager.SettingsDto.ShowHoursOptions.TOP_RIGHT => VerticalAlignment.Top,
 				_ => VerticalAlignment.Bottom,
 			};
 			label.ParseBbcode($"[bgcolor=#000000ff]{hours.ToString("F01")} {hoursText}[/bgcolor]");

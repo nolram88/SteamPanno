@@ -4,9 +4,11 @@ using System.Text.Json;
 
 namespace SteamPanno
 {
-	public static class Settings
+	public class SettingsManager
 	{
-		public class Dto
+		public static SettingsManager Instance = new SettingsManager();
+
+		public class SettingsDto
 		{
 			public enum ShowHoursOptions
 			{
@@ -45,54 +47,59 @@ namespace SteamPanno
 			public int MaxDegreeOfParallelism { get; set; } = 8;
 		}
 
-		static Settings()
+		private string profile;
+		private Dictionary<string, SettingsDto> settingsByProfile;
+		private JsonSerializerOptions serializationOptions;
+
+		public SettingsManager()
 		{
-			Load();
+			profile = string.Empty;
+			settingsByProfile = new Dictionary<string, SettingsDto>()
+			{
+				{ profile, new SettingsDto() }
+			};
+			serializationOptions = new JsonSerializerOptions()
+			{
+				WriteIndented = true,
+			};
 		}
 
-		public static Dto Instance { get; private set; } = new Dto();
+		public SettingsDto Settings
+		{
+			get
+			{
+				if (!settingsByProfile.TryGetValue(profile, out var profileSettings))
+				{
+					profileSettings = new SettingsDto();
+					settingsByProfile[profile] = profileSettings;
+				}
 
-		public static void Save()
+				return profileSettings;
+			}
+		}
+
+		public void Save()
 		{
 			var settingsPath = FileExtensions.GetSettingsPath();
-			var json = JsonSerializer.Serialize(Instance, options: SerializerOptions);
+			var json = JsonSerializer.Serialize(settingsByProfile, options: serializationOptions);
 			File.WriteAllText(settingsPath, json);
 		}
 
-		public static void Load()
+		public void Load()
 		{
 			var settingsPath = FileExtensions.GetSettingsPath();
 			if (File.Exists(settingsPath))
 			{
-				var json = File.ReadAllText(settingsPath);
-				Instance = JsonSerializer.Deserialize<Dto>(json);
-			}
-		}
-		
-		public static string GetSteamId()
-		{
-			var id = Steam.GetSteamId();
-
-			if (id != null)
-			{
-				if (Settings.Instance.ProfileOption == 0)
+				try
 				{
-					return id;
+					var json = File.ReadAllText(settingsPath);
+					profile = Steam.GetSteamId() ?? string.Empty;
+					settingsByProfile = JsonSerializer.Deserialize<Dictionary<string, SettingsDto>>(json);
 				}
-				else if (Settings.Instance.ProfileOption == 1)
+				catch
 				{
-					return Settings.Instance.FriendProfile.TryParseSteamId(out var friendSteamId)
-						? friendSteamId : null;
 				}
 			}
-
-			return Settings.Instance.CustomProfile.TryParseSteamId(out var customSteamId)
-				? customSteamId : null;
 		}
-
-		private static JsonSerializerOptions SerializerOptions { get; set; } = new JsonSerializerOptions()
-		{
-			WriteIndented = true,
-		};
 	}
 }

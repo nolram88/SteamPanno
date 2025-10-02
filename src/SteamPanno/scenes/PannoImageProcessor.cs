@@ -23,7 +23,7 @@ namespace SteamPanno.scenes
 
 		public override void _Ready()
 		{
-			for (int i = 0; i < Settings.Instance.MaxDegreeOfParallelism; i++)
+			for (int i = 0; i < SettingsManager.Instance.Settings.MaxDegreeOfParallelism; i++)
 			{
 				var subViewport = new SubViewport();
 				subViewport.RenderTargetClearMode = SubViewport.ClearMode.Always;

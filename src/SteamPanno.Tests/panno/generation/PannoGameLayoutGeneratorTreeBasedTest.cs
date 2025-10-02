@@ -232,7 +232,7 @@ namespace SteamPanno.panno.generation
 			var game1 = new PannoGame() { HoursOnRecord = 1000 };
 			var game2 = new PannoGame() { HoursOnRecord = 500 };
 			var games = new PannoGame[] { game1, game2 };
-			var minSize = Settings.Instance.MinGameAreaSize;
+			var minSize = SettingsManager.Instance.Settings.MinGameAreaSize;
 
 			var area = new Rect2I(0, 0, minSize, minSize);
 			var layout = await pannoGenerator.Generate(games, area);
@@ -248,7 +248,7 @@ namespace SteamPanno.panno.generation
 			var game1 = new PannoGame() { HoursOnRecord = 1000 };
 			var game2 = new PannoGame() { HoursOnRecord = 500 };
 			var games = new PannoGame[] { game1, game2 };
-			var minSize = Settings.Instance.MinGameAreaSize;
+			var minSize = SettingsManager.Instance.Settings.MinGameAreaSize;
 			var size = minSize * 2 - 1;
 
 			var area = new Rect2I(0, 0, size, size);
@@ -266,7 +266,7 @@ namespace SteamPanno.panno.generation
 			var game2 = new PannoGame() { HoursOnRecord = 500 };
 			var game3 = new PannoGame() { HoursOnRecord = 300 };
 			var games = new PannoGame[] { game1, game2, game3 };
-			var minSize = Settings.Instance.MinGameAreaSize;
+			var minSize = SettingsManager.Instance.Settings.MinGameAreaSize;
 
 			var area = new Rect2I(0, 0, minSize * 2, minSize);
 			var layout = await pannoGenerator.Generate(games, area);

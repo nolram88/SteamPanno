@@ -108,20 +108,20 @@ namespace SteamPanno.scenes
 				{
 					var itemName = $"{friend.name} ({friend.id})";
 					friendProfileValue.AddItem(itemName);
-					if (friend.id == Settings.Instance.FriendProfile)
+					if (friend.id == SettingsManager.Instance.Settings.FriendProfile)
 					{
 						friendProfileValue.Select(friendProfileValue.ItemCount - 1);
 					}
 				}
 			}
 			
-			customProfileValue.Text = Settings.Instance.CustomProfile;
+			customProfileValue.Text = SettingsManager.Instance.Settings.CustomProfile;
 			for (int i = 0; i <= 2; i++)
 			{
 				var text = Localization.Localize($"{nameof(Config)}/ProfileOption{i}");
 				profileValue.AddItem(text);
 			}
-			var profileOptionIndex = Math.Clamp(Settings.Instance.ProfileOption, 0, profileValue.ItemCount);
+			var profileOptionIndex = Math.Clamp(SettingsManager.Instance.Settings.ProfileOption, 0, profileValue.ItemCount);
 			if (Steam.GetSteamId() != null)
 			{
 				profileValue.SetItemDisabled(1, friends.Length == 0);
@@ -141,7 +141,7 @@ namespace SteamPanno.scenes
 				screenResolution.FormatResolution(
 					Localization.Localize($"{nameof(Config)}/PannoResolutionOptionNative")));
 			var resolutionOptionIndex = 0;
-			Settings.Instance.SelectedResolution.TryParseResolution(out var selectedResolution);
+			SettingsManager.Instance.Settings.SelectedResolution.TryParseResolution(out var selectedResolution);
 			foreach (var r in resolutions)
 			{
 				if (r.Size.X == screenResolution.X && r.Size.Y == screenResolution.Y)
@@ -150,7 +150,7 @@ namespace SteamPanno.scenes
 				}
 
 				pannoResolutionValue.AddItem(r.Size.FormatResolution(r.Name));
-				if (!Settings.Instance.UseNativeResolution &&
+				if (!SettingsManager.Instance.Settings.UseNativeResolution &&
 					r.Size.X == selectedResolution.X &&
 					r.Size.Y == selectedResolution.Y)
 				{
@@ -159,21 +159,21 @@ namespace SteamPanno.scenes
 			}
 			var customResolutionText = Localization.Localize($"{nameof(Config)}/PannoResolutionOptionCustom");
 			pannoResolutionValue.AddItem(customResolutionText);
-			if (resolutionOptionIndex == 0 && !Settings.Instance.UseNativeResolution)
+			if (resolutionOptionIndex == 0 && !SettingsManager.Instance.Settings.UseNativeResolution)
 			{
 				resolutionOptionIndex = pannoResolutionValue.ItemCount - 1;
 			}
 			pannoResolutionValue.ItemSelected += ResolutionOptionSelected;
 			pannoResolutionValue.Select(resolutionOptionIndex);
 			ResolutionOptionSelected(resolutionOptionIndex);
-			customPannoResolutionValue.Text = Settings.Instance.CustomResolution;
+			customPannoResolutionValue.Text = SettingsManager.Instance.Settings.CustomResolution;
 
 			foreach (var method in MetaData.GenerationTypes.Keys)
 			{
 				var text = Localization.Localize($"{nameof(Config)}/{nameof(MetaData.GenerationTypes)}/{method}");
 				generationMethodValue.AddItem(text);
 			};
-			var selectedGenerationMethod = Math.Min(Math.Max(Settings.Instance.GenerationMethodOption, 0), MetaData.GenerationTypes.Count - 1);
+			var selectedGenerationMethod = Math.Min(Math.Max(SettingsManager.Instance.Settings.GenerationMethodOption, 0), MetaData.GenerationTypes.Count - 1);
 			generationMethodValue.Select(selectedGenerationMethod);
 
 			foreach (var method in MetaData.OutpaintingTypes.Keys)
@@ -181,7 +181,7 @@ namespace SteamPanno.scenes
 				var text = Localization.Localize($"{nameof(Config)}/{nameof(MetaData.OutpaintingTypes)}/{method}");
 				outpaintingMethodValue.AddItem(text);
 			};
-			var selectedOutpaintingMethod = Math.Min(Math.Max(Settings.Instance.OutpaintingMethodOption, 0), MetaData.OutpaintingTypes.Count - 1);
+			var selectedOutpaintingMethod = Math.Min(Math.Max(SettingsManager.Instance.Settings.OutpaintingMethodOption, 0), MetaData.OutpaintingTypes.Count - 1);
 			outpaintingMethodValue.Select(selectedOutpaintingMethod);
 
 			minimalHoursValue.AddItem("0");
@@ -190,17 +190,17 @@ namespace SteamPanno.scenes
 			minimalHoursValue.AddItem("100");
 			minimalHoursValue.AddItem(Localization.Localize($"{nameof(Config)}/MinimalHoursOptionCustom"));
 			minimalHoursValue.ItemSelected += HoursOptionSelected;
-			var minimalHoursOptionIndex = Math.Clamp(Settings.Instance.MinimalHoursOption, 0, minimalHoursValue.ItemCount);
+			var minimalHoursOptionIndex = Math.Clamp(SettingsManager.Instance.Settings.MinimalHoursOption, 0, minimalHoursValue.ItemCount);
 			minimalHoursValue.Select(minimalHoursOptionIndex);
 			HoursOptionSelected(minimalHoursOptionIndex);
-			customMinimalHoursValue.Text = Settings.Instance.CustomMinimalHours;
+			customMinimalHoursValue.Text = SettingsManager.Instance.Settings.CustomMinimalHours;
 
 			for (int i = 0; i <= 6; i++)
 			{
 				var text = Localization.Localize($"{nameof(Config)}/ShowHoursOption{i}");
 				showHoursValue.AddItem(text);
 			}
-			var showHoursOptionIndex = Math.Clamp((int)Settings.Instance.ShowHoursOption, 0, showHoursValue.ItemCount - 1);
+			var showHoursOptionIndex = Math.Clamp((int)SettingsManager.Instance.Settings.ShowHoursOption, 0, showHoursValue.ItemCount - 1);
 			showHoursValue.Select(showHoursOptionIndex);
 
 			var okBtn = new ImageButtonController(GetNode<ImageButton>("./VBoxContainer/Buttons/OkButton"));
@@ -303,9 +303,9 @@ namespace SteamPanno.scenes
 				TryGetProfileSnapshots(steamId, out var snapshots))
 			{
 				if (!selectedBeginingSnapshots.TryGetValue(steamId, out var selectedSnapshot) &&
-					Settings.Instance.SelectedBeginingSnapshots != null)
+					SettingsManager.Instance.Settings.SelectedBeginingSnapshots != null)
 				{
-					Settings.Instance.SelectedBeginingSnapshots.TryGetValue(steamId, out selectedSnapshot);
+					SettingsManager.Instance.Settings.SelectedBeginingSnapshots.TryGetValue(steamId, out selectedSnapshot);
 				}
 
 				foreach (var snapshot in snapshots)
@@ -339,9 +339,9 @@ namespace SteamPanno.scenes
 				beginingSnapshotValue.Selected > 0)
 			{
 				if (!selectedEndingSnapshots.TryGetValue(steamId, out var selectedSnapshot) &&
-					Settings.Instance.SelectedEndingSnapshots != null)
+					SettingsManager.Instance.Settings.SelectedEndingSnapshots != null)
 				{
-					Settings.Instance.SelectedEndingSnapshots.TryGetValue(steamId, out selectedSnapshot);
+					SettingsManager.Instance.Settings.SelectedEndingSnapshots.TryGetValue(steamId, out selectedSnapshot);
 				}
 
 				foreach (var snapshot in snapshots.Skip(beginingSnapshotValue.Selected))
@@ -451,62 +451,62 @@ namespace SteamPanno.scenes
 		{
 			var maxTextureSize = RenderingServer.GetRenderingDevice().LimitGet(RenderingDevice.Limit.MaxTextureSize2D);
 
-			Settings.Instance.ProfileOption = profileValue.Selected;
+			SettingsManager.Instance.Settings.ProfileOption = profileValue.Selected;
 			if (friendProfileValue.Text.TryParseSteamId(out var friendSteamId))
 			{
-				Settings.Instance.FriendProfile = friendSteamId;
+				SettingsManager.Instance.Settings.FriendProfile = friendSteamId;
 			}
-			Settings.Instance.CustomProfile = customProfileValue.Text;
+			SettingsManager.Instance.Settings.CustomProfile = customProfileValue.Text;
 			if (selectedBeginingSnapshots.Count > 0)
 			{
-				if (Settings.Instance.SelectedBeginingSnapshots == null)
+				if (SettingsManager.Instance.Settings.SelectedBeginingSnapshots == null)
 				{
-					Settings.Instance.SelectedBeginingSnapshots = new Dictionary<string, long>();
+					SettingsManager.Instance.Settings.SelectedBeginingSnapshots = new Dictionary<string, long>();
 				}
 				foreach (var selectedBeginingSnapshot in selectedBeginingSnapshots)
 				{
 					if (selectedBeginingSnapshot.Value != default)
 					{
-						Settings.Instance.SelectedBeginingSnapshots[selectedBeginingSnapshot.Key] = selectedBeginingSnapshot.Value;
+						SettingsManager.Instance.Settings.SelectedBeginingSnapshots[selectedBeginingSnapshot.Key] = selectedBeginingSnapshot.Value;
 					}
-					else if (Settings.Instance.SelectedBeginingSnapshots.ContainsKey(selectedBeginingSnapshot.Key))
+					else if (SettingsManager.Instance.Settings.SelectedBeginingSnapshots.ContainsKey(selectedBeginingSnapshot.Key))
 					{
-						Settings.Instance.SelectedBeginingSnapshots.Remove(selectedBeginingSnapshot.Key);
+						SettingsManager.Instance.Settings.SelectedBeginingSnapshots.Remove(selectedBeginingSnapshot.Key);
 					}
 				}
 			}
 			if (selectedEndingSnapshots.Count > 0)
 			{
-				if (Settings.Instance.SelectedEndingSnapshots == null)
+				if (SettingsManager.Instance.Settings.SelectedEndingSnapshots == null)
 				{
-					Settings.Instance.SelectedEndingSnapshots = new Dictionary<string, long>();
+					SettingsManager.Instance.Settings.SelectedEndingSnapshots = new Dictionary<string, long>();
 				}
 				foreach (var selectedEndingSnapshot in selectedEndingSnapshots)
 				{
 					if (selectedEndingSnapshot.Value != default)
 					{
-						Settings.Instance.SelectedEndingSnapshots[selectedEndingSnapshot.Key] = selectedEndingSnapshot.Value;
+						SettingsManager.Instance.Settings.SelectedEndingSnapshots[selectedEndingSnapshot.Key] = selectedEndingSnapshot.Value;
 					}
-					else if (Settings.Instance.SelectedEndingSnapshots.ContainsKey(selectedEndingSnapshot.Key))
+					else if (SettingsManager.Instance.Settings.SelectedEndingSnapshots.ContainsKey(selectedEndingSnapshot.Key))
 					{
-						Settings.Instance.SelectedEndingSnapshots.Remove(selectedEndingSnapshot.Key);
+						SettingsManager.Instance.Settings.SelectedEndingSnapshots.Remove(selectedEndingSnapshot.Key);
 					}
 				}
 			}
-			Settings.Instance.UseNativeResolution = pannoResolutionValue.Selected == 0;
-			Settings.Instance.SelectedResolution =
+			SettingsManager.Instance.Settings.UseNativeResolution = pannoResolutionValue.Selected == 0;
+			SettingsManager.Instance.Settings.SelectedResolution =
 				pannoResolutionValue.Selected == 0 ||
 				pannoResolutionValue.Selected == pannoResolutionValue.ItemCount - 1
 					? null : pannoResolutionValue.Text;
-			Settings.Instance.CustomResolution = customPannoResolutionValue.Text;
-			Settings.Instance.GenerationMethodOption = generationMethodValue.Selected;
-			Settings.Instance.OutpaintingMethodOption = outpaintingMethodValue.Selected;
-			Settings.Instance.MinimalHoursOption = minimalHoursValue.Selected;
-			Settings.Instance.CustomMinimalHours = decimal.TryParse(customMinimalHoursValue.Text, out _)
+			SettingsManager.Instance.Settings.CustomResolution = customPannoResolutionValue.Text;
+			SettingsManager.Instance.Settings.GenerationMethodOption = generationMethodValue.Selected;
+			SettingsManager.Instance.Settings.OutpaintingMethodOption = outpaintingMethodValue.Selected;
+			SettingsManager.Instance.Settings.MinimalHoursOption = minimalHoursValue.Selected;
+			SettingsManager.Instance.Settings.CustomMinimalHours = decimal.TryParse(customMinimalHoursValue.Text, out _)
 				? customMinimalHoursValue.Text
 				: "0";
-			Settings.Instance.ShowHoursOption = (Settings.Dto.ShowHoursOptions)showHoursValue.Selected;
-			Settings.Save();
+			SettingsManager.Instance.Settings.ShowHoursOption = (SettingsManager.SettingsDto.ShowHoursOptions)showHoursValue.Selected;
+			SettingsManager.Instance.Save();
 
 			OnExit?.Invoke(true);
 		}

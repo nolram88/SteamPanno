@@ -70,7 +70,7 @@ namespace SteamPanno.panno.generation
 					gamesSecond = new PannoGame[] { games.Last() };
 				}
 
-				if ((area.PreferHorizontal() ? area.Size.X : area.Size.Y) >= Settings.Instance.MinGameAreaSize * 2)
+				if ((area.PreferHorizontal() ? area.Size.X : area.Size.Y) >= SettingsManager.Instance.Settings.MinGameAreaSize * 2)
 				{
 					var areaFirst = GetFirstArea(area);
 					var areaSecond = GetSecondArea(area);

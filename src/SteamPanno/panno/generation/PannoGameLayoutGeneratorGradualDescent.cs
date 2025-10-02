@@ -48,7 +48,7 @@ namespace SteamPanno.panno.generation
 				var lastGame = games.Count == 1;
 				var areaIsNotBiggerThanItSupposedToBe = areaHours <= game.HoursOnRecord + deltaHours && areaHours < totalHours - fixedHours;
 				var freeAreaIsEnoughToPlaceAllRemainGamesOneLevelDeeper = games.Count * (areaArea / 2) < totalArea - fixedArea;
-				var areaIsTooSmallToSplit = (area.PreferHorizontal() ? area.Size.X : area.Size.Y) < Settings.Instance.MinGameAreaSize * 2;
+				var areaIsTooSmallToSplit = (area.PreferHorizontal() ? area.Size.X : area.Size.Y) < SettingsManager.Instance.Settings.MinGameAreaSize * 2;
 
 				if ((lastGame ||
 					areaIsNotBiggerThanItSupposedToBe ||

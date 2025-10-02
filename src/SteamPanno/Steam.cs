@@ -7,13 +7,15 @@ namespace SteamPanno
 {
 	public static class Steam
 	{
-		public static uint appID = 4026140;
+		private static uint appID = 4026140;
+		private static bool init = false;
 
 		static Steam()
 		{
 			try
 			{
 				SteamClient.Init(appID, true);
+				init = true;
 				GD.Print($"Steam Name: {SteamClient.Name}, Id: {SteamClient.SteamId}, Lang: {SteamApps.GameLanguage}");
 			}
 			catch (Exception e)
@@ -22,16 +24,19 @@ namespace SteamPanno
 			}
 		}
 
+		public static bool IsReady()
+		{
+			return init && SteamClient.IsValid;
+		}
+
 		public static string GetSteamId()
 		{
-			return SteamClient.IsValid ?
-				SteamClient.SteamId.ToString()
-				: null;
+			return IsReady() ? SteamClient.SteamId.ToString() : null;
 		}
 
 		public static string Language
 		{
-			get => SteamClient.IsValid ? SteamApps.GameLanguage : null;
+			get => IsReady() ? SteamApps.GameLanguage : null;
 		}
 
 		public static (string id, string name)[] GetFriends()
@@ -40,7 +45,7 @@ namespace SteamPanno
 
 			try
 			{
-				if (SteamClient.IsValid)
+				if (IsReady())
 				{
 					foreach (var friend in SteamFriends.GetFriends())
 					{
@@ -60,7 +65,7 @@ namespace SteamPanno
 		{
 			try
 			{
-				if (SteamClient.IsValid)
+				if (IsReady())
 				{
 					SteamScreenshots.WriteScreenshot(data, width, height);
 				}
@@ -75,7 +80,7 @@ namespace SteamPanno
 		{
 			try
 			{
-				if (SteamClient.IsValid)
+				if (IsReady())
 				{
 					SteamClient.Shutdown();
 				}

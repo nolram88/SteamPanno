@@ -38,10 +38,10 @@ namespace SteamPanno
 				}
 			}
 
-			if (!string.IsNullOrEmpty(Settings.Instance.Language) &&
-				localizations.ContainsKey(Settings.Instance.Language))
+			if (!string.IsNullOrEmpty(SettingsManager.Instance.Settings.Language) &&
+				localizations.ContainsKey(SettingsManager.Instance.Settings.Language))
 			{
-				SetLocalization(Settings.Instance.Language);
+				SetLocalization(SettingsManager.Instance.Settings.Language);
 			}
 			else if (!string.IsNullOrEmpty(Steam.Language) &&
 				localizations.ContainsKey(Steam.Language))
@@ -68,11 +68,11 @@ namespace SteamPanno
 		{
 			localizationActive = lang;
 
-			if (Settings.Instance.Language != localizationActive &&
+			if (SettingsManager.Instance.Settings.Language != localizationActive &&
 				Steam.Language != localizationActive)
 			{
-				Settings.Instance.Language = localizationActive;
-				Settings.Save();
+				SettingsManager.Instance.Settings.Language = localizationActive;
+				SettingsManager.Instance.Save();
 			}
 		}
 

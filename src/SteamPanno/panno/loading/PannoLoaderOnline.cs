@@ -27,7 +27,7 @@ namespace SteamPanno.panno.loading
 		public PannoLoaderOnline()
 		{
 			httpClient = new System.Net.Http.HttpClient();
-			httpClient.Timeout = TimeSpan.FromSeconds(Settings.Instance.HttpTimeoutSeconds);
+			httpClient.Timeout = TimeSpan.FromSeconds(SettingsManager.Instance.Settings.HttpTimeoutSeconds);
 		}
 
 		public async Task<string> GetProfileSteamId(string steamName)

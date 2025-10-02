@@ -8,7 +8,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -51,6 +50,8 @@ namespace SteamPanno.scenes
 
 		public override void _Ready()
 		{
+			SettingsManager.Instance.Load();
+
 			panno = GetNode<Panno>("./Panno");
 			gui = GetNode<Control>("./GUI");
 			PrepareConfig();
@@ -110,7 +111,7 @@ namespace SteamPanno.scenes
 			var versionLabel = GetNode<Label>("./GUI/Bottom/VersionLabel");
 			versionLabel.Text = MetaData.Version;
 			
-			if (Settings.Instance.ShowConfigOnStart)
+			if (SettingsManager.Instance.Settings.ShowConfigOnStart)
 			{
 				ShowConfig(true);
 			}
@@ -244,6 +245,27 @@ namespace SteamPanno.scenes
 			AddChild(config);
 		}
 
+		public string GetSteamIdForGeneration()
+		{
+			var id = Steam.GetSteamId();
+
+			if (id != null)
+			{
+				if (SettingsManager.Instance.Settings.ProfileOption == 0)
+				{
+					return id;
+				}
+				else if (SettingsManager.Instance.Settings.ProfileOption == 1)
+				{
+					return SettingsManager.Instance.Settings.FriendProfile.TryParseSteamId(out var friendSteamId)
+						? friendSteamId : null;
+				}
+			}
+
+			return SettingsManager.Instance.Settings.CustomProfile.TryParseSteamId(out var customSteamId)
+				? customSteamId : null;
+		}
+
 		protected async Task GeneratePannoWorkThread()
 		{
 			while (true)
@@ -282,7 +304,7 @@ namespace SteamPanno.scenes
 				savedFileLabelText = null;
 				panno.Clear();
 
-				pannoSteamId = Settings.GetSteamId();
+				pannoSteamId = GetSteamIdForGeneration();
 				if (string.IsNullOrEmpty(pannoSteamId))
 				{
 					Report(Localization.Localize("ProfileWasNotSet"));
@@ -293,12 +315,12 @@ namespace SteamPanno.scenes
 				var pannoSize = GetPannoSize();
 				var loader = new PannoLoaderCache(new PannoLoaderOnline());
 				Type generatorType = MetaData.GenerationTypes
-					.Skip(Settings.Instance.GenerationMethodOption)
+					.Skip(SettingsManager.Instance.Settings.GenerationMethodOption)
 					.Select(x => x.Value)
 					.FirstOrDefault() ?? typeof(PannoGameLayoutGeneratorDivideAndConquer);
 				var generator = (PannoGameLayoutGenerator)Activator.CreateInstance(generatorType);
 				Type drawerType = MetaData.OutpaintingTypes
-					.Skip(Settings.Instance.OutpaintingMethodOption)
+					.Skip(SettingsManager.Instance.Settings.OutpaintingMethodOption)
 					.Select(x => x.Value)
 					.FirstOrDefault() ?? typeof(PannoDrawerResizeExpandBlur);
 				var drawer = CreateDrawer(drawerType, pannoSize);
@@ -306,8 +328,8 @@ namespace SteamPanno.scenes
 				ProgressUpdate(0, Localization.Localize("ProfileLoading"));
 				PannoGame[] games = null;
 
-				if (Settings.Instance.SelectedEndingSnapshots != null &&
-					Settings.Instance.SelectedEndingSnapshots.TryGetValue(pannoSteamId, out var endingSnapshot))
+				if (SettingsManager.Instance.Settings.SelectedEndingSnapshots != null &&
+					SettingsManager.Instance.Settings.SelectedEndingSnapshots.TryGetValue(pannoSteamId, out var endingSnapshot))
 				{
 					var profile = ProfileSnapshotManager.Instance.GetProfile(pannoSteamId);
 					if (profile != null)
@@ -330,14 +352,14 @@ namespace SteamPanno.scenes
 				else if (games.Length > 0 && games.All(x => x.HoursOnRecord == 0))
 				{
 					Report(Localization.Localize("ProfileIsPrivate", pannoSteamId));
-					if (Settings.Instance.ProfileOption == 0)
+					if (SettingsManager.Instance.Settings.ProfileOption == 0)
 					{
 						Report(Localization.Localize("ProfileIsPrivateAndLocal"));
 					}
 				}
 
-				if (Settings.Instance.SelectedBeginingSnapshots != null &&
-					Settings.Instance.SelectedBeginingSnapshots.TryGetValue(pannoSteamId, out var beginingSnapshot))
+				if (SettingsManager.Instance.Settings.SelectedBeginingSnapshots != null &&
+					SettingsManager.Instance.Settings.SelectedBeginingSnapshots.TryGetValue(pannoSteamId, out var beginingSnapshot))
 				{
 					var profile = ProfileSnapshotManager.Instance.GetProfile(pannoSteamId);
 					if (profile != null)
@@ -476,13 +498,13 @@ namespace SteamPanno.scenes
 		
 		protected Vector2I GetPannoSize()
 		{
-			if (!Settings.Instance.UseNativeResolution)
+			if (!SettingsManager.Instance.Settings.UseNativeResolution)
 			{
-				if (Settings.Instance.SelectedResolution.TryParseResolution(out var selectedResolution))
+				if (SettingsManager.Instance.Settings.SelectedResolution.TryParseResolution(out var selectedResolution))
 				{
 					return selectedResolution;
 				}
-				else if (Settings.Instance.CustomResolution.TryParseResolution(out var customResolution))
+				else if (SettingsManager.Instance.Settings.CustomResolution.TryParseResolution(out var customResolution))
 				{
 					return customResolution;
 				}
@@ -501,13 +523,13 @@ namespace SteamPanno.scenes
 
 		protected decimal GetMinimalHours()
 		{
-			return (Settings.Instance.MinimalHoursOption) switch
+			return (SettingsManager.Instance.Settings.MinimalHoursOption) switch
 			{
 				0 => 0,
 				1 => 1,
 				2 => 10,
 				3 => 100,
-				_ => decimal.TryParse(Settings.Instance.CustomMinimalHours, out var hours) ? hours : 0,
+				_ => decimal.TryParse(SettingsManager.Instance.Settings.CustomMinimalHours, out var hours) ? hours : 0,
 			};
 		}
 
