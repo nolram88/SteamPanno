@@ -8,6 +8,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -110,6 +111,16 @@ namespace SteamPanno.scenes
 			savedFileLabel = GetNode<RichTextLabel>("./GUI/Bottom/SavedFileLabel");
 			var versionLabel = GetNode<Label>("./GUI/Bottom/VersionLabel");
 			versionLabel.Text = MetaData.Version;
+			versionLabel.MouseFilter = Control.MouseFilterEnum.Pass;
+			versionLabel.GuiInput += (@event) =>
+			{
+				if (@event is InputEventMouseButton mouseEvent &&
+					mouseEvent.ButtonIndex == MouseButton.Left &&
+					!mouseEvent.Pressed)
+				{
+					PrintSystemInfo();
+				}
+			};
 			
 			if (SettingsManager.Instance.Settings.ShowConfigOnStart ||
 				GetSteamIdForGeneration() == null)
@@ -532,6 +543,21 @@ namespace SteamPanno.scenes
 				3 => 100,
 				_ => decimal.TryParse(SettingsManager.Instance.Settings.CustomMinimalHours, out var hours) ? hours : 0,
 			};
+		}
+
+		protected void PrintSystemInfo()
+		{
+			StringBuilder info = new StringBuilder();
+			info.AppendLine();
+			info.AppendLine("=== SYSTEM INFO ===");
+			info.AppendLine(string.Format("Screen resolution: {0}", DisplayServer.ScreenGetSize()));
+			info.AppendLine(string.Format("Screen scale: {0}", DisplayServer.ScreenGetScale()));
+			var window = GetWindow();
+			info.AppendLine(string.Format("Window: {0} {1}", window.Position, window.Size));
+			var viewport = GetViewport().GetVisibleRect();
+			info.AppendLine(string.Format("Viewport: {0} {1}", viewport.Position, viewport.Size));
+			info.AppendLine("===================");
+			Report(info.ToString());
 		}
 
 		protected void ShowConfig(bool show)
