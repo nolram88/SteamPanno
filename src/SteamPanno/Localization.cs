@@ -68,10 +68,11 @@ namespace SteamPanno
 		{
 			localizationActive = lang;
 
-			if (SettingsManager.Instance.Settings.Language != localizationActive &&
-				Steam.Language != localizationActive)
+			if (SettingsManager.Instance.Settings.Language != localizationActive)
 			{
-				SettingsManager.Instance.Settings.Language = localizationActive;
+				SettingsManager.Instance.Settings.Language = 
+					Steam.Language != localizationActive
+						? localizationActive : null;
 				SettingsManager.Instance.Save();
 			}
 		}
