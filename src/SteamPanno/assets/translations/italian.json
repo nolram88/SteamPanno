@@ -1,0 +1,54 @@
+{
+	"Language": "Italiano",
+	"Config":
+	{
+		"GenerationSettingsLbl": "Impostazioni di Generazione",
+		"ProfileLbl": "Profilo Steam",
+		"ProfileOption0": "Il Mio Profilo",
+		"ProfileOption1": "Profilo del Mio Amico",
+		"ProfileOption2": "Profilo Personalizzato",
+		"BeginingSnapshotLbl": "Snapshot Iniziale",
+		"EndingSnapshotLbl": "Snapshot Finale",
+		"SnapshotOptionOff": "Disattivato",
+		"PannoResolutionLbl": "Risoluzione Panno",
+		"PannoResolutionOptionNative": "Nativa",
+		"PannoResolutionOptionCustom": "Personalizzata",
+		"GenerationMethodLbl": "Metodo di Generazione",
+		"OutpaintingMethodLbl": "Metodo di Outpainting",
+		"MinimalHoursLbl": "Ore Minime",
+		"MinimalHoursOptionCustom": "Personalizzate",
+		"ShowHoursLbl": "Mostra Ore",
+		"ShowHoursOption0": "No",
+		"ShowHoursOption1": "In Basso",
+		"ShowHoursOption2": "In Basso a Sinistra",
+		"ShowHoursOption3": "In Basso a Destra",
+		"ShowHoursOption4": "In Alto",
+		"ShowHoursOption5": "In Alto a Sinistra",
+		"ShowHoursOption6": "In Alto a Destra",
+		"GenerationTypes":
+		{
+			"DivideAndConquer": "Dividi e Domina",
+			"GradualDescent": "Discesa Graduale"
+		},
+		"OutpaintingTypes":
+		{
+			"ResizeCut": "Ridimensiona+Ritaglia",
+			"ResizeExpand": "Ridimensiona+Espandi",
+			"ResizeExpandBlur": "Ridimensiona+Espandi+Sfoca",
+			"ResizeMirror": "Ridimensiona+Specchia",
+			"ResizeMirrorBlur": "Ridimensiona+Specchia+Sfoca",
+			"ResizeProportional": "Ridimensionamento Proporzionale",
+			"ResizeUnproportional": "Ridimensionamento Non Proporzionale"
+		}
+	},
+	"Hours": "o",
+	"ProfileWasNotSet": "Profilo Steam non specificato.",
+	"ProfileWasNotLoaded": "Impossibile caricare il profilo Steam {0}.",
+	"ProfileIsPrivate": "I dettagli dei giochi sono impostati come privati sul profilo Steam {0}.",
+	"ProfileIsPrivateAndLocal": "Puoi rendere pubblici i dettagli dei tuoi giochi e il tempo di gioco nelle Impostazioni sulla Privacy del tuo profilo Steam. Potresti dover attendere alcuni minuti prima che la cache di Steam venga aggiornata.",
+	"ProfileLoading": "Caricamento profilo...",
+	"PannoLayoutGeneration": "Generazione layout panno...",
+	"PannoSaving": "Salvataggio panno...",
+	"PannoSaved": "Panno salvato: {0}",
+	"NoGamesMeetTheGivenCriteria": "Nessun gioco soddisfa i criteri indicati."
+}

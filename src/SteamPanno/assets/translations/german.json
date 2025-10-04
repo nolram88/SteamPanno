@@ -1,0 +1,54 @@
+{
+	"Language": "Deutsch",
+	"Config":
+	{
+		"GenerationSettingsLbl": "Generierungseinstellungen",
+		"ProfileLbl": "Steam-Profil",
+		"ProfileOption0": "Mein Profil",
+		"ProfileOption1": "Profil meines Freundes",
+		"ProfileOption2": "Benutzerdefiniertes Profil",
+		"BeginingSnapshotLbl": "Start-Snapshot",
+		"EndingSnapshotLbl": "End-Snapshot",
+		"SnapshotOptionOff": "Aus",
+		"PannoResolutionLbl": "Panno-Auflösung",
+		"PannoResolutionOptionNative": "Native",
+		"PannoResolutionOptionCustom": "Benutzerdefiniert",
+		"GenerationMethodLbl": "Generierungsmethode",
+		"OutpaintingMethodLbl": "Outpainting-Methode",
+		"MinimalHoursLbl": "Mindeststunden",
+		"MinimalHoursOptionCustom": "Benutzerdefiniert",
+		"ShowHoursLbl": "Stunden anzeigen",
+		"ShowHoursOption0": "Aus",
+		"ShowHoursOption1": "Unten",
+		"ShowHoursOption2": "Unten links",
+		"ShowHoursOption3": "Unten rechts",
+		"ShowHoursOption4": "Oben",
+		"ShowHoursOption5": "Oben links",
+		"ShowHoursOption6": "Oben rechts",
+		"GenerationTypes":
+		{
+			"DivideAndConquer": "Teile und Herrsche",
+			"GradualDescent": "Allmählicher Abstieg"
+		},
+		"OutpaintingTypes":
+		{
+			"ResizeCut": "Größe ändern+Zuschneiden",
+			"ResizeExpand": "Größe ändern+Erweitern",
+			"ResizeExpandBlur": "Größe ändern+Erweitern+Weichzeichnen",
+			"ResizeMirror": "Größe ändern+Spiegeln",
+			"ResizeMirrorBlur": "Größe ändern+Spiegeln+Weichzeichnen",
+			"ResizeProportional": "Proportional skalieren",
+			"ResizeUnproportional": "Nicht proportional skalieren"
+		}
+	},
+	"Hours": "s",
+	"ProfileWasNotSet": "Steam-Profil wurde nicht angegeben.",
+	"ProfileWasNotLoaded": "Steam-Profil {0} konnte nicht geladen werden.",
+	"ProfileIsPrivate": "Spieledetails sind im Steam-Profil {0} auf privat eingestellt.",
+	"ProfileIsPrivateAndLocal": "Sie können Ihre Spieledetails und Spielzeit in den Datenschutzeinstellungen Ihres Steam-Profils öffentlich machen. Möglicherweise müssen Sie auch mehrere Minuten warten, bis der Steam-Cache aktualisiert ist.",
+	"ProfileLoading": "Profil wird geladen...",
+	"PannoLayoutGeneration": "Panno-Layout wird generiert...",
+	"PannoSaving": "Panno wird gespeichert...",
+	"PannoSaved": "Panno gespeichert: {0}",
+	"NoGamesMeetTheGivenCriteria": "Keine Spiele erfüllen die gegebenen Kriterien."
+}

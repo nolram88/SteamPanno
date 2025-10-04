@@ -1,0 +1,54 @@
+{
+	"Language": "Español",
+	"Config":
+	{
+		"GenerationSettingsLbl": "Configuración de Generación",
+		"ProfileLbl": "Perfil de Steam",
+		"ProfileOption0": "Mi Perfil",
+		"ProfileOption1": "Perfil de Mi Amigo",
+		"ProfileOption2": "Perfil Personalizado",
+		"BeginingSnapshotLbl": "Instantáneo Inicial",
+		"EndingSnapshotLbl": "Instantáneo Final",
+		"SnapshotOptionOff": "Desactivado",
+		"PannoResolutionLbl": "Resolución del Panorama",
+		"PannoResolutionOptionNative": "Nativa",
+		"PannoResolutionOptionCustom": "Personalizada",
+		"GenerationMethodLbl": "Método de Generación",
+		"OutpaintingMethodLbl": "Método de Extensión",
+		"MinimalHoursLbl": "Horas Mínimas",
+		"MinimalHoursOptionCustom": "Personalizado",
+		"ShowHoursLbl": "Mostrar Horas",
+		"ShowHoursOption0": "No",
+		"ShowHoursOption1": "Inferior",
+		"ShowHoursOption2": "Inferior Izquierdo",
+		"ShowHoursOption3": "Inferior Derecho",
+		"ShowHoursOption4": "Superior",
+		"ShowHoursOption5": "Superior Izquierdo",
+		"ShowHoursOption6": "Superior Derecho",
+		"GenerationTypes":
+		{
+			"DivideAndConquer": "Divide y Vencerás",
+			"GradualDescent": "Descenso Gradual"
+		},
+		"OutpaintingTypes":
+		{
+			"ResizeCut": "Redimensionar+Recortar",
+			"ResizeExpand": "Redimensionar+Expandir",
+			"ResizeExpandBlur": "Redimensionar+Expandir+Desenfocar",
+			"ResizeMirror": "Redimensionar+Reflejar",
+			"ResizeMirrorBlur": "Redimensionar+Reflejar+Desenfocar",
+			"ResizeProportional": "Redimensionado Proporcional",
+			"ResizeUnproportional": "Redimensionado No Proporcional"
+		}
+	},
+	"Hours": "h",
+	"ProfileWasNotSet": "No se especificó el perfil de Steam.",
+	"ProfileWasNotLoaded": "No se pudo cargar el perfil de Steam {0}.",
+	"ProfileIsPrivate": "Los detalles del juego están configurados como privados en el perfil de Steam {0}.",
+	"ProfileIsPrivateAndLocal": "Puedes hacer que los detalles de tus juegos y el tiempo de juego sean públicos en la Configuración de Privacidad de tu perfil de Steam. Es posible que también debas esperar varios minutos antes de que se actualice la caché de Steam.",
+	"ProfileLoading": "Cargando perfil...",
+	"PannoLayoutGeneration": "Generando diseño del panorama...",
+	"PannoSaving": "Guardando panorama...",
+	"PannoSaved": "Panorama guardado: {0}",
+	"NoGamesMeetTheGivenCriteria": "Ningún juego cumple con los criterios dados."
+}

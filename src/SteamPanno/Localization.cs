@@ -9,17 +9,51 @@ namespace SteamPanno
 {
 	public static class Localization
 	{
+		private class LanguageStringComparer : StringComparer
+		{
+			public override int Compare(string x, string y)
+			{
+				if (x == null && y == null) return 0;
+				if (x == null) return -1;
+				if (y == null) return 1;
+
+				return string.Compare(
+					x != LanguageDefault ? x : string.Empty,
+					y != LanguageDefault ? y : string.Empty,
+					StringComparison.InvariantCultureIgnoreCase);
+			}
+
+			public override bool Equals(string x, string y)
+			{
+				if (x == null && y == null) return true;
+				if (x == null || y == null) return false;
+
+				return string.Equals(
+					x != LanguageDefault ? x : string.Empty,
+					y != LanguageDefault ? y : string.Empty,
+					StringComparison.InvariantCultureIgnoreCase);
+			}
+
+			public override int GetHashCode(string obj)
+			{
+				if (obj == null)
+					return 0;
+
+				return obj.ToLowerInvariant().GetHashCode();
+			}
+		}
+
 		private const string LanguageProperty = "Language";
 		private const string LanguageDefault = "english";
 		private const string TranslationsPath = "res://assets/translations";
 		private const string TranslationsPathAlt = "./custom-assets/translations";
 
-		private readonly static Dictionary<string, Dictionary<string, string>> localizations;
+		private readonly static SortedDictionary<string, Dictionary<string, string>> localizations;
 		private static string localizationActive;
 
 		static Localization()
 		{
-			localizations = new Dictionary<string, Dictionary<string, string>>();
+			localizations = new SortedDictionary<string, Dictionary<string, string>>(new LanguageStringComparer());
 			var filesFromRes = DirAccess.GetFilesAt(TranslationsPath);
 			var filesFromDir = System.IO.Directory.Exists(TranslationsPathAlt)
 				? DirAccess.GetFilesAt(TranslationsPathAlt)
@@ -56,7 +90,9 @@ namespace SteamPanno
 
 		public static (string Invariant, string Native)[] GetLocalizations()
 		{
-			return localizations.Select(x => (x.Key, x.Value[LanguageProperty])).ToArray();
+			return localizations
+				.Select(x => (x.Key, x.Value[LanguageProperty]))
+				.ToArray();
 		}
 
 		public static string GetLocalization()
