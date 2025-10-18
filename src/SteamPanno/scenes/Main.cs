@@ -461,14 +461,15 @@ namespace SteamPanno.scenes
 				saveButtonVisible = false;
 				ProgressStart(true, Localization.Localize("PannoSaving"));
 
+				var dateFormatString = "yyyy-MM-dd-HH-mm-ss";
 				var dateBegining = pannoBeginingTimestamp != default
-					? DateExtensions.TimestampToLocalDateTime(pannoBeginingTimestamp).ToString("yyyy-MM-dd")
+					? DateExtensions.TimestampToLocalDateTime(pannoBeginingTimestamp).ToString(dateFormatString)
 					: null;
 				var dateEnding = pannoEndingTimestamp != default
-					? DateExtensions.TimestampToLocalDateTime(pannoEndingTimestamp).ToString("yyyy-MM-dd")
-					: DateTime.Today.ToString("yyyy-MM-dd");
+					? DateExtensions.TimestampToLocalDateTime(pannoEndingTimestamp).ToString(dateFormatString)
+					: DateTime.Now.ToString(dateFormatString);
 				var date = dateBegining != null
-					? $"{dateBegining}-{dateEnding}"
+					? $"{dateBegining}_{dateEnding}"
 					: dateEnding;
 				var savePath = Path.Combine(FileExtensions.GetGenerationPath(), $"panno_{pannoSteamId}_{date}.png");
 				if (File.Exists(savePath))
