@@ -1,4 +1,6 @@
-# SteamPanno — a visual representation of someone's Steam library
+# SteamPanno
+
+a visual representation of someone's Steam library
 
 [![LicenseBadge](https://img.shields.io/github/license/kirnosenko/SteamPanno.svg)](https://raw.githubusercontent.com/kirnosenko/SteamPanno/master/LICENSE)
 [![Release](https://img.shields.io/github/v/release/kirnosenko/SteamPanno)](https://github.com/kirnosenko/SteamPanno/releases/latest)
