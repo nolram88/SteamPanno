@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>SteamPanno Web</title>
+    <style>
+      body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;margin:2rem;}
+      button{padding:.6rem 1rem;border-radius:.4rem;border:1px solid #ccc;cursor:pointer}
+      .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:1rem}
+      .card{border:1px solid #e2e2e2;border-radius:.4rem;padding:8px}
+      .muted{color:#666}
+      img.avatar{border-radius:50%;width:48px;height:48px;vertical-align:middle;margin-right:.5rem}
+    </style>
+  </head>
+  <body>
+    <h1>SteamPanno Web</h1>
+    <div id="auth"></div>
+    <div id="content" style="display:none">
+      <div id="profile"></div>
+      <h3>Your Games</h3>
+      <div id="games" class="grid"></div>
+    </div>
+    <script type="module">
+      async function me(){
+        const r = await fetch('/api/me');
+        if(!r.ok) return null; return r.json();
+      }
+      async function games(){
+        const r = await fetch('/api/me/games');
+        if(!r.ok) return {games:[]}; return r.json();
+      }
+      function signInBtn(){
+        const btn = document.createElement('button'); btn.textContent = 'Sign in through Steam';
+        btn.onclick = ()=> location.href = '/auth/steam';
+        return btn;
+      }
+      function logoutBtn(){
+        const btn = document.createElement('button'); btn.textContent = 'Log out';
+        btn.onclick = async ()=>{ await fetch('/api/logout',{method:'POST'}); location.reload(); }
+        return btn;
+      }
+      const auth = document.getElementById('auth');
+      const content = document.getElementById('content');
+      const profile = document.getElementById('profile');
+      const grid = document.getElementById('games');
+      const data = await me();
+      if(!data){ auth.append(signInBtn()); document.body.insertAdjacentHTML('beforeend','<p class="muted">Not signed in</p>'); }
+      else{
+        auth.append(logoutBtn()); content.style.display='block';
+        const p = data.profile || {}; 
+        profile.innerHTML = `<img class="avatar" src="${p.avatarfull||p.avatar||''}"/> <strong>${p.personaname||data.steamid}</strong>`;
+        const g = await games();
+        (g.games || []).slice(0,200).forEach(x=>{
+          const el = document.createElement('div'); el.className='card';
+          const img = x.img_logo_url ? `https://media.steampowered.com/steamcommunity/public/images/apps/${x.appid}/${x.img_logo_url}.jpg` : '';
+          el.innerHTML = `<img src="${img}" alt="" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:.25rem"/>`+
+            `<div><strong>${x.name||x.appid}</strong><br/><span class="muted">${Math.round((x.playtime_forever||0)/60)}h</span></div>`;
+          grid.append(el);
+        });
+      }
+    </script>
+  </body>
+  </html>
+
