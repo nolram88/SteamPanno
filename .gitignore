@@ -31,3 +31,7 @@ bld/
 
 # Distribution
 dist/
+# Webapp (Bun)
+webapp/.env
+webapp/node_modules/
+webapp/bun.lockb

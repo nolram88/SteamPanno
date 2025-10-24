@@ -1,0 +1,40 @@
+name: webapp-ci
+
+on:
+  push:
+    paths:
+      - 'webapp/**'
+      - '.github/workflows/webapp.yml'
+  pull_request:
+    paths:
+      - 'webapp/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install
+        working-directory: webapp
+        run: bun install
+      - name: Typecheck
+        working-directory: webapp
+        run: bun run typecheck
+      - name: Build Docker image (optional)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/steampanno-web:sha-${{ github.sha }} -f webapp/Dockerfile .
+      - name: Login to GHCR
+        if: github.ref == 'refs/heads/main'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push image
+        if: github.ref == 'refs/heads/main'
+        run: docker push ghcr.io/${{ github.repository_owner }}/steampanno-web:sha-${{ github.sha }}
+

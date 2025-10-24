@@ -5,6 +5,12 @@ a visual representation of someone's Steam library
 [![LicenseBadge](https://img.shields.io/github/license/kirnosenko/SteamPanno.svg)](https://raw.githubusercontent.com/kirnosenko/SteamPanno/master/LICENSE)
 [![Release](https://img.shields.io/github/v/release/kirnosenko/SteamPanno)](https://github.com/kirnosenko/SteamPanno/releases/latest)
 
+## Webapp (Bun) — One‑Click Deploy
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/nolram88/SteamPanno)
+
+This deploys the Bun web server in `webapp/` with Steam sign‑in. After deploy, set the `STEAM_API_KEY` env var (get from https://steamcommunity.com/dev/apikey). `BASE_URL` is inferred; `SESSION_SECRET` is auto‑generated.
+
 ## Downloads
 
 You may download the latest release for your system:
