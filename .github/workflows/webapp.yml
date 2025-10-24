@@ -24,17 +24,16 @@ jobs:
         working-directory: webapp
         run: bun run typecheck
       - name: Build Docker image (optional)
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         run: |
           docker build -t ghcr.io/${{ github.repository_owner }}/steampanno-web:sha-${{ github.sha }} -f webapp/Dockerfile .
       - name: Login to GHCR
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Push image
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         run: docker push ghcr.io/${{ github.repository_owner }}/steampanno-web:sha-${{ github.sha }}
-
